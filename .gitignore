@@ -1,0 +1,13 @@
+node_modules
+dist
+.DS_Store
+*.log
+
+# résumé tool: personal details and generated files stay local
+tools/resume/private.json
+tools/resume/out/
+
+tools/portrait/out/
+
+# raw bio notes (personal details, register numbers) — source material only, never published
+projects/

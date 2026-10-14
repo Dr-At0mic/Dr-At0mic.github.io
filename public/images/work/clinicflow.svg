@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <rect width="1200" height="1200" fill="#A9B8A0"/>
+  <rect x="150" y="190" width="520" height="150" rx="40" fill="#EFE9DD"/>
+  <path d="M200 330 L170 400 L270 336 Z" fill="#EFE9DD"/>
+  <g fill="#17140F" opacity=".7"><rect x="200" y="240" width="380" height="14" rx="5"/><rect x="200" y="276" width="250" height="14" rx="5"/></g>
+  <rect x="520" y="420" width="530" height="150" rx="40" fill="#1F3B2D"/>
+  <path d="M990 560 L1040 625 L930 566 Z" fill="#1F3B2D"/>
+  <g fill="#EFE9DD" opacity=".85"><rect x="570" y="470" width="400" height="14" rx="5"/><rect x="570" y="506" width="210" height="14" rx="5"/></g>
+  <path d="M100 820 H1100" stroke="#17140F" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+  <circle cx="170" cy="820" r="68" fill="#EFE9DD" stroke="#17140F" stroke-width="3"/>
+      <text x="170" y="838" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="50" font-weight="700" fill="#17140F">05</text><circle cx="342" cy="820" r="68" fill="#EFE9DD" stroke="#17140F" stroke-width="3"/>
+      <text x="342" y="838" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="50" font-weight="700" fill="#17140F">06</text><circle cx="514" cy="820" r="68" fill="#E8461E" stroke="#17140F" stroke-width="0"/>
+      <text x="514" y="838" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="50" font-weight="700" fill="#17140F">07</text><circle cx="686" cy="820" r="68" fill="#EFE9DD" stroke="#17140F" stroke-width="3"/>
+      <text x="686" y="838" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="50" font-weight="700" fill="#17140F">08</text><circle cx="858" cy="820" r="68" fill="#EFE9DD" stroke="#17140F" stroke-width="3"/>
+      <text x="858" y="838" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="50" font-weight="700" fill="#17140F">09</text><circle cx="1030" cy="820" r="68" fill="#EFE9DD" stroke="#17140F" stroke-width="3"/>
+      <text x="1030" y="838" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="50" font-weight="700" fill="#17140F">10</text>
+  <path d="M514 700 l30 40 30-40" fill="none" stroke="#E8461E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>

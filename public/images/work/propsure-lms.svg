@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <rect width="1200" height="1200" fill="#17140F"/>
+  <g fill="#EFE9DD" opacity=".12"><rect x="150" y="220" width="260" height="800" rx="20"/><rect x="470" y="220" width="260" height="800" rx="20"/><rect x="790" y="220" width="260" height="800" rx="20"/></g>
+  <g fill="#EFE9DD" opacity=".7"><rect x="180" y="250" width="110" height="14" rx="5"/><rect x="500" y="250" width="140" height="14" rx="5"/><rect x="820" y="250" width="90" height="14" rx="5"/></g>
+  <rect x="165" y="310" width="230" height="140" rx="14" fill="#EFE9DD"/><rect x="165" y="472" width="230" height="100" rx="14" fill="#EFE9DD"/><rect x="165" y="594" width="230" height="170" rx="14" fill="#E6A93A"/>
+  <rect x="485" y="310" width="230" height="120" rx="14" fill="#E8461E"/><rect x="485" y="452" width="230" height="160" rx="14" fill="#EFE9DD"/>
+  <rect x="805" y="310" width="230" height="180" rx="14" fill="#EFE9DD"/><rect x="805" y="512" width="230" height="110" rx="14" fill="#2B3FD6"/><rect x="805" y="644" width="230" height="120" rx="14" fill="#EFE9DD"/>
+  <path d="M400 390 C440 330 470 330 500 380" fill="none" stroke="#E8461E" stroke-width="6" stroke-linecap="round"/>
+  <path d="M488 362 l14 20 -24 6" fill="none" stroke="#E8461E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>

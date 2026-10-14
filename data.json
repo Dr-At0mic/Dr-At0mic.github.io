@@ -1,0 +1,1119 @@
+{
+  "site": {
+    "title": "Anandhu Suresh — Full-Stack Software Engineer",
+    "description": "Full-stack engineer building multi-tenant SaaS, secure APIs, Flutter and React apps, and practical AI — from the database to the phone. Based in Thiruvananthapuram, Kerala.",
+    "accent": "#E8461E",
+    "defaultTheme": "light",
+    "preloader": true,
+    "customCursor": true
+  },
+  "profile": {
+    "name": "Anandhu Suresh",
+    "role": "Full-Stack Software Engineer",
+    "headline": "Multi-tenant SaaS · Backend architecture · Flutter & React Native · Applied AI/ML",
+    "location": "Thiruvananthapuram, Kerala, India",
+    "timezone": "Asia/Kolkata",
+    "email": "anandhu2suresh797@gmail.com",
+    "phone": "",
+    "website": "",
+    "portrait": "images/portrait.jpg",
+    "portraitCaption": "hi — that’s me",
+    "available": true,
+    "availability": "Open to interesting roles & problems"
+  },
+  "hero": {
+    "eyebrow": "Portfolio — Full-stack engineer, Kerala",
+    "intro": "I build *multi-tenant SaaS*, {secure} APIs, Flutter & React apps and practical AI — from the database all the way to the phone.",
+    "note": "yes — I trained the GNN myself too",
+    "badge": "Open to work ✺ Say hello ✺ "
+  },
+  "sections": {
+    "about": {
+      "label": "About",
+      "nav": "About"
+    },
+    "work": {
+      "label": "Selected work",
+      "nav": "Work",
+      "title": "Selected *work*",
+      "aside": "Products I've designed and built — at Siga Infotech and on my own. Click any of them for the full story."
+    },
+    "archive": {
+      "label": "More projects",
+      "title": "More *projects*",
+      "aside": "Platforms, client work and tools."
+    },
+    "services": {
+      "label": "Expertise",
+      "title": "What I *do*",
+      "aside": "The problems I'm usually brought in for."
+    },
+    "skills": {
+      "label": "Toolkit",
+      "nav": "Skills",
+      "title": "The *toolkit*",
+      "aside": "What I reach for day to day. The italic ones are where I'm strongest."
+    },
+    "experience": {
+      "label": "Experience",
+      "nav": "Experience",
+      "title": "Where I've *worked*",
+      "highlightsTitle": "a few things I'm proud of —"
+    },
+    "education": {
+      "label": "Education",
+      "title": "Where I *studied*",
+      "languagesTitle": "languages —"
+    },
+    "testimonials": {
+      "label": "Kind words",
+      "title": "In their *words*"
+    },
+    "contact": {
+      "label": "Contact",
+      "nav": "Contact"
+    }
+  },
+  "marquee": [
+    "Multi-tenant SaaS",
+    "NestJS",
+    "Flutter",
+    "PostgreSQL",
+    "Applied AI",
+    "React",
+    "FastAPI",
+    "PyTorch",
+    "Security"
+  ],
+  "about": {
+    "statement": "I build software end to end — the database, the APIs, the web and mobile UI, the ML models and the deployment. Mostly that means *multi-tenant SaaS* that stays fast, secure and properly isolated, and AI features that cite their sources instead of making things up.",
+    "body": [
+      "At **Siga Infotech** (since November 2024) I build and run multi-tenant SaaS platforms for restaurants, UK care homes, staffing agencies, retail and AI — about a thousand commits across fourteen production repositories — and look after the AWS production setup they run on, down to the monthly bill.",
+      "On my own time I trained a graph neural network from scratch to forecast India's air quality, built a knowledge-graph learning app that refuses to hallucinate, and a WhatsApp-first clinic queue system. I think about failure modes first, and I quite enjoy the hard migrations nobody else wants."
+    ],
+    "stats": [
+      {
+        "value": 1000,
+        "suffix": "+",
+        "label": "Commits at Siga Infotech"
+      },
+      {
+        "value": 14,
+        "suffix": "",
+        "label": "Production repositories"
+      },
+      {
+        "value": 4,
+        "suffix": "×",
+        "label": "Database-per-tenant, built from scratch"
+      },
+      {
+        "value": 0.945,
+        "suffix": "",
+        "label": "R² of my air-quality GNN"
+      }
+    ],
+    "currently": [
+      {
+        "label": "Shipping",
+        "value": "FloatPro HR & payroll suite, API key gateway"
+      },
+      {
+        "label": "Building",
+        "value": "Zynk Suite — staffing SaaS for UK agencies"
+      },
+      {
+        "label": "Writing",
+        "value": "Claude Code skills from production lessons"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "breathe",
+      "title": "Breathe",
+      "client": "M.Sc. project — Christ Nagar College",
+      "context": "M.Sc. project",
+      "category": "AI · Mobile · Platform",
+      "year": 2026,
+      "period": "2025 — 2026",
+      "featured": true,
+      "cover": "images/work/breathe.svg",
+      "summary": "Forecasts India's air quality with a graph neural network I trained from scratch — running on the server and on the phone.",
+      "description": [
+        "Breathe forecasts air quality for India and helps people plan healthier trips. It's a Flutter app, a React web app, a React ML-ops console, a NestJS API and a Python inference service — about 43k lines in total.",
+        "The heart of it is a GCN-Transformer-GRU spatio-temporal graph neural network over 29 Indian cities and 569 distance-weighted edges. I distilled a 4.86M-parameter teacher into a 491K-parameter student — about 10× smaller — and the student actually beat the teacher on the held-out test set."
+      ],
+      "highlights": [
+        "Forecasts PM2.5, PM10 and NO₂ an hour ahead from a 48-hour window of 14 features per city; overall R² 0.945, PM2.5 MAE 4.5 µg/m³.",
+        "Exported to ONNX (1.58 MB) with a parity check, served from FastAPI **and on-device in Flutter** — I rewrote the feature pipeline in Dart to match the Python training pipeline exactly.",
+        "MLOps: live drift evaluation against real readings every 6 hours, a model version registry and an admin dashboard with an SVG city graph.",
+        "Self-hosted OSRM on the whole-India road graph; alternative routes ranked by AQI sampled along each route, plus a hand-written PDF carbon report.",
+        "Refresh-token rotation with reuse detection that revokes every session, Redis deny-lists, and a startup check that refuses unsafe production config."
+      ],
+      "metrics": [
+        {
+          "value": "0.945",
+          "label": "R² on held-out data"
+        },
+        {
+          "value": "10×",
+          "label": "smaller student model"
+        },
+        {
+          "value": "69",
+          "label": "API endpoints"
+        },
+        {
+          "value": "43k",
+          "label": "lines across 5 apps"
+        }
+      ],
+      "role": [
+        "Sole developer",
+        "ML",
+        "Backend",
+        "Mobile",
+        "DevOps"
+      ],
+      "stack": [
+        "Flutter",
+        "React 19",
+        "NestJS",
+        "FastAPI",
+        "PyTorch",
+        "ONNX",
+        "PostgreSQL",
+        "Redis",
+        "OSRM",
+        "Docker"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/Breathe"
+        }
+      ],
+      "gallery": []
+    },
+    {
+      "id": "floatpro",
+      "title": "FloatPro",
+      "client": "Siga Infotech — restaurant POS SaaS (UK)",
+      "context": "Siga Infotech",
+      "category": "Restaurant POS SaaS",
+      "year": 2026,
+      "period": "Nov 2024 — Now",
+      "featured": true,
+      "cover": "images/work/floatpro.svg",
+      "summary": "A multi-tenant restaurant platform for the UK — I designed its permission system, billing, compliance, AI assistant and much of the Flutter POS.",
+      "description": [
+        "FloatPro (also sold as Zynk and EasyDine) is a TypeScript backend on AWS Lambda, a tenant admin portal, a super-admin console and a Flutter waiter / POS / KDS app running on Android, Windows and iMin hardware. I've made about 690 commits across its four repositories.",
+        "I designed the PAC (Permission-Action-Control) authorization system, built the subscription and billing layer, the food-safety compliance module and the HR/payroll suite, and led the phased migration from the Express monolith to NestJS 11."
+      ],
+      "highlights": [
+        "**AI assistant:** a 4-layer multi-agent text-to-SQL pipeline — an orchestrator routing to SQL/UI/general agents, a validator that only allows a single read-only SELECT, execution inside `BEGIN READ ONLY`, and reversible PII masking in Redis.",
+        "**PAC authorization:** a DB-driven route registry, subscription-tier module sync with repair logic, per-user PLUS/MINUS overrides and Redis permission caching.",
+        "**API key gateway:** per-tenant vaulted secrets, HMAC pepper rotation, Redis Lua sliding-window rate limiting, IP allow/block lists and step-up re-auth.",
+        "**Flutter POS:** a Dio interceptor chain with single-flight token refresh, an ESC/POS printing subsystem with Bluetooth/mDNS discovery and templates, and a CI/CD pipeline producing signed, auto-versioned builds delivered to OneDrive.",
+        "**HR suite:** about 30k lines of frontend across people, time, pay and documents — including a config-driven form engine and an ID-card print engine."
+      ],
+      "metrics": [
+        {
+          "value": "690",
+          "label": "commits across 4 repos"
+        },
+        {
+          "value": "30k",
+          "label": "lines of HR frontend"
+        },
+        {
+          "value": "4",
+          "label": "platforms for the POS app"
+        }
+      ],
+      "role": [
+        "Backend",
+        "Architecture",
+        "Admin UI",
+        "Flutter",
+        "CI/CD"
+      ],
+      "stack": [
+        "NestJS 11",
+        "Express 5",
+        "TypeORM",
+        "PostgreSQL",
+        "Redis",
+        "AWS Lambda",
+        "React 18",
+        "Flutter",
+        "BLoC"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "ai-hub",
+      "title": "AI Hub",
+      "client": "Siga Infotech — multi-tenant AI SaaS",
+      "context": "Siga Infotech",
+      "category": "AI SaaS Platform",
+      "year": 2026,
+      "period": "Jun 2026 — Sep 2026",
+      "featured": true,
+      "cover": "images/work/ai-hub.svg",
+      "summary": "A modular AI platform — content generation, document extraction, résumé scoring and a RAG chatbot — on which I was nearly the sole developer.",
+      "description": [
+        "AI Hub covers text, SEO, code, social, image and video generation, schema-based document extraction, ATS résumé analysis and a knowledge-base chatbot, served through a customer portal, an admin portal and a public API.",
+        "I hand-built the RAG pipeline with no framework, the moderation and strike system, and a credit-wallet billing engine — then ported the whole backend from Express/Drizzle to NestJS/TypeORM with the API contract preserved, and designed a Python control plane for v2."
+      ],
+      "highlights": [
+        "**RAG:** gemini-embedding-001 vectors in pgvector via a custom TypeORM transformer, sliding-window chunking, top-k cosine search over active entries, and human review of extracted knowledge.",
+        "**Billing:** a three-bucket wallet (plan → prepaid → pay-as-you-go) with pre-auth holds and `SELECT … FOR UPDATE` locking, Stripe Checkout and idempotent webhooks.",
+        "**Port:** about 17.6k LOC and 143 routes moved to NestJS; a schema-parity checker confirmed 41/41 tables and 493/493 columns — and caught three latent billing bugs.",
+        "**v2 control plane (Python):** a 7-step resumable provisioning state machine, PgBouncer routing, Ed25519 JWT/JWKS, an SSRF-safe HTTP client and 532 tests against real Postgres servers.",
+        "A WebGL landing page with custom GLSL shaders, post-processing and Lenis scrollytelling."
+      ],
+      "metrics": [
+        {
+          "value": "143",
+          "label": "routes ported to NestJS"
+        },
+        {
+          "value": "41/41",
+          "label": "tables at schema parity"
+        },
+        {
+          "value": "532",
+          "label": "tests on the v2 control plane"
+        }
+      ],
+      "role": [
+        "Nearly sole developer",
+        "AI engineering",
+        "Backend",
+        "Billing"
+      ],
+      "stack": [
+        "NestJS",
+        "TypeORM",
+        "Gemini",
+        "Vertex AI",
+        "pgvector",
+        "Stripe",
+        "FastAPI",
+        "SQLAlchemy",
+        "Three.js / GLSL"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "clinicflow",
+      "title": "ClinicFlow",
+      "client": "M.Sc. project — Christ Nagar College",
+      "context": "M.Sc. project",
+      "category": "Healthcare SaaS",
+      "year": 2026,
+      "period": "2025 — 2026",
+      "featured": true,
+      "cover": "images/work/clinicflow.svg",
+      "summary": "A WhatsApp-first clinic queue for Kerala — patients book by chatting in English or Malayalam, and the waiting room watches the queue move live.",
+      "description": [
+        "ClinicFlow is a multi-tenant SaaS for clinics. Patients book through a bilingual WhatsApp chatbot; the clinic runs a live token queue that also shows on a waiting-room TV board.",
+        "Under the hood: 15 domain modules, 75 REST endpoints and 23 entities, covered by 80 end-to-end tests, with medical records kept in an append-only, hash-chained ledger."
+      ],
+      "highlights": [
+        "A bilingual booking state machine on WhatsApp interactive lists and buttons — with consent, opt-out and 24-hour-window rules — and **automatic failover to Telegram** via a ports-and-adapters design.",
+        "Live queue on Socket.IO rooms per tenant and per doctor, wait times from a rolling average of recent consultations, and proactive \"your turn is coming\" alerts.",
+        "Append-only, SHA-256 hash-chained medical records; external labs upload via API key, and reports are delivered through signed, expiring, PIN-protected links.",
+        "DPDPA 2023 data export and erasure, per-clinic roles, audited super-admin impersonation behind TOTP MFA, and PostgreSQL row-level security.",
+        "Razorpay subscriptions verified with HMAC, with dunning from Active → Past Due → booking-only mode."
+      ],
+      "metrics": [
+        {
+          "value": "75",
+          "label": "REST endpoints"
+        },
+        {
+          "value": "80",
+          "label": "end-to-end tests"
+        },
+        {
+          "value": "2",
+          "label": "languages in the chatbot"
+        }
+      ],
+      "role": [
+        "Sole developer",
+        "Backend",
+        "Frontend"
+      ],
+      "stack": [
+        "NestJS 10",
+        "TypeORM",
+        "PostgreSQL",
+        "Socket.IO",
+        "React 18",
+        "WhatsApp Cloud API",
+        "Razorpay"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "easy-learn",
+      "title": "Easy Learn",
+      "client": "M.Sc. project — Christ Nagar College",
+      "context": "M.Sc. project",
+      "category": "AI Learning Platform",
+      "year": 2026,
+      "period": "2025 — 2026",
+      "featured": true,
+      "cover": "images/work/easy-learn.svg",
+      "summary": "Turns study material into an interactive knowledge graph where every node can be traced back to the exact passage it came from.",
+      "description": [
+        "Easy Learn ingests PDFs, Word files, Markdown, HTML, CSV, JSON and images, plus AI study chats, and turns them into a graph you can explore by focus, timeline or search.",
+        "The rule I designed it around: the LLM must quote its source, and nothing reaches the graph until a person approves it."
+      ],
+      "highlights": [
+        "An ingestion state machine — extract → chunk → structure with the LLM → dedupe → review — with per-format extractors that record exactly where each passage came from.",
+        "**Hallucination guard:** a node is rejected unless its quote appears in the source chunk (normalised substring or fuzzy ratio ≥ 0.85); approved quotes are stored with a SHA-256 hash.",
+        "Duplicate detection from embedding cosine similarity plus title similarity, with versioned node history.",
+        "OpenAI and Gemini behind one interface with an automatic fallback chain, bring-your-own-key with Fernet encryption, and rule-based fallbacks when no LLM is available.",
+        "Hybrid full-text + pgvector search, an offline PWA caching the graph in IndexedDB, Stripe subscriptions and SSE progress streaming."
+      ],
+      "metrics": [
+        {
+          "value": "46",
+          "label": "REST endpoints"
+        },
+        {
+          "value": "7",
+          "label": "file formats ingested"
+        },
+        {
+          "value": "0.85",
+          "label": "minimum quote match"
+        }
+      ],
+      "role": [
+        "Sole developer",
+        "AI engineering",
+        "Backend",
+        "Frontend"
+      ],
+      "stack": [
+        "FastAPI",
+        "SQLAlchemy 2",
+        "PostgreSQL",
+        "pgvector",
+        "Redis",
+        "React 19",
+        "React Flow",
+        "PWA",
+        "Stripe"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/Easy-Learn"
+        }
+      ],
+      "gallery": []
+    },
+    {
+      "id": "carerez",
+      "title": "CareRez",
+      "client": "Siga Infotech — UK care-home SaaS",
+      "context": "Siga Infotech",
+      "category": "Healthcare SaaS (UK)",
+      "year": 2025,
+      "period": "Mar 2025 — Feb 2026",
+      "featured": true,
+      "cover": "images/work/carerez.svg",
+      "summary": "A platform for UK residential care providers. I wrote its first commit, designed its database-per-tenant architecture and moved it to serverless.",
+      "description": [
+        "CareRez is organised as Company → Homes → Units → Residents and Staff, across an Express/TypeScript backend, a React admin portal, a super-admin console and two Flutter apps.",
+        "I founded the backend codebase and was its top committer (243 of 757 commits) — the multi-tenancy, auth and RBAC framework, clinical and finance modules and the SaaS control plane."
+      ],
+      "highlights": [
+        "Database-per-tenant on Sequelize: runtime DB creation, subdomain resolution, and a `DBFactory` with LRU eviction (50 active domains), idle cleanup, health checks and request-scoped instances.",
+        "A declarative route-auth map compiled with path-to-regexp, with AND/OR role and permission checks behind a type-safe API.",
+        "Clinical modules: the medicine master, resident medication slots and **MAR sheet APIs**, treatments with follow-ups and inventory batches.",
+        "A resident finance ledger with budget limits, reserve funds with reversal entries and DB-transaction-wrapped operations.",
+        "Serverless with AWS CDK: ARM64 Lambda, API Gateway with X-Ray and a TLS-only policy, webpack → esbuild, and a GitHub Actions deploy pipeline."
+      ],
+      "metrics": [
+        {
+          "value": "243",
+          "label": "commits — top committer"
+        },
+        {
+          "value": "50",
+          "label": "tenant connections in the LRU"
+        },
+        {
+          "value": "5",
+          "label": "apps in the platform"
+        }
+      ],
+      "role": [
+        "Backend founder",
+        "Architecture",
+        "AWS"
+      ],
+      "stack": [
+        "Express",
+        "TypeScript",
+        "Sequelize",
+        "PostgreSQL",
+        "AWS CDK",
+        "Lambda",
+        "React"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "zynk-suite",
+      "title": "Zynk Suite",
+      "client": "Siga Infotech — staffing-agency SaaS (UK)",
+      "context": "Siga Infotech",
+      "category": "Staffing SaaS",
+      "year": 2026,
+      "period": "May 2026 — Now",
+      "featured": false,
+      "cover": "images/work/zynk-suite.svg",
+      "summary": "A multi-tenant platform for UK temporary-staffing agencies with five user tiers — I bootstrapped the platform and own the client domain.",
+      "description": [
+        "Zynk Suite (Sqube) serves system admins, super admins, agency admins, staff and client-portal users. I bootstrapped it from our multi-tenant SaaS core and removed about 17k lines of the old restaurant domain."
+      ],
+      "highlights": [
+        "Capacity-aware tenant placement on a DB-server registry, `CREATE DATABASE … TEMPLATE` provisioning and a reviewable schema-diff migration-job system.",
+        "A multi-user Client Portal identity model: per-device sessions storing only refresh-token hashes, rotation with a multi-tab grace window, and per-request branch scoping cached in Redis.",
+        "Jobs, booking calendar, holiday pay and timesheet sign-off; a compliance-minded archive with a nine-rule eligibility engine.",
+        "Migrated the staff portal from Next.js 14 to Vite — 2,564 files, kept working through a Next.js compatibility shim."
+      ],
+      "metrics": [
+        {
+          "value": "2,564",
+          "label": "files moved to Vite"
+        },
+        {
+          "value": "5",
+          "label": "user tiers"
+        }
+      ],
+      "role": [
+        "Platform",
+        "Backend",
+        "Expo apps"
+      ],
+      "stack": [
+        "NestJS",
+        "TypeORM",
+        "PostgreSQL",
+        "Redis",
+        "React",
+        "Vite",
+        "Expo"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "subscription-service",
+      "title": "Subscription Service",
+      "client": "Siga Infotech — billing microservice",
+      "context": "Siga Infotech",
+      "category": "Billing Microservice",
+      "year": 2026,
+      "period": "Jul 2025 — Apr 2026",
+      "featured": false,
+      "cover": "images/work/subscription.svg",
+      "summary": "One app-agnostic subscription and billing service shared by many products and tenants — proration, dues, tax-aware invoicing and churn analytics.",
+      "description": [
+        "I built v1 on Express, migrated it to NestJS 11 within two weeks with a use-case-driven clean architecture, and then took it through nine months of production hardening. Primary author: 22 of 24 commits, about 9,200 lines."
+      ],
+      "highlights": [
+        "Mid-cycle proration with two credit strategies — refund, or bonus days at the new plan's daily rate — using integer-cents arithmetic.",
+        "A bill-preview engine that runs the same maths as the real operation and returns warnings, minimum and recommended payments before anyone commits.",
+        "Oldest-first dues settlement, GST/VAT-style tax snapshots, freeze/unfreeze, and an hourly expiry cron that switches to an HTTP trigger in serverless deployments.",
+        "SaaS analytics: revenue, ARPT, churn, retention, tenant risk scoring and renewal-pattern classification."
+      ],
+      "metrics": [
+        {
+          "value": "9.2k",
+          "label": "lines of TypeScript"
+        },
+        {
+          "value": "2 wks",
+          "label": "Express → NestJS"
+        }
+      ],
+      "role": [
+        "Designer & primary developer"
+      ],
+      "stack": [
+        "NestJS 11",
+        "TypeScript",
+        "PostgreSQL",
+        "TypeORM",
+        "Docker"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "siga-pos",
+      "title": "Siga POS",
+      "client": "Siga Infotech — retail POS (India)",
+      "context": "Siga Infotech",
+      "category": "Retail POS & GST",
+      "year": 2026,
+      "period": "Mar 2026 — Apr 2026",
+      "featured": false,
+      "cover": "images/work/siga-pos.svg",
+      "summary": "A retail and inventory POS with one database per tenant — I built its loyalty engine and GST compliance reporting.",
+      "description": [
+        "Siga POS is a Flutter app on an Express/Drizzle backend with separate master and tenant configs."
+      ],
+      "highlights": [
+        "A loyalty program engine: tiered credit rules with range-overlap validation and memberships that can be purchased, upgraded, redeemed and expired.",
+        "GSTR-1, GSTR-2 and GSTR-3B reports with JSON, PDF and Excel export.",
+        "A barcode-scanner POS overlay, desktop features (service charges, manager PIN, tax-inclusive pricing) and wastage and near-expiry reports."
+      ],
+      "metrics": [],
+      "role": [
+        "Backend",
+        "Flutter"
+      ],
+      "stack": [
+        "Flutter",
+        "Express",
+        "Drizzle",
+        "PostgreSQL"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "propsure",
+      "title": "PropSure",
+      "client": "Client project — property verification & CRM",
+      "context": "Client project · B.Sc.",
+      "category": "PropTech Platform",
+      "year": 2023,
+      "period": "Sep 2023 — Oct 2023",
+      "featured": false,
+      "cover": "images/work/propsure.svg",
+      "summary": "A property-verification platform and real-estate CRM for Kerala — shipped by me alone, from first commit to production with full observability.",
+      "description": [
+        "PropSure scores properties against a configurable inspection checklist (\"Know Before You Buy\"), publishes verified listings, captures enquiries as CRM leads and manages pipelines and site visits — about 51k lines of TypeScript across a NestJS API, a React admin portal and a trilingual marketing site."
+      ],
+      "highlights": [
+        "A weighted two-level verification scoring engine as pure, unit-tested functions that re-scores affected properties when the rules change.",
+        "Admin auth with a TOTP authenticator implemented from RFC 6238, AES-256-GCM encrypted secrets, Redis session rotation and per-IP lockout.",
+        "A partner API platform: scoped keys stored as SHA-256 hashes, BigInt CIDR matching and Redis rate limiting with automatic blocking.",
+        "GitHub Actions CD with health-gated rollout and automatic rollback, and the full Grafana LGTM stack with trace ↔ log ↔ metric correlation."
+      ],
+      "metrics": [
+        {
+          "value": "51k",
+          "label": "lines of TypeScript"
+        },
+        {
+          "value": "~200",
+          "label": "API endpoints"
+        },
+        {
+          "value": "181",
+          "label": "unit tests"
+        }
+      ],
+      "role": [
+        "Sole developer"
+      ],
+      "stack": [
+        "NestJS",
+        "PostgreSQL",
+        "Redis",
+        "React 19",
+        "Tailwind v4",
+        "Docker",
+        "Grafana LGTM"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "propsure-lms",
+      "title": "PropSure LMS",
+      "client": "Client project — lead management SaaS",
+      "context": "Client project · B.Sc.",
+      "category": "Multi-tenant CRM",
+      "year": 2023,
+      "period": "Aug 2023 — Sep 2023",
+      "featured": false,
+      "cover": "images/work/propsure-lms.svg",
+      "summary": "An enterprise lead-management CRM on Spring Boot where every customer company gets its own physically isolated database.",
+      "description": [
+        "A Gradle multi-module modular monolith (12 modules, 46 endpoints) with a React 19 frontend: a dark control plane for platform admins and a light workspace for six tenant roles."
+      ],
+      "highlights": [
+        "Database-per-tenant via `AbstractRoutingDataSource`, Caffeine-cached HikariCP pools per tenant and a staged provisioning pipeline (create DB → Flyway → seed → activate).",
+        "RBAC with six roles plus row-level data security through JPA Criteria specifications.",
+        "Lead scoring with MQL/SQL qualification, Jaro-Winkler duplicate detection, conversion to accounts and opportunities, and round-robin assignment.",
+        "Real-time collaboration on WebSocket/STOMP: presence, edit locks and threaded comments with @mentions."
+      ],
+      "metrics": [
+        {
+          "value": "12",
+          "label": "Gradle modules"
+        },
+        {
+          "value": "28",
+          "label": "PostgreSQL tables"
+        }
+      ],
+      "role": [
+        "Architect & developer"
+      ],
+      "stack": [
+        "Java 21",
+        "Spring Boot 3",
+        "PostgreSQL",
+        "Flyway",
+        "WebSocket",
+        "React 19"
+      ],
+      "links": [],
+      "gallery": []
+    },
+    {
+      "id": "fleetbooks",
+      "title": "FleetBooks",
+      "client": "M.Sc. project — Christ Nagar College",
+      "context": "M.Sc. project",
+      "category": "Cross-platform App",
+      "year": 2026,
+      "period": "2026",
+      "featured": false,
+      "cover": "images/work/fleetbooks.svg",
+      "summary": "A fleet-finance app for vehicle-hire businesses — one React Native codebase running on Android, iOS and the web.",
+      "description": [
+        "FleetBooks covers client receivables, drivers, vehicles, odometer readings, attendance and daily allowances, delivered spec-first: user stories, derived requirements and implementation plans with risk analysis."
+      ],
+      "highlights": [
+        "A hand-written Vite config that bundles React Native for the browser (migrated from Webpack).",
+        "A responsive shell — sidebar on desktop, bottom bar and drawer on mobile — kept in sync through a global navigation reference.",
+        "A token-based design system (34 Material-3 colour roles) and 26 components, including charts built from plain views."
+      ],
+      "metrics": [
+        {
+          "value": "3",
+          "label": "platforms, one codebase"
+        }
+      ],
+      "role": [
+        "Sole developer"
+      ],
+      "stack": [
+        "React Native 0.86",
+        "react-native-web",
+        "Vite",
+        "NestJS 11"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/FleetBooks"
+        }
+      ],
+      "gallery": []
+    },
+    {
+      "id": "playbooks",
+      "title": "Engineering Playbooks",
+      "client": "Personal — Claude Code agent skills",
+      "context": "Personal",
+      "category": "AI Agent Skills",
+      "year": 2026,
+      "period": "2026",
+      "featured": false,
+      "cover": "images/work/playbooks.svg",
+      "summary": "My production lessons on multi-tenancy and permissions, packaged as skills that AI coding agents load and follow.",
+      "description": [
+        "Two reusable playbooks: `multitenancy` (all three isolation strategies with 12 NestJS templates) and `pac`, a ~7.7k-line permission engine combining RBAC, PBAC and ABAC."
+      ],
+      "highlights": [
+        "Trusted-source tenant resolution, AsyncLocalStorage context and how jobs and webhooks re-establish tenant scope.",
+        "DENY-always-wins permission evaluation with O(1) lookups, full PostgreSQL DDL and a catalogue of 26 design decisions, each with the failure it prevents."
+      ],
+      "metrics": [],
+      "role": [
+        "Author"
+      ],
+      "stack": [
+        "TypeScript",
+        "NestJS",
+        "TypeORM",
+        "PostgreSQL"
+      ],
+      "links": [],
+      "gallery": []
+    }
+  ],
+  "services": [
+    {
+      "title": "Multi-tenant SaaS",
+      "description": "Database-per-tenant, schema-per-tenant or shared schema with row-level security — plus provisioning, tenant routing and migrations that fan out safely.",
+      "deliverables": [
+        "DB-per-tenant",
+        "PostgreSQL RLS",
+        "Provisioning",
+        "Migrations"
+      ]
+    },
+    {
+      "title": "Auth & Security",
+      "description": "Permission frameworks that deny by default, token rotation with reuse detection, MFA, encryption and the boring startup checks that save you at 2am.",
+      "deliverables": [
+        "RBAC / ABAC",
+        "JWT rotation",
+        "MFA",
+        "API gateways"
+      ]
+    },
+    {
+      "title": "Applied AI / ML",
+      "description": "Models trained from scratch, RAG that cites its sources, LLM pipelines with fallbacks and guardrails, and inference that runs on the phone.",
+      "deliverables": [
+        "PyTorch",
+        "pgvector RAG",
+        "LLM pipelines",
+        "On-device ONNX"
+      ]
+    },
+    {
+      "title": "Mobile & Web",
+      "description": "Flutter and React Native apps, React admin portals and PWAs — with real attention to responsive layout, motion and accessibility.",
+      "deliverables": [
+        "Flutter",
+        "React Native",
+        "React",
+        "PWA"
+      ]
+    },
+    {
+      "title": "Shipping It",
+      "description": "I deploy and run production on AWS — Lambda, EC2 and Lightsail — with CI/CD, health-gated rollouts and observability, and I keep a close eye on the bill: cost analysis and optimisation are part of the job.",
+      "deliverables": [
+        "AWS Lambda / EC2 / Lightsail",
+        "Cost optimisation",
+        "CI/CD",
+        "Observability"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "area": "Languages",
+      "items": [
+        "*TypeScript*",
+        "JavaScript",
+        "*Python*",
+        "*Dart*",
+        "SQL",
+        "Java",
+        "Bash",
+        "PowerShell",
+        "Kotlin (integration)"
+      ]
+    },
+    {
+      "area": "Backend",
+      "items": [
+        "*NestJS*",
+        "Express",
+        "*FastAPI*",
+        "Spring Boot",
+        "Socket.IO",
+        "TypeORM",
+        "Sequelize",
+        "Drizzle",
+        "SQLAlchemy 2",
+        "Pydantic"
+      ]
+    },
+    {
+      "area": "Data",
+      "items": [
+        "*PostgreSQL*",
+        "pgvector",
+        "Row-level security",
+        "*Redis*",
+        "PgBouncer",
+        "Alembic",
+        "Flyway"
+      ]
+    },
+    {
+      "area": "Frontend",
+      "items": [
+        "*React 19*",
+        "Vite",
+        "TanStack Query",
+        "Zustand",
+        "Jotai",
+        "Redux Toolkit",
+        "React Flow",
+        "Tailwind",
+        "Three.js / GLSL",
+        "Framer Motion"
+      ]
+    },
+    {
+      "area": "Mobile",
+      "items": [
+        "*Flutter*",
+        "BLoC",
+        "GoRouter",
+        "React Native",
+        "Expo",
+        "react-native-web"
+      ]
+    },
+    {
+      "area": "AI / ML",
+      "items": [
+        "*PyTorch*",
+        "Graph neural networks",
+        "ONNX Runtime",
+        "*RAG*",
+        "OpenAI",
+        "Gemini",
+        "Vertex AI",
+        "Ollama",
+        "scikit-learn"
+      ]
+    },
+    {
+      "area": "Cloud & DevOps",
+      "items": [
+        "*AWS* (Lambda, EC2, Lightsail, API Gateway, S3, CloudFront, CDK)",
+        "Cost analysis & optimisation",
+        "*Docker*",
+        "GitHub Actions",
+        "nginx",
+        "Grafana LGTM",
+        "OpenTelemetry"
+      ]
+    },
+    {
+      "area": "Integrations",
+      "items": [
+        "Stripe",
+        "Razorpay",
+        "WhatsApp Cloud API",
+        "Telegram",
+        "FCM",
+        "ESC/POS printing",
+        "OSRM / OSM"
+      ]
+    },
+    {
+      "area": "Testing",
+      "items": [
+        "Jest",
+        "Supertest",
+        "Vitest",
+        "pytest",
+        "JUnit 5",
+        "flutter_test",
+        "mypy",
+        "Ruff"
+      ]
+    }
+  ],
+  "domains": [
+    "Healthcare & clinics",
+    "UK care homes",
+    "Restaurant POS",
+    "Retail & GST",
+    "Staffing agencies",
+    "HR & payroll",
+    "Real estate & CRM",
+    "Fleet finance",
+    "Air quality",
+    "SaaS billing"
+  ],
+  "experience": [
+    {
+      "period": "Nov 2024 — Now",
+      "role": "Full-Stack Software Engineer",
+      "company": "Siga Infotech",
+      "location": "Kerala",
+      "description": "Building and running multi-tenant SaaS products end to end — database architecture, APIs, admin portals, Flutter apps and the AWS production infrastructure they run on. About 1,070 commits across 14 production repositories.",
+      "highlights": [
+        "**FloatPro / Zynk / EasyDine (restaurant POS, UK):** designed the PAC authorization system, built subscriptions and billing, food-safety compliance and the HR/payroll suite, a multi-agent text-to-SQL assistant and an API key gateway; led the Express → NestJS 11 migration.",
+        "**CareRez (care homes, UK):** founded the backend — database-per-tenant on Sequelize, RBAC, MAR sheet APIs and a resident finance ledger — and moved it to serverless with AWS CDK.",
+        "**Zynk Suite (staffing, UK):** bootstrapped the NestJS platform with capacity-aware tenant placement, built the Client Portal identity system and migrated 2,564 files from Next.js to Vite.",
+        "**AI Hub (AI SaaS):** Gemini text/image/video, hand-built pgvector RAG, a credit-wallet billing engine, a full Express → NestJS port and a Python FastAPI control plane.",
+        "**Subscription Service:** designed and built an app-agnostic billing microservice with proration, dues and tax-aware invoicing.",
+        "**Siga POS (retail, India):** loyalty engine and GSTR-1/2/3B reporting with JSON, PDF and Excel export.",
+        "**Cloud & production (AWS):** deploy and run production workloads on AWS Lambda, EC2 and Lightsail — with API Gateway, S3, CloudFront, CDK and GitHub Actions pipelines — and own cost analysis and optimisation of the production infrastructure."
+      ],
+      "url": "https://sigainfotech.com/"
+    },
+    {
+      "period": "Aug 2023 — Oct 2023",
+      "role": "Full-Stack Developer",
+      "company": "PropSure (client projects)",
+      "location": "Kerala",
+      "description": "During my B.Sc. — sole developer of a property-verification platform and real-estate CRM, and architect of a multi-tenant lead-management SaaS on Spring Boot.",
+      "highlights": [
+        "**PropSure:** ~51k lines of TypeScript across a NestJS API, React admin portal and trilingual site; RFC 6238 TOTP, scoped API keys, health-gated deploys with rollback and a full Grafana LGTM stack.",
+        "**PropSure LMS:** database-per-tenant on Spring Boot with per-tenant HikariCP pools, staged provisioning, row-level data security and real-time collaboration over STOMP."
+      ]
+    }
+  ],
+  "highlights": [
+    {
+      "tag": "4×",
+      "title": "Built database-per-tenant four times",
+      "detail": "Sequelize, TypeORM, Drizzle and SQLAlchemy — each generation better than the last."
+    },
+    {
+      "tag": "10×",
+      "title": "My student model beat its teacher",
+      "detail": "A 491K-parameter GNN, 10× smaller, scoring R² 0.945 on held-out data."
+    },
+    {
+      "tag": "2,564",
+      "title": "Files moved from Next.js to Vite",
+      "detail": "Kept working the whole way through with a compatibility shim."
+    },
+    {
+      "tag": "41/41",
+      "title": "Tables at schema parity after a port",
+      "detail": "Express/Drizzle → NestJS/TypeORM, 493/493 columns verified."
+    },
+    {
+      "tag": "532",
+      "title": "Tests on a Python control plane",
+      "detail": "Run against three real Postgres servers and Redis in CI."
+    }
+  ],
+  "education": [
+    {
+      "degree": "M.Sc. Computer Science",
+      "institution": "Christ Nagar College, Maranalloor",
+      "board": "University of Kerala",
+      "period": "2024 — 2026",
+      "score": "78.28",
+      "scoreUnit": "%",
+      "result": "First Class",
+      "detail": "Major project 88/100 · comprehensive viva 90/100. Breathe, Easy Learn, ClinicFlow and FleetBooks were built here.",
+      "level": "degree"
+    },
+    {
+      "degree": "B.Sc. Computer Science",
+      "institution": "Emmanuel College of Arts and Science, Vazhichal",
+      "board": "University of Kerala",
+      "period": "2021 — 2024",
+      "score": "7.10",
+      "scoreUnit": "CCPA",
+      "result": "Grade B · 71.03%",
+      "detail": "Major project 98/100 (A+). Python, FOSS and web programming labs all A+.",
+      "level": "degree"
+    },
+    {
+      "degree": "Higher Secondary — Science",
+      "institution": "St. Xavier's HSS, Peyad",
+      "board": "Kerala HSE Board",
+      "period": "2021",
+      "score": "74.17",
+      "scoreUnit": "%",
+      "result": "890 / 1200",
+      "detail": "Biology science stream.",
+      "level": "school"
+    },
+    {
+      "degree": "Secondary School (Class 10)",
+      "institution": "Rajiv Gandhi National School, Manali",
+      "board": "CBSE",
+      "period": "2019",
+      "score": "73.00",
+      "scoreUnit": "%",
+      "result": "365 / 500",
+      "detail": "",
+      "level": "school"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Malayalam",
+      "level": 5,
+      "note": "Native — read, write, speak"
+    },
+    {
+      "name": "English",
+      "level": 5,
+      "note": "Fluent — read, write, speak"
+    },
+    {
+      "name": "Hindi",
+      "level": 2,
+      "note": "Basic — speak & understand"
+    },
+    {
+      "name": "Tamil",
+      "level": 2,
+      "note": "Understand"
+    }
+  ],
+  "testimonials": [],
+  "contact": {
+    "headline": "Got a product that needs building *from the database up?*",
+    "text": "I'm happiest owning a feature from schema to production. Write to me about roles, collaborations or an interesting hard problem — I read everything.",
+    "cta": "Say hello"
+  },
+  "socials": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/Dr-At0mic"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/anandhu-suresh-9908ab19a/",
+      "note": "not up to date — I’m rarely active there"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/r0cks__d___xebec/"
+    },
+    {
+      "label": "Email",
+      "url": "mailto:anandhu2suresh797@gmail.com"
+    }
+  ],
+  "footer": {
+    "colophon": "Designed & hand-coded in Thiruvananthapuram. Set in Fraunces, Instrument Sans & JetBrains Mono."
+  },
+  "resume": {
+    "summary": "Full-stack engineer who builds products end to end — database, APIs, web and mobile UI, ML models and deployment. At Siga Infotech (Nov 2024 – present) I build and run multi-tenant SaaS platforms across restaurant POS, UK care homes, UK staffing agencies, AI SaaS and retail POS (~1,070 commits, 14 production repositories), and manage their AWS production deployments on Lambda, EC2 and Lightsail, including cost analysis and optimisation. Strongest in database-per-tenant architecture, permission and identity systems, security hardening, and practical AI: RAG, guarded LLM pipelines and on-device ML.",
+    "projects": [
+      "breathe",
+      "easy-learn",
+      "clinicflow",
+      "propsure",
+      "propsure-lms",
+      "fleetbooks"
+    ],
+    "maxProjectHighlights": 3,
+    "photo": "tools/resume/photo.jpg"
+  }
+}

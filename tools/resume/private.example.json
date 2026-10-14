@@ -1,0 +1,18 @@
+{
+  "_note": "Copy this file to private.json and fill it in. private.json is git-ignored and only read by the résumé/biodata tool — it is never bundled into the website.",
+  "fullName": "",
+  "dateOfBirth": "",
+  "fatherName": "",
+  "motherName": "",
+  "nationality": "",
+  "nativePlace": "",
+  "address": "",
+  "maritalStatus": "",
+  "currentOrganisation": "",
+  "objective": "",
+  "place": "",
+  "date": "",
+  "declaration": "I hereby declare that the information furnished above is true to the best of my knowledge and belief.",
+  "extra": {},
+  "photo": ""
+}
