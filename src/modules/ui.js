@@ -98,9 +98,9 @@ export function initCopy() {
     b.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(b.dataset.copy);
-        say('copied — talk soon!');
+        say(b.dataset.copied || 'copied — talk soon!');
       } catch {
-        location.href = `mailto:${b.dataset.copy}`;
+        if (b.dataset.copy.includes('@')) location.href = `mailto:${b.dataset.copy}`;
       }
     })
   );

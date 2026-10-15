@@ -14,6 +14,10 @@ export const doodle = {
 };
 
 export const asterisk = `<svg class="asterisk" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5v30M7 12.5l26 15M7 27.5l26-15"/></svg>`;
+// The brand mark — three orbits round a nucleus, an electron on each (Dr. Atomic).
+const orbit = (deg) =>
+  `<g transform="rotate(${deg} 20 20)"><ellipse cx="20" cy="20" rx="17.5" ry="6.6"/><circle class="atom__e" cx="31.2" cy="25.1" r="2.3"/></g>`;
+export const atom = `<svg class="atom" viewBox="0 0 40 40" aria-hidden="true">${[0, 60, -60].map(orbit).join('')}<circle cx="20" cy="20" r="3.4"/></svg>`;
 const arrowIcon = `<svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8.5 7H17v8.5"/></svg>`;
 const plusIcon = `<svg class="i-plus" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`;
 
@@ -39,6 +43,7 @@ const SECTION_DEFAULTS = {
   skills: { label: 'Toolkit', nav: 'Skills', title: 'The *toolkit*', aside: '' },
   experience: { label: 'Experience', nav: 'Experience', title: 'Where I’ve *worked*', highlightsTitle: 'a few nice things —' },
   education: { label: 'Education', nav: '', title: 'Where I *studied*', languagesTitle: 'languages —' },
+  play: { label: 'Off the clock', nav: '', title: 'Off the *clock*', aside: '', handlesTitle: 'find me —' },
   testimonials: { label: 'Kind words', title: 'In their *words*' },
   contact: { label: 'Contact', nav: 'Contact' },
 };
@@ -63,6 +68,7 @@ export function renderApp(d) {
     ['skills', list(d.skills).length, () => skills(d, num(), sec('skills'))],
     ['experience', list(d.experience).length, () => experience(d, num(), sec('experience'))],
     ['education', list(d.education).length || list(d.languages).length, () => education(d, num(), sec('education'))],
+    ['play', list(d.play?.games).length || list(d.play?.handles).length, () => play(d.play, num(), sec('play'))],
     ['testimonials', list(d.testimonials).length, () => testimonials(d.testimonials, num(), sec('testimonials'))],
   ].filter(([, present]) => present);
 
@@ -98,7 +104,7 @@ function loader(d) {
   return `
   <div class="loader" aria-hidden="true">
     <div class="loader__top label"><span>${esc(d.profile.name)}</span><span class="loader__eyebrow">${esc(d.hero?.eyebrow || '')}</span></div>
-    <div class="loader__mark">${asterisk}</div>
+    <div class="loader__mark">${atom}</div>
     <div class="loader__bottom">
       <span class="label">Loading the good stuff</span>
       <span class="loader__count">000</span>
@@ -111,7 +117,7 @@ function nav(d, links) {
   return `
   <header class="nav">
     <a class="nav__brand" href="#top" aria-label="${esc(p.name)} — back to top">
-      <span class="nav__mark">${asterisk}</span>
+      <span class="nav__mark">${atom}</span>
       <span class="nav__name">${esc(p.name)}</span>
     </a>
     <div class="nav__meta label">
@@ -460,6 +466,53 @@ function education(d, num, s) {
                     <span class="langs__note">${esc(l.note || '')}</span>
                   </li>`;
                 })
+                .join('')}</ul>
+            </aside>`
+          : ''
+      }
+    </div>
+  </section>`;
+}
+
+function play(p, num, s) {
+  const games = list(p.games);
+  const handles = list(p.handles);
+  return `
+  <section class="section play" id="play">
+    ${sectionHead(num, s)}
+    <div class="play__grid ${handles.length ? '' : 'is-solo'}">
+      <ol class="games">
+        ${games
+          .map(
+            (g) => `
+          <li class="game" data-fade>
+            <span class="label game__status">${esc(g.status || '')}</span>
+            <div class="game__main">
+              <h3 class="game__title">${
+                g.url ? `<a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(g.title)}${arrowIcon}</a>` : esc(g.title)
+              }</h3>
+              ${g.note ? `<p class="game__note">${rich(g.note)}</p>` : ''}
+            </div>
+            ${g.tag ? `<span class="game__tag hand">${esc(g.tag)}</span>` : ''}
+          </li>`
+          )
+          .join('')}
+      </ol>
+      ${
+        handles.length
+          ? `<aside class="handles" data-fade>
+              <p class="hand handles__title">${esc(s.handlesTitle)}</p>
+              <ul>${handles
+                .map(
+                  (h) => `<li>
+                    <span class="label handles__platform">${esc(h.platform)}</span>
+                    ${
+                      h.url
+                        ? `<a class="handles__id" href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.handle)}${arrowIcon}</a>`
+                        : `<button class="handles__id" type="button" data-copy="${esc(h.handle)}" data-copied="copied — see you in game" data-cursor="Copy">${esc(h.handle)}</button>`
+                    }
+                  </li>`
+                )
                 .join('')}</ul>
             </aside>`
           : ''
