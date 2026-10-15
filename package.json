@@ -8,7 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "resume": "node tools/resume/build.mjs",
-    "resume:biodata": "node tools/resume/build.mjs --template biodata"
+    "resume:biodata": "node tools/resume/build.mjs --template biodata",
+    "resume:ats": "node tools/resume/build.mjs --template resume-ats",
+    "resume:biodata-ats": "node tools/resume/build.mjs --template biodata-ats",
+    "resume:all": "node tools/resume/build.mjs --template all"
   },
   "devDependencies": {
     "puppeteer-core": "^25.14.0",

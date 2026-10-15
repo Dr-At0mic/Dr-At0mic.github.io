@@ -15,7 +15,7 @@
     "timezone": "Asia/Kolkata",
     "email": "anandhu2suresh797@gmail.com",
     "phone": "",
-    "website": "",
+    "website": "https://dr-at0mic.github.io/",
     "portrait": "images/portrait.jpg",
     "portraitCaption": "hi — that’s me",
     "available": true,
@@ -72,6 +72,12 @@
     "contact": {
       "label": "Contact",
       "nav": "Contact"
+    },
+    "play": {
+      "label": "Off the clock",
+      "title": "When I’m *not* coding",
+      "aside": "Mostly games. If you play any of these, come say hi.",
+      "handlesTitle": "find me —"
     }
   },
   "marquee": [
@@ -1075,6 +1081,77 @@
       "note": "Understand"
     }
   ],
+  "play": {
+    "games": [
+      {
+        "title": "Bodycam",
+        "status": "Now playing",
+        "note": "My current obsession."
+      },
+      {
+        "title": "Marvel Rivals",
+        "status": "Playing"
+      },
+      {
+        "title": "Counter-Strike 2",
+        "status": "Playing"
+      },
+      {
+        "title": "Chess",
+        "status": "When stressed",
+        "note": "My way of unwinding — so, a fairly low Elo.",
+        "url": "https://www.chess.com/member/anandhusureshvr"
+      },
+      {
+        "title": "Valorant",
+        "status": "Retired",
+        "note": "Peaked at Platinum 3, then quit out of boredom.",
+        "tag": "Plat 3"
+      },
+      {
+        "title": "Elden Ring",
+        "status": "Finished",
+        "note": "Played through everything there is."
+      },
+      {
+        "title": "God of War",
+        "status": "Finished"
+      },
+      {
+        "title": "Her Story",
+        "status": "Finished"
+      }
+    ],
+    "handles": [
+      {
+        "platform": "Discord",
+        "handle": "dr___atomic"
+      },
+      {
+        "platform": "Chess.com",
+        "handle": "anandhusureshvr",
+        "url": "https://www.chess.com/member/anandhusureshvr"
+      },
+      {
+        "platform": "Steam",
+        "handle": "dr_at0mic",
+        "url": "https://steamcommunity.com/profiles/76561199543188556/"
+      },
+      {
+        "platform": "Riot",
+        "handle": "DrAtOm1c#4346"
+      },
+      {
+        "platform": "Epic Games",
+        "handle": "DR_ATOM1C"
+      },
+      {
+        "platform": "Monkeytype",
+        "handle": "Dr_Atomic",
+        "url": "https://monkeytype.com/profile/Dr_Atomic"
+      }
+    ]
+  },
   "testimonials": [],
   "contact": {
     "headline": "Got a product that needs building *from the database up?*",

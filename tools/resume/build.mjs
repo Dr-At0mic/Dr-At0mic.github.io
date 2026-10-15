@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-// Turns data.json into a résumé (or an Indian-style biodata).
+// Turns data.json into résumés and biodatas.
 //
-//   npm run resume                    → tools/resume/out/resume.{pdf,html,md,json}
-//   npm run resume:biodata            → tools/resume/out/biodata.{pdf,html,md}
+//   npm run resume                    → designed résumé      tools/resume/out/resume.{pdf,html,md,json}
+//   npm run resume:ats                → ATS-friendly résumé  tools/resume/out/resume-ats.{pdf,html,txt}
+//   npm run resume:biodata            → designed biodata     tools/resume/out/biodata.{pdf,html,md}
+//   npm run resume:biodata-ats        → ATS-friendly biodata tools/resume/out/biodata-ats.{pdf,html,txt}
+//   npm run resume:all                → all four
 //
 // Options:
-//   --template resume|biodata   which document to build (default: resume)
+//   --template <name>           resume | resume-ats | biodata | biodata-ats | all (default: resume)
 //   --out <dir>                 output folder (default: tools/resume/out)
 //   --no-pdf                    skip the PDF (no browser needed)
 //   --public                    also copy the résumé PDF to public/resume.pdf (off by default — the site has no résumé link)
@@ -19,6 +22,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from
 import { dirname, join, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { resumeHtml, biodataHtml, pickProjects } from './templates.mjs';
+import { atsResumeModel, atsBiodataModel, atsHtml, atsText } from './ats.mjs';
 import { list, md, plain, skillName, parsePeriod } from './text.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -31,64 +35,65 @@ const opt = (name, fallback) => {
   return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : fallback;
 };
 const flag = (name) => argv.includes(`--${name}`);
-const template = opt('template', 'resume');
+const TEMPLATES = ['resume', 'resume-ats', 'biodata', 'biodata-ats'];
+const chosen = opt('template', 'resume');
 const outDir = resolve(root, opt('out', 'tools/resume/out'));
 const dataFile = resolve(root, opt('data', 'data.json'));
 const wantPdf = !flag('no-pdf');
-const toPublic = template === 'resume' && flag('public');
 
-if (!['resume', 'biodata'].includes(template)) {
-  console.error(`Unknown --template "${template}". Use "resume" or "biodata".`);
+if (chosen !== 'all' && !TEMPLATES.includes(chosen)) {
+  console.error(`Unknown --template "${chosen}". Use one of: ${TEMPLATES.join(', ')}, all.`);
   process.exit(1);
 }
 
 const data = JSON.parse(readFileSync(dataFile, 'utf8'));
 const privFile = join(here, 'private.json');
 const priv = existsSync(privFile) ? JSON.parse(readFileSync(privFile, 'utf8')) : {};
-if (template === 'biodata' && !existsSync(privFile)) {
-  console.warn('! No tools/resume/private.json — personal details will be blank. Copy private.example.json to private.json and fill it in.');
-}
-
+const browser = wantPdf ? findBrowser() : null;
+if (wantPdf && !browser) console.warn('! No Chrome/Edge found, so no PDFs this time. Open the .html files and use Print → Save as PDF, or set CHROME_PATH.');
 mkdirSync(outDir, { recursive: true });
-const base = join(outDir, template);
-const written = [];
-const write = (file, content) => {
-  writeFileSync(file, content);
-  written.push(file);
-};
 
-/* ---------- photo (embedded so the HTML is self-contained) ---------- */
-const photoPath = template === 'biodata' ? priv.photo || data.resume?.photo : data.resume?.photo;
-const photo = embed(photoPath);
+for (const template of chosen === 'all' ? TEMPLATES : [chosen]) {
+  const isBiodata = template.startsWith('biodata');
+  const isAts = template.endsWith('-ats');
+  if (isBiodata && !existsSync(privFile)) {
+    console.warn('! No tools/resume/private.json — personal details will be blank. Copy private.example.json to private.json and fill it in.');
+  }
+  const base = join(outDir, template);
+  const written = [];
+  const write = (file, content) => {
+    writeFileSync(file, content);
+    written.push(file);
+  };
 
-/* ---------- HTML ---------- */
-const html = template === 'biodata' ? biodataHtml(data, priv, photo) : resumeHtml(data, photo);
-write(`${base}.html`, html);
-
-/* ---------- Markdown (paste into forms, LinkedIn, emails) ---------- */
-write(`${base}.md`, toMarkdown(data, template === 'biodata' ? priv : null));
-
-/* ---------- JSON Resume (jsonresume.org) — résumé only ---------- */
-if (template === 'resume') write(`${base}.json`, JSON.stringify(toJsonResume(data), null, 2) + '\n');
-
-/* ---------- PDF ---------- */
-if (wantPdf) {
-  const browser = findBrowser();
-  if (!browser) {
-    console.warn('! No Chrome/Edge found, so no PDF this time. Open the .html file and use Print → Save as PDF, or set CHROME_PATH.');
+  let html;
+  if (isAts) {
+    // ATS: no photo, plain structure, plus a .txt for pasting into job portals
+    const model = isBiodata ? atsBiodataModel(data, priv) : atsResumeModel(data);
+    html = atsHtml(model, `${data.profile.name} — ${isBiodata ? 'Bio-data' : 'Résumé'}`);
+    write(`${base}.html`, html);
+    write(`${base}.txt`, atsText(model));
   } else {
-    await printPdf(html, `${base}.pdf`, browser, data.profile.name);
+    const photo = embed(isBiodata ? priv.photo || data.resume?.photo : data.resume?.photo);
+    html = isBiodata ? biodataHtml(data, priv, photo) : resumeHtml(data, photo);
+    write(`${base}.html`, html);
+    write(`${base}.md`, toMarkdown(data, isBiodata ? priv : null));
+    if (!isBiodata) write(`${base}.json`, JSON.stringify(toJsonResume(data), null, 2) + '\n');
+  }
+
+  if (browser) {
+    await printPdf(html, `${base}.pdf`, browser, data.profile.name, { footer: !isAts });
     written.push(`${base}.pdf`);
-    if (toPublic) {
+    if (template === 'resume' && flag('public')) {
       const pub = join(root, 'public', 'resume.pdf');
       copyFileSync(`${base}.pdf`, pub);
       written.push(pub);
     }
   }
-}
 
-console.log(`✓ ${template} built:`);
-written.forEach((f) => console.log('  ' + relative(root, f)));
+  console.log(`✓ ${template} built:`);
+  written.forEach((f) => console.log('  ' + relative(root, f)));
+}
 
 /* =========================================================== */
 
@@ -127,7 +132,7 @@ function findBrowser() {
   return candidates.find((p) => existsSync(p));
 }
 
-async function printPdf(html, file, executablePath, name) {
+async function printPdf(html, file, executablePath, name, { footer = true } = {}) {
   let puppeteer;
   try {
     puppeteer = (await import('puppeteer-core')).default;
@@ -145,7 +150,7 @@ async function printPdf(html, file, executablePath, name) {
       format: 'A4',
       printBackground: true,
       preferCSSPageSize: true,
-      displayHeaderFooter: true,
+      displayHeaderFooter: footer,
       headerTemplate: '<span></span>',
       footerTemplate: `<div style="width:100%;padding:0 15mm;font:7px 'Segoe UI',Arial,sans-serif;color:#8a8275;display:flex;justify-content:space-between">
         <span>${name.replace(/</g, '&lt;')}</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>`,
@@ -159,7 +164,7 @@ function toMarkdown(d, privateDetails) {
   const p = d.profile;
   const out = [];
   out.push(`# ${p.name}`, '', `**${p.role}**${p.headline ? ` — ${p.headline}` : ''}`, '');
-  const contact = [p.email, p.phone, p.location, p.website, ...list(d.socials).filter((s) => !/^mailto:/.test(s.url)).map((s) => s.url)].filter(Boolean);
+  const contact = [p.email, p.website && `Portfolio: ${p.website}`, p.phone, p.location, ...list(d.socials).filter((s) => !/^mailto:/.test(s.url)).map((s) => s.url)].filter(Boolean);
   out.push(contact.join(' · '), '');
 
   if (privateDetails) {

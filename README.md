@@ -12,8 +12,11 @@ npm run dev              # local dev server; edits to data.json update the page 
 npm run build            # production build in /dist (a plain static site)
 npm run preview          # preview the production build
 
-npm run resume           # data.json → résumé PDF / HTML / Markdown / JSON Resume
-npm run resume:biodata   # data.json + private details → Indian-style biodata
+npm run resume              # designed résumé (photo, two columns)
+npm run resume:ats          # ATS-friendly résumé (plain, single column) + .txt
+npm run resume:biodata      # designed Indian-style biodata
+npm run resume:biodata-ats  # ATS-friendly biodata + .txt
+npm run resume:all          # all four
 ```
 
 Deploy `/dist` anywhere static: Netlify, Vercel, GitHub Pages or any web host. It works from a sub-folder too.
@@ -81,7 +84,7 @@ The project covers are illustrated placeholders; real app screenshots will make 
 
 | File | Use it for |
 | --- | --- |
-| `resume.pdf` | Applying. A4, single column, with your photo and real selectable text (ATS-friendly) |
+| `resume.pdf` | The designed résumé: A4, two pages, with your photo. Real selectable text |
 | `resume.html` | Opening in a browser to tweak or print |
 | `resume.md` | Pasting into job portals, LinkedIn or emails |
 | `resume.json` | The [JSON Resume](https://jsonresume.org) standard, importable by many résumé builders and themes |
@@ -92,7 +95,16 @@ The project covers are illustrated placeholders; real app screenshots will make 
 
 The PDF is printed by Chrome or Edge, which the tool finds automatically. If it can't, set `CHROME_PATH`, or open the `.html` file and use *Print → Save as PDF*.
 
-Options: `--template resume|biodata`, `--no-pdf`, `--public` (also copy the PDF to `public/resume.pdf`; off by default), `--out <dir>`, `--data <file>`.
+### Designed vs ATS-friendly
+
+| Version | Commands | Looks like | Use it when |
+| --- | --- | --- | --- |
+| **Designed** | `resume`, `resume:biodata` | Dark header card with your photo, two-column layout, timeline, project cards — matches the website | Emailing someone directly, interviews, printing, portfolio links |
+| **ATS-friendly** | `resume:ats`, `resume:biodata-ats` | One column, Arial, standard headings (PROFESSIONAL SUMMARY, EXPERIENCE…), plain bullets — no photo, tables, icons, colour or headers/footers | Uploading to job portals (Naukri, LinkedIn, Workday, Greenhouse…) that parse your résumé automatically |
+
+The ATS versions also write a `.txt` (`resume-ats.txt`, `biodata-ats.txt`) to paste into portal text boxes. Symbols that confuse parsers (→, ×, ², µ, ✺) are swapped for plain equivalents automatically.
+
+Options: `--template resume|resume-ats|biodata|biodata-ats|all`, `--no-pdf`, `--public` (also copy the PDF to `public/resume.pdf`; off by default), `--out <dir>`, `--data <file>`.
 
 ## Under the hood
 
