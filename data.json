@@ -741,6 +741,69 @@
       "gallery": []
     },
     {
+      "id": "og-converter",
+      "title": "OG Converter",
+      "client": "Personal — open-source Windows utility",
+      "context": "Personal",
+      "category": "Desktop · Windows",
+      "year": 2026,
+      "period": "2026",
+      "featured": true,
+      "cover": "images/work/og-converter.svg",
+      "summary": "A fully offline Windows file converter: start dragging a file, tap a key, and drop it on a radial menu that opens at the cursor.",
+      "description": [
+        "OG Converter converts, compresses, edits and encrypts files without opening an app. While you drag a file from File Explorer or a VS Code-style editor, tapping Shift, Ctrl or Alt opens a Convert, Tools or Actions wheel, and the result is saved next to the original. Nothing is uploaded.",
+        "It's a native tray app in C#, .NET 10 and WPF — about 19k lines across ~90 files — that routes each job to FFmpeg, Windows imaging codecs, Office over COM, LibreOffice, headless Edge or managed code, running heavy work in short-lived separate processes."
+      ],
+      "highlights": [
+        "Detects the gesture inside another app's drag with **low-level Win32 keyboard and mouse hooks**, and finds the dragged file through Shell COM interfaces in Explorer and **UI Automation** in VS Code-based editors.",
+        "Lossless and lossy compression for 10+ file families: TinyPNG-style palette quantization, two-pass target-size video and **automatic GPU encoder detection** (NVENC, Quick Sync, AMF).",
+        "A custom `.ogx` encrypted container with AES-256-GCM or ChaCha20-Poly1305 and Argon2id key derivation, plus AES-256 protection for PDF and Office files.",
+        "A plugin system for wheel renderers loaded into a collectible `AssemblyLoadContext`, five built-in themes with synthesized sound packs, and a no-code JSON template format.",
+        "A built-in `--test` suite with pixel-level lossless checks and encryption round-trips, and a GitHub Actions pipeline that publishes a checksummed single-file exe."
+      ],
+      "metrics": [
+        {
+          "value": "19k",
+          "label": "lines of C# and XAML"
+        },
+        {
+          "value": "~64 MB",
+          "label": "idle memory in the tray"
+        },
+        {
+          "value": "0.6 s",
+          "label": "startup"
+        },
+        {
+          "value": "100%",
+          "label": "offline"
+        }
+      ],
+      "role": [
+        "Solo developer",
+        "Design",
+        "Architecture",
+        "CI/CD"
+      ],
+      "stack": [
+        "C#",
+        ".NET 10",
+        "WPF",
+        "Win32",
+        "COM",
+        "UI Automation",
+        "FFmpeg"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/og-converter"
+        }
+      ],
+      "gallery": []
+    },
+    {
       "id": "playbooks",
       "title": "Engineering Playbooks",
       "client": "Personal — Claude Code agent skills",
