@@ -2,10 +2,8 @@
   "site": {
     "title": "Anandhu Suresh — Full-Stack Software Engineer",
     "description": "Full-stack engineer building multi-tenant SaaS, secure APIs, Flutter and React apps, and practical AI — from the database to the phone. Based in Thiruvananthapuram, Kerala.",
-    "accent": "#E8461E",
-    "defaultTheme": "light",
-    "preloader": true,
-    "customCursor": true
+    "accent": "#9A5B3F",
+    "preloader": true
   },
   "profile": {
     "name": "Anandhu Suresh",
@@ -17,7 +15,7 @@
     "phone": "",
     "website": "https://dr-at0mic.github.io/",
     "portrait": "images/portrait.jpg",
-    "portraitCaption": "hi — that’s me",
+    "portraitCaption": "The maker — Thiruvananthapuram",
     "available": true,
     "availability": "Open to interesting roles & problems"
   },
@@ -25,45 +23,67 @@
     "eyebrow": "Portfolio — Full-stack engineer, Kerala",
     "intro": "I build *multi-tenant SaaS*, {secure} APIs, Flutter & React apps and practical AI — from the database all the way to the phone.",
     "note": "yes — I trained the GNN myself too",
-    "badge": "Open to work ✺ Say hello ✺ "
+    "form": {
+      "name": "atom",
+      "caption": "As — my initials, and the symbol for arsenic, element 33. Its electron cloud, sampled from the real orbitals: 2 · 8 · 18 · 5. Move through it to disturb it; click to send a pulse."
+    }
   },
   "sections": {
     "about": {
-      "label": "About",
-      "nav": "About"
+      "label": "The maker",
+      "nav": "About",
+      "form": {
+        "name": "portrait",
+        "src": "images/portrait-3d.png",
+        "caption": "The maker, rebuilt in 3D from one photograph — a depth model for the shape, a matting model for the edges — and assembled from the same particles as everything else here."
+      }
     },
     "work": {
-      "label": "Selected work",
+      "label": "Work",
       "nav": "Work",
-      "title": "Selected *work*",
-      "aside": "Products I've designed and built — at Siga Infotech and on my own. Click any of them for the full story."
+      "title": "Things I’ve *built*",
+      "aside": "Products I’ve designed and built — at Siga Infotech and on my own. The particles behind each one are drawn from how it actually works. Open any of them for the full story."
     },
     "archive": {
-      "label": "More projects",
-      "title": "More *projects*",
+      "label": "Also built",
+      "title": "More *work*",
       "aside": "Platforms, client work and tools."
     },
     "services": {
-      "label": "Expertise",
-      "title": "What I *do*",
-      "aside": "The problems I'm usually brought in for."
+      "label": "Brought in for",
+      "title": "What I’m *brought in for*",
+      "aside": "The problems I’m usually handed.",
+      "form": {
+        "name": "stack",
+        "caption": "The stack, exploded: database, API, web, phone. I work on every layer."
+      }
     },
     "skills": {
       "label": "Toolkit",
-      "nav": "Skills",
+      "nav": "Toolkit",
       "title": "The *toolkit*",
-      "aside": "What I reach for day to day. The italic ones are where I'm strongest."
+      "aside": "What everything here is built from. The bright ones are where I’m strongest.",
+      "form": {
+        "name": "armillary",
+        "caption": "One ring per area, one bead per tool. The bright beads are where I’m strongest."
+      }
     },
     "experience": {
       "label": "Experience",
       "nav": "Experience",
-      "title": "Where I've *worked*",
-      "highlightsTitle": "a few things I'm proud of —"
+      "title": "Where I’ve *worked*",
+      "highlightsTitle": "Achievements",
+      "form": {
+        "name": "commit-graph",
+        "lanes": 14,
+        "commits": 1070,
+        "caption": "Fourteen production repositories, about 1,070 commits since November 2024 — a lane each."
+      }
     },
     "education": {
       "label": "Education",
       "title": "Where I *studied*",
-      "languagesTitle": "languages —"
+      "languagesTitle": "Languages"
     },
     "testimonials": {
       "label": "Kind words",
@@ -71,13 +91,21 @@
     },
     "contact": {
       "label": "Contact",
-      "nav": "Contact"
+      "nav": "Contact",
+      "form": {
+        "name": "atom",
+        "caption": "Element 33, back where it started."
+      }
     },
     "play": {
       "label": "Off the clock",
       "title": "When I’m *not* coding",
       "aside": "Mostly games. If you play any of these, come say hi.",
-      "handlesTitle": "find me —"
+      "handlesTitle": "Find me",
+      "form": {
+        "name": "chess-king",
+        "caption": "Chess, for when I’m stressed — which explains the Elo."
+      }
     }
   },
   "marquee": [
@@ -86,16 +114,18 @@
     "Flutter",
     "PostgreSQL",
     "Applied AI",
+    "Kotlin Multiplatform",
     "React",
     "FastAPI",
     "PyTorch",
+    "Real-time audio",
     "Security"
   ],
   "about": {
     "statement": "I build software end to end — the database, the APIs, the web and mobile UI, the ML models and the deployment. Mostly that means *multi-tenant SaaS* that stays fast, secure and properly isolated, and AI features that cite their sources instead of making things up.",
     "body": [
       "At **Siga Infotech** (since November 2024) I build and run multi-tenant SaaS platforms for restaurants, UK care homes, staffing agencies, retail and AI — about a thousand commits across fourteen production repositories — and look after the AWS production setup they run on, down to the monthly bill.",
-      "On my own time I trained a graph neural network from scratch to forecast India's air quality, built a knowledge-graph learning app that refuses to hallucinate, and a WhatsApp-first clinic queue system. I think about failure modes first, and I quite enjoy the hard migrations nobody else wants."
+      "On my own time I trained a graph neural network from scratch to forecast India's air quality, built a knowledge-graph learning app that refuses to hallucinate, an app that turns an Android phone into a PC microphone, and a studio that turns GitHub activity into animated art. I think about failure modes first, and I quite enjoy the hard migrations nobody else wants."
     ],
     "stats": [
       {
@@ -138,13 +168,17 @@
     {
       "id": "breathe",
       "title": "Breathe",
+      "symbol": "Br",
       "client": "M.Sc. project — Christ Nagar College",
       "context": "M.Sc. project",
       "category": "AI · Mobile · Platform",
       "year": 2026,
       "period": "2025 — 2026",
       "featured": true,
-      "cover": "images/work/breathe.svg",
+      "form": {
+        "name": "gnn-india",
+        "caption": "Twenty-nine Indian cities as a graph. The light running along the edges is message passing — each city learning from its neighbours’ air."
+      },
       "summary": "Forecasts India's air quality with a graph neural network I trained from scratch — running on the server and on the phone.",
       "description": [
         "Breathe forecasts air quality for India and helps people plan healthier trips. It's a Flutter app, a React web app, a React ML-ops console, a NestJS API and a Python inference service — about 43k lines in total.",
@@ -203,15 +237,105 @@
       "gallery": []
     },
     {
+      "id": "phone-input",
+      "title": "PhoneInput",
+      "symbol": "Pi",
+      "client": "Personal — open-source phone-as-microphone app",
+      "context": "Personal",
+      "category": "Real-time audio · Cross-platform",
+      "year": 2026,
+      "period": "Oct 2026",
+      "featured": true,
+      "form": {
+        "name": "phone-wave",
+        "caption": "10 ms Opus frames leaving the phone, through an adaptive jitter buffer, into a virtual microphone on the desktop."
+      },
+      "cover": "images/work/phone-input/desktop.webp",
+      "summary": "Turns an Android phone into a low-latency microphone for Windows and Linux — over Wi-Fi, USB or Bluetooth — that Discord, Zoom and OBS can pick like any other mic.",
+      "description": [
+        "The phone captures and cleans up the audio, compresses it with Opus and streams it to a desktop app, which plays it into a virtual microphone. The computer can stream its own audio back, so the phone doubles as a speaker.",
+        "One Kotlin Multiplatform module shares the wire protocol, jitter buffer, noise suppressor and Compose design system between the phone and desktop apps — about 10,000 lines and 45 unit tests, taken from an empty folder to v1.1.2 with installers and auto-update in two days."
+      ],
+      "highlights": [
+        "A custom UDP audio protocol: 10 ms frames of 48 kHz audio, Opus at 96 kbit/s in low-delay mode, and an **adaptive jitter buffer** (30–250 ms) sized from measured jitter, with packet-loss concealment and fade-outs instead of hard cuts.",
+        "Three transports: LAN discovery and QR pairing, USB through TCP-framed `adb reverse`, and Bluetooth RFCOMM over native sockets via JNA — Winsock `AF_BTH` on Windows, BlueZ on Linux.",
+        "**No echo in screen shares:** a probe tone showed process loopback leaking the voice into Discord Go Live and OBS at −17.7 dBFS, so the virtual mic is written through WASAPI exclusive mode to bypass the Windows mixer.",
+        "Phone as speaker: desktop audio streams back in stereo Opus at 128 kbit/s, captured by process loopback of every app except PhoneInput itself.",
+        "Up to 8 phones at once, guided VB-CABLE and PipeWire/PulseAudio setup, and a GitHub Actions pipeline that ships APK, MSI/EXE, DEB and RPM with SHA-256-verified auto-updates."
+      ],
+      "metrics": [
+        {
+          "value": "10k",
+          "label": "lines of Kotlin"
+        },
+        {
+          "value": "45",
+          "label": "unit tests"
+        },
+        {
+          "value": "8",
+          "label": "phones at once"
+        },
+        {
+          "value": "2 days",
+          "label": "empty folder → v1.1.2"
+        }
+      ],
+      "role": [
+        "Solo developer",
+        "Product",
+        "Design",
+        "Release"
+      ],
+      "stack": [
+        "Kotlin Multiplatform",
+        "Compose Multiplatform",
+        "Opus",
+        "WASAPI",
+        "PipeWire",
+        "JNA",
+        "Bluetooth RFCOMM",
+        "GitHub Actions"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/Phone-Input"
+        },
+        {
+          "label": "Download",
+          "url": "https://github.com/Dr-At0mic/Phone-Input/releases/latest"
+        }
+      ],
+      "gallery": [
+        {
+          "src": "images/work/phone-input/home.webp",
+          "alt": "PhoneInput on Android: the connect screen"
+        },
+        {
+          "src": "images/work/phone-input/live.webp",
+          "alt": "PhoneInput on Android: streaming live with input level, round trip and quality"
+        },
+        {
+          "src": "images/work/phone-input/settings.webp",
+          "alt": "PhoneInput on Android: settings"
+        }
+      ]
+    },
+    {
       "id": "floatpro",
       "title": "FloatPro",
+      "symbol": "Fp",
       "client": "Siga Infotech — restaurant POS SaaS (UK)",
       "context": "Siga Infotech",
       "category": "Restaurant POS SaaS",
       "year": 2026,
       "period": "Nov 2024 — Now",
       "featured": true,
-      "cover": "images/work/floatpro.svg",
+      "form": {
+        "name": "receipt",
+        "caption": "An ESC/POS receipt. The Flutter POS finds printers over Bluetooth and mDNS and prints from templates."
+      },
       "summary": "A multi-tenant restaurant platform for the UK — I designed its permission system, billing, compliance, AI assistant and much of the Flutter POS.",
       "description": [
         "FloatPro (also sold as Zynk and EasyDine) is a TypeScript backend on AWS Lambda, a tenant admin portal, a super-admin console and a Flutter waiter / POS / KDS app running on Android, Windows and iMin hardware. I've made about 690 commits across its four repositories.",
@@ -260,15 +384,111 @@
       "gallery": []
     },
     {
+      "id": "readme-templates",
+      "title": "README Templates",
+      "symbol": "Rt",
+      "client": "Personal — open-source desktop studio",
+      "context": "Personal",
+      "category": "Desktop · Generative art",
+      "year": 2026,
+      "period": "Oct 2026",
+      "featured": true,
+      "form": {
+        "name": "black-hole",
+        "caption": "Singularity, one of the seven templates: a particle per day of contributions, falling into a black hole. On GitHub it’s a plain SVG animated with CSS."
+      },
+      "cover": "images/work/readme-templates/cover.webp",
+      "summary": "A desktop studio that turns your GitHub activity into original, animated artwork for your profile README — then publishes it to your profile in one commit.",
+      "description": [
+        "Generators hand you a block of markdown and leave the rest to you, and the usual stats cards come from third-party services that get rate-limited and look the same on every profile. README Templates does the whole job: pick a template, connect GitHub, edit the text against a preview that matches GitHub in dark and light, and publish.",
+        "Every image is a plain SVG committed to your own repo — nothing depends on an outside service, so nothing breaks later. It runs entirely on your machine: no server, no sign-up, no analytics."
+      ],
+      "highlights": [
+        "Seven templates, each a data visualisation dressed as a scene — a black hole with one particle per day of contributions, a reef with one coral per week, a dusk city with one tower per day.",
+        "Animated with **CSS keyframes inside the SVG** so it survives GitHub's `<img>` tag — no GIFs, no JavaScript, no SMIL — and the resting state is always the final frame, so reduced-motion viewers see the finished picture.",
+        "Tokens encrypted with AES-256-GCM under a key derived from a **non-extractable WebCrypto key**, a CSP that only allows the app and `api.github.com`, no file-read capability, and a Rust guard that sends every outside link to the system browser.",
+        "Tauri v2 instead of Electron: a ~3 MB installer, NSIS/MSI and deb/rpm/AppImage builds, and a signed auto-updater released by a tag-triggered GitHub Actions workflow.",
+        "Animations tested headlessly — forced reduced-motion screenshots for the final frame, then filmstrips seeked through `document.getAnimations()` to catch timing bugs."
+      ],
+      "metrics": [
+        {
+          "value": "7",
+          "label": "templates, 6 animated"
+        },
+        {
+          "value": "~3 MB",
+          "label": "installer"
+        },
+        {
+          "value": "0",
+          "label": "servers, accounts or analytics"
+        },
+        {
+          "value": "5",
+          "label": "releases, v1.0 → v1.4"
+        }
+      ],
+      "role": [
+        "Solo developer",
+        "Design",
+        "Generative art",
+        "Release"
+      ],
+      "stack": [
+        "React 19",
+        "Vite 6",
+        "Tauri v2",
+        "Rust",
+        "SVG + CSS animation",
+        "WebCrypto",
+        "GitHub GraphQL",
+        "GitHub Actions"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/README-Templates"
+        },
+        {
+          "label": "Download",
+          "url": "https://github.com/Dr-At0mic/README-Templates/releases/latest"
+        }
+      ],
+      "gallery": [
+        {
+          "src": "images/work/readme-templates/singularity.webp",
+          "alt": "The README Templates studio: profile fields beside a live preview of the animated Singularity template",
+          "wide": true
+        },
+        {
+          "src": "images/work/readme-templates/fathom.webp",
+          "alt": "The Fathom template: an underwater reef grown from a year of contributions"
+        },
+        {
+          "src": "images/work/readme-templates/breakdown.webp",
+          "alt": "The Breakdown template: a dusk city of towers inside a compositing viewer"
+        },
+        {
+          "src": "images/work/readme-templates/templates.webp",
+          "alt": "The template gallery with search, an Animated/Static filter and a Dark/Light toggle",
+          "wide": true
+        }
+      ]
+    },
+    {
       "id": "ai-hub",
       "title": "AI Hub",
+      "symbol": "Ai",
       "client": "Siga Infotech — multi-tenant AI SaaS",
       "context": "Siga Infotech",
       "category": "AI SaaS Platform",
       "year": 2026,
       "period": "Jun 2026 — Sep 2026",
       "featured": true,
-      "cover": "images/work/ai-hub.svg",
+      "form": {
+        "name": "embeddings",
+        "caption": "Retrieval without a framework: embeddings in pgvector, a query, and its five nearest neighbours by cosine."
+      },
       "summary": "A modular AI platform — content generation, document extraction, résumé scoring and a RAG chatbot — on which I was nearly the sole developer.",
       "description": [
         "AI Hub covers text, SEO, code, social, image and video generation, schema-based document extraction, ATS résumé analysis and a knowledge-base chatbot, served through a customer portal, an admin portal and a public API.",
@@ -316,15 +536,86 @@
       "gallery": []
     },
     {
+      "id": "og-converter",
+      "title": "OG Converter",
+      "symbol": "Og",
+      "client": "Personal — open-source Windows utility",
+      "context": "Personal",
+      "category": "Desktop · Windows",
+      "year": 2026,
+      "period": "2026",
+      "featured": true,
+      "form": {
+        "name": "wheel",
+        "caption": "Start dragging a file, tap Shift, Ctrl or Alt, and a radial menu opens at the cursor."
+      },
+      "summary": "A fully offline Windows file converter: start dragging a file, tap a key, and drop it on a radial menu that opens at the cursor.",
+      "description": [
+        "OG Converter converts, compresses, edits and encrypts files without opening an app. While you drag a file from File Explorer or a VS Code-style editor, tapping Shift, Ctrl or Alt opens a Convert, Tools or Actions wheel, and the result is saved next to the original. Nothing is uploaded.",
+        "It's a native tray app in C#, .NET 10 and WPF — about 19k lines across ~90 files — that routes each job to FFmpeg, Windows imaging codecs, Office over COM, LibreOffice, headless Edge or managed code, running heavy work in short-lived separate processes."
+      ],
+      "highlights": [
+        "Detects the gesture inside another app's drag with **low-level Win32 keyboard and mouse hooks**, and finds the dragged file through Shell COM interfaces in Explorer and **UI Automation** in VS Code-based editors.",
+        "Lossless and lossy compression for 10+ file families: TinyPNG-style palette quantization, two-pass target-size video and **automatic GPU encoder detection** (NVENC, Quick Sync, AMF).",
+        "A custom `.ogx` encrypted container with AES-256-GCM or ChaCha20-Poly1305 and Argon2id key derivation, plus AES-256 protection for PDF and Office files.",
+        "A plugin system for wheel renderers loaded into a collectible `AssemblyLoadContext`, five built-in themes with synthesized sound packs, and a no-code JSON template format.",
+        "A built-in `--test` suite with pixel-level lossless checks and encryption round-trips, and a GitHub Actions pipeline that publishes a checksummed single-file exe."
+      ],
+      "metrics": [
+        {
+          "value": "19k",
+          "label": "lines of C# and XAML"
+        },
+        {
+          "value": "~64 MB",
+          "label": "idle memory in the tray"
+        },
+        {
+          "value": "0.6 s",
+          "label": "startup"
+        },
+        {
+          "value": "100%",
+          "label": "offline"
+        }
+      ],
+      "role": [
+        "Solo developer",
+        "Design",
+        "Architecture",
+        "CI/CD"
+      ],
+      "stack": [
+        "C#",
+        ".NET 10",
+        "WPF",
+        "Win32",
+        "COM",
+        "UI Automation",
+        "FFmpeg"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Dr-At0mic/og-converter"
+        }
+      ],
+      "gallery": []
+    },
+    {
       "id": "clinicflow",
       "title": "ClinicFlow",
+      "symbol": "Cf",
       "client": "M.Sc. project — Christ Nagar College",
       "context": "M.Sc. project",
       "category": "Healthcare SaaS",
       "year": 2026,
       "period": "2025 — 2026",
       "featured": true,
-      "cover": "images/work/clinicflow.svg",
+      "form": {
+        "name": "hash-chain",
+        "caption": "Medical records as an append-only ledger: every entry carries the SHA-256 hash of the one before it."
+      },
       "summary": "A WhatsApp-first clinic queue for Kerala — patients book by chatting in English or Malayalam, and the waiting room watches the queue move live.",
       "description": [
         "ClinicFlow is a multi-tenant SaaS for clinics. Patients book through a bilingual WhatsApp chatbot; the clinic runs a live token queue that also shows on a waiting-room TV board.",
@@ -371,13 +662,17 @@
     {
       "id": "easy-learn",
       "title": "Easy Learn",
+      "symbol": "El",
       "client": "M.Sc. project — Christ Nagar College",
       "context": "M.Sc. project",
       "category": "AI Learning Platform",
       "year": 2026,
       "period": "2025 — 2026",
       "featured": true,
-      "cover": "images/work/easy-learn.svg",
+      "form": {
+        "name": "knowledge-graph",
+        "caption": "Every node keeps the passage it came from. If the quote isn’t in the source, the node never reaches the graph."
+      },
       "summary": "Turns study material into an interactive knowledge graph where every node can be traced back to the exact passage it came from.",
       "description": [
         "Easy Learn ingests PDFs, Word files, Markdown, HTML, CSV, JSON and images, plus AI study chats, and turns them into a graph you can explore by focus, timeline or search.",
@@ -432,13 +727,17 @@
     {
       "id": "carerez",
       "title": "CareRez",
+      "symbol": "Cr",
       "client": "Siga Infotech — UK care-home SaaS",
       "context": "Siga Infotech",
       "category": "Healthcare SaaS (UK)",
       "year": 2025,
       "period": "Mar 2025 — Feb 2026",
       "featured": true,
-      "cover": "images/work/carerez.svg",
+      "form": {
+        "name": "db-tenants",
+        "caption": "Database-per-tenant: created at runtime, resolved by subdomain, kept warm in an LRU of fifty."
+      },
       "summary": "A platform for UK residential care providers. I wrote its first commit, designed its database-per-tenant architecture and moved it to serverless.",
       "description": [
         "CareRez is organised as Company → Homes → Units → Residents and Staff, across an Express/TypeScript backend, a React admin portal, a super-admin console and two Flutter apps.",
@@ -485,13 +784,13 @@
     {
       "id": "zynk-suite",
       "title": "Zynk Suite",
+      "symbol": "Zs",
       "client": "Siga Infotech — staffing-agency SaaS (UK)",
       "context": "Siga Infotech",
       "category": "Staffing SaaS",
       "year": 2026,
       "period": "May 2026 — Now",
       "featured": false,
-      "cover": "images/work/zynk-suite.svg",
       "summary": "A multi-tenant platform for UK temporary-staffing agencies with five user tiers — I bootstrapped the platform and own the client domain.",
       "description": [
         "Zynk Suite (Sqube) serves system admins, super admins, agency admins, staff and client-portal users. I bootstrapped it from our multi-tenant SaaS core and removed about 17k lines of the old restaurant domain."
@@ -532,13 +831,13 @@
     {
       "id": "subscription-service",
       "title": "Subscription Service",
+      "symbol": "Ss",
       "client": "Siga Infotech — billing microservice",
       "context": "Siga Infotech",
       "category": "Billing Microservice",
       "year": 2026,
       "period": "Jul 2025 — Apr 2026",
       "featured": false,
-      "cover": "images/work/subscription.svg",
       "summary": "One app-agnostic subscription and billing service shared by many products and tenants — proration, dues, tax-aware invoicing and churn analytics.",
       "description": [
         "I built v1 on Express, migrated it to NestJS 11 within two weeks with a use-case-driven clean architecture, and then took it through nine months of production hardening. Primary author: 22 of 24 commits, about 9,200 lines."
@@ -575,13 +874,13 @@
     {
       "id": "siga-pos",
       "title": "Siga POS",
+      "symbol": "Sp",
       "client": "Siga Infotech — retail POS (India)",
       "context": "Siga Infotech",
       "category": "Retail POS & GST",
       "year": 2026,
       "period": "Mar 2026 — Apr 2026",
       "featured": false,
-      "cover": "images/work/siga-pos.svg",
       "summary": "A retail and inventory POS with one database per tenant — I built its loyalty engine and GST compliance reporting.",
       "description": [
         "Siga POS is a Flutter app on an Express/Drizzle backend with separate master and tenant configs."
@@ -608,13 +907,13 @@
     {
       "id": "propsure",
       "title": "PropSure",
+      "symbol": "Ps",
       "client": "Client project — property verification & CRM",
       "context": "Client project · B.Sc.",
       "category": "PropTech Platform",
       "year": 2023,
       "period": "Sep 2023 — Oct 2023",
       "featured": false,
-      "cover": "images/work/propsure.svg",
       "summary": "A property-verification platform and real-estate CRM for Kerala — shipped by me alone, from first commit to production with full observability.",
       "description": [
         "PropSure scores properties against a configurable inspection checklist (\"Know Before You Buy\"), publishes verified listings, captures enquiries as CRM leads and manages pipelines and site visits — about 51k lines of TypeScript across a NestJS API, a React admin portal and a trilingual marketing site."
@@ -657,13 +956,13 @@
     {
       "id": "propsure-lms",
       "title": "PropSure LMS",
+      "symbol": "Pl",
       "client": "Client project — lead management SaaS",
       "context": "Client project · B.Sc.",
       "category": "Multi-tenant CRM",
       "year": 2023,
       "period": "Aug 2023 — Sep 2023",
       "featured": false,
-      "cover": "images/work/propsure-lms.svg",
       "summary": "An enterprise lead-management CRM on Spring Boot where every customer company gets its own physically isolated database.",
       "description": [
         "A Gradle multi-module modular monolith (12 modules, 46 endpoints) with a React 19 frontend: a dark control plane for platform admins and a light workspace for six tenant roles."
@@ -701,13 +1000,13 @@
     {
       "id": "fleetbooks",
       "title": "FleetBooks",
+      "symbol": "Fb",
       "client": "M.Sc. project — Christ Nagar College",
       "context": "M.Sc. project",
       "category": "Cross-platform App",
       "year": 2026,
       "period": "2026",
       "featured": false,
-      "cover": "images/work/fleetbooks.svg",
       "summary": "A fleet-finance app for vehicle-hire businesses — one React Native codebase running on Android, iOS and the web.",
       "description": [
         "FleetBooks covers client receivables, drivers, vehicles, odometer readings, attendance and daily allowances, delivered spec-first: user stories, derived requirements and implementation plans with risk analysis."
@@ -806,13 +1105,13 @@
     {
       "id": "playbooks",
       "title": "Engineering Playbooks",
+      "symbol": "Pb",
       "client": "Personal — Claude Code agent skills",
       "context": "Personal",
       "category": "AI Agent Skills",
       "year": 2026,
       "period": "2026",
       "featured": false,
-      "cover": "images/work/playbooks.svg",
       "summary": "My production lessons on multi-tenancy and permissions, packaged as skills that AI coding agents load and follow.",
       "description": [
         "Two reusable playbooks: `multitenancy` (all three isolation strategies with 12 NestJS templates) and `pac`, a ~7.7k-line permission engine combining RBAC, PBAC and ABAC."
@@ -897,9 +1196,11 @@
         "*Dart*",
         "SQL",
         "Java",
+        "C#",
+        "Rust (Tauri)",
         "Bash",
         "PowerShell",
-        "Kotlin (integration)"
+        "Kotlin"
       ]
     },
     {
@@ -953,6 +1254,19 @@
         "React Native",
         "Expo",
         "react-native-web"
+      ]
+    },
+    {
+      "area": "Desktop & native",
+      "items": [
+        "Kotlin Multiplatform",
+        "Compose Multiplatform",
+        "Tauri v2",
+        ".NET / WPF",
+        "Win32 & COM",
+        "WASAPI",
+        "PipeWire",
+        "JNA"
       ]
     },
     {
@@ -1241,7 +1555,7 @@
     }
   ],
   "footer": {
-    "colophon": "Designed & hand-coded in Thiruvananthapuram. Set in Fraunces, Instrument Sans & JetBrains Mono."
+    "colophon": "Designed & built in Thiruvananthapuram. Set in Archivo, Instrument Serif and Martian Mono. Every shape on this page is drawn by code from one field of particles."
   },
   "resume": {
     "summary": "Full-stack engineer who builds products end to end — database, APIs, web and mobile UI, ML models and deployment. At Siga Infotech (Nov 2024 – present) I build and run multi-tenant SaaS platforms across restaurant POS, UK care homes, UK staffing agencies, AI SaaS and retail POS (~1,070 commits, 14 production repositories), and manage their AWS production deployments on Lambda, EC2 and Lightsail, including cost analysis and optimisation. Strongest in database-per-tenant architecture, permission and identity systems, security hardening, and practical AI: RAG, guarded LLM pipelines and on-device ML.",

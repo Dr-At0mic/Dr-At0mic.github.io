@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100" width="512" height="512">
+  <title>Anandhu Suresh — mark</title>
+  
+  <g transform="rotate(16) scale(1.18)">
+    <path d="M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z" transform="rotate(0)" fill="#ECE7DC" fill-opacity="0.88"/>
+    <path d="M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z" transform="rotate(60)" fill="#F4B52F" fill-opacity="0.95"/>
+    <path d="M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z" transform="rotate(120)" fill="#ECE7DC" fill-opacity="0.88"/>
+    <path d="M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z" transform="rotate(180)" fill="#F4B52F" fill-opacity="0.95"/>
+    <path d="M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z" transform="rotate(240)" fill="#ECE7DC" fill-opacity="0.88"/>
+    <path d="M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z" transform="rotate(300)" fill="#F4B52F" fill-opacity="0.95"/>
+    <circle r="4.2" fill="#ECE7DC"/>
+  </g>
+</svg>
