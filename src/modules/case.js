@@ -1,28 +1,27 @@
 import { state } from './core.js';
-import { renderCase } from '../render.js';
-import { initDials } from './guilloche.js';
+import { renderCase, formOf } from '../render.js';
 
-// Case studies open in a sliding panel and live at #/work/<id>, so they can be linked and the back button closes them.
-export function initCase(projects = [], experience = []) {
+// Case studies open in a panel and live at #/work/<id>, so they can be linked and the back
+// button closes them. While one is open the field takes that project's formation.
+export function initCase(projects = [], experience = [], director = null) {
   // a project made at a company listed in experience links to that company's site
   const companyUrl = (p) => experience.find((e) => e.url && [p.client, p.context].some((t) => String(t || '').startsWith(e.company)))?.url || '';
   const el = document.getElementById('case');
   const panel = el?.querySelector('.case__panel');
   if (!el || !projects.length) return;
 
-  const behind = () => document.querySelectorAll('main, .nav, .contact, .menu');
+  const behind = () => document.querySelectorAll('main, .nav, .contact, .menu, .hud');
   let isOpen = false;
   let lastFocus = null;
 
   const open = (id) => {
     const i = projects.findIndex((p) => String(p.id) === id);
     if (i < 0) return close();
+    const p = projects[i];
     const next = projects.length > 1 ? projects[(i + 1) % projects.length] : null;
-    const featured = projects.filter((p) => p.featured);
-    const fi = featured.indexOf(projects[i]);
-    panel.innerHTML = renderCase(projects[i], i, projects.length, next, companyUrl(projects[i]), fi < 0 ? i : fi);
-    initDials(panel, { reduced: state.reduced });
+    panel.innerHTML = renderCase(p, i, projects.length, next, companyUrl(p));
     panel.scrollTop = 0;
+    director?.focus(formOf(p.form, 'dust').name, 'right', `work/${p.id}`);
     if (!isOpen) {
       isOpen = true;
       lastFocus = document.activeElement;
@@ -41,6 +40,7 @@ export function initCase(projects = [], experience = []) {
     el.setAttribute('aria-hidden', 'true');
     behind().forEach((n) => (n.inert = false));
     state.lenis?.start();
+    director?.unfocus();
     lastFocus?.focus?.({ preventScroll: true });
   };
 

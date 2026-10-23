@@ -1,175 +1,119 @@
-import { state, clamp } from './core.js';
-import { onScroll } from './smooth.js';
+import { gsap } from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+import { state, ticker, clamp, fontsReady } from './core.js';
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
+gsap.registerPlugin(SplitText, ScrambleTextPlugin);
 
-// Wraps every word in a span, preserving inline markup like <em> and the circled word.
-function wrapWords(el, make) {
-  let i = 0;
-  const walk = (node) => {
-    [...node.childNodes].forEach((child) => {
-      if (child.nodeType === Node.TEXT_NODE) {
-        const frag = document.createDocumentFragment();
-        child.textContent.split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          frag.appendChild(/^\s+$/.test(part) ? document.createTextNode(part) : make(part, i++));
-        });
-        child.replaceWith(frag);
-      } else if (child.nodeType === Node.ELEMENT_NODE && child.namespaceURI !== SVG_NS) {
-        walk(child);
-      }
-    });
-  };
-  walk(el);
-  return i;
-}
-
-const maskedWord = (text, i) => {
-  const w = document.createElement('span');
-  const inner = document.createElement('span');
-  w.className = 'w';
-  inner.textContent = text;
-  inner.style.setProperty('--i', Math.min(i, 40));
-  w.appendChild(inner);
-  return w;
-};
-
-const scrubWord = (text) => {
-  const s = document.createElement('span');
-  s.className = 'sw';
-  s.textContent = text;
-  return s;
-};
-
-export function initReveal() {
-  document.querySelectorAll('[data-split]').forEach((el) => wrapWords(el, maskedWord));
-
-  // menu words get a stagger index
-  document.querySelectorAll('.menu__word').forEach((el, i) => el.style.setProperty('--i', i));
-
-  const targets = document.querySelectorAll(
-    '[data-split]:not(.hero [data-split]), [data-fade]:not(.hero [data-fade]), [data-reveal]'
-  );
-
-  if (state.reduced) {
-    targets.forEach((el) => el.classList.add('is-in'));
-  } else {
-    const io = new IntersectionObserver(
-      (entries) => {
-        let k = 0;
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          // things that arrive together get a gentle stagger
-          if (e.target.hasAttribute('data-fade')) e.target.style.setProperty('--d', `${k++ * 0.09}s`);
-          e.target.classList.add('is-in');
-          io.unobserve(e.target);
-        });
-      },
-      { rootMargin: '0px 0px -10% 0px' }
-    );
-    targets.forEach((el) => io.observe(el));
-  }
-
-  initCounters();
-  initScrub();
-  initParallax();
-}
-
-// Hero reveals are choreographed after the loader instead of on scroll.
-export function revealHero() {
-  const root = document.documentElement;
-  root.classList.add('is-ready');
-  const seq = [
-    ['.hero__eyebrow', 0.2],
-    ['.hero__name', 0.35],
-    ['.hero__intro', 0.8],
-    ['.hero__right', 1.0],
-    ['.hero__foot', 1.2],
-  ];
-  seq.forEach(([sel, d]) => {
-    const el = document.querySelector(sel);
-    if (!el) return;
-    el.style.setProperty('--d', `${d}s`);
-    if (el.matches('[data-split]')) el.querySelectorAll('.w > span').forEach((s) => (s.style.transitionDelay = `calc(${d}s + var(--i) * 28ms)`));
-    el.classList.add('is-in');
-  });
-}
-
-function initCounters() {
-  const nums = document.querySelectorAll('[data-count]');
-  const run = (el) => {
-    const raw = String(el.dataset.count || '0');
-    const end = Number(raw) || 0;
-    const decimals = (raw.split('.')[1] || '').length;
-    const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-    if (state.reduced) return (el.textContent = fmt.format(end));
-    const t0 = performance.now();
-    const dur = 1800;
-    const tick = (now) => {
-      const p = clamp((now - t0) / dur);
-      el.textContent = fmt.format(end * (1 - Math.pow(1 - p, 4)));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  };
+// Calls `fn` once, the first time `el` comes into view.
+function once(el, fn, margin = '0px 0px -12% 0px') {
   const io = new IntersectionObserver(
     (entries) =>
       entries.forEach((e) => {
-        if (e.isIntersecting) {
-          run(e.target);
-          io.unobserve(e.target);
-        }
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        fn(e.target);
       }),
-    { rootMargin: '0px 0px -15% 0px' }
+    { rootMargin: margin }
   );
-  nums.forEach((n) => io.observe(n));
+  io.observe(el);
 }
 
-// About statement: words ink in as you scroll past.
-function initScrub() {
-  const el = document.querySelector('[data-scrub]');
-  if (!el) return;
-  if (state.reduced) return;
-  const n = wrapWords(el, scrubWord);
-  const words = [...el.querySelectorAll('.sw')];
-  const last = new Array(n).fill(-1);
+// Headings rise out of their own lines. Lines are re-split when fonts or widths change.
+function splitHeading(el) {
+  let anim = null;
+  let shown = false;
+  SplitText.create(el, {
+    type: 'lines',
+    mask: 'lines',
+    linesClass: 'split-line',
+    autoSplit: true,
+    onSplit(self) {
+      anim = gsap.fromTo(self.lines, { yPercent: 108 }, { yPercent: 0, duration: 1.3, ease: 'expo.out', stagger: 0.085, paused: !shown });
+      return anim;
+    },
+  });
+  once(el, () => {
+    shown = true;
+    anim?.play();
+  });
+}
 
-  const update = () => {
+// The about statement lights up word by word as you read down the page.
+function scrub(el) {
+  const split = SplitText.create(el, { type: 'words', wordsClass: 'w' });
+  const words = split.words;
+  let lit = -1;
+  ticker(() => {
     const r = el.getBoundingClientRect();
-    const vh = window.innerHeight;
-    if (r.bottom < 0 || r.top > vh) return;
-    const p = clamp((vh * 0.88 - r.top) / (vh * 0.35 + r.height));
-    words.forEach((w, i) => {
-      const o = Math.round((0.15 + 0.85 * clamp(p * n * 1.15 - i)) * 100) / 100;
-      if (o !== last[i]) {
-        w.style.opacity = o;
-        last[i] = o;
-      }
-    });
-  };
-  onScroll(update);
-  addEventListener('resize', update);
-  update();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    const p = clamp((innerHeight * 0.82 - r.top) / (r.height + innerHeight * 0.25));
+    const n = Math.round(p * words.length);
+    if (n === lit) return;
+    lit = n;
+    words.forEach((w, i) => w.classList.toggle('is-lit', i < n));
+  });
 }
 
-function initParallax() {
+function count(el) {
+  const raw = String(el.dataset.count);
+  const target = parseFloat(raw);
+  const decimals = (raw.split('.')[1] || '').length;
+  const fmt = (v) => (decimals ? v.toFixed(decimals) : Math.round(v).toLocaleString('en-GB'));
+  if (!Number.isFinite(target)) return;
+  if (state.reduced) {
+    el.textContent = fmt(target);
+    return;
+  }
+  const o = { v: 0 };
+  gsap.to(o, { v: target, duration: 2.2, ease: 'expo.out', onUpdate: () => (el.textContent = fmt(o.v)) });
+}
+
+// "41/41", "2,564", "10×" — decoded like a readout rather than counted
+function decode(el) {
   if (state.reduced) return;
-  const items = [...document.querySelectorAll('[data-parallax]')].map((img) => ({
-    img,
-    box: img.parentElement,
-    speed: Number(img.dataset.parallax) || 0.08,
-  }));
-  if (!items.length) return;
-  const update = () => {
-    const vh = window.innerHeight;
-    items.forEach(({ img, box, speed }) => {
-      const r = box.getBoundingClientRect();
-      if (r.bottom < -100 || r.top > vh + 100) return;
-      const progress = (r.top + r.height / 2 - vh / 2) / vh; // -1 … 1 across the screen
-      img.style.transform = `translate3d(0, ${(-progress * speed * r.height).toFixed(1)}px, 0)`;
-    });
-  };
-  onScroll(update);
-  addEventListener('resize', update);
-  update();
+  const text = el.textContent;
+  gsap.fromTo(el, { scrambleText: { text: text.replace(/[^\s]/g, '0'), chars: '0123456789' } }, { duration: 1.4, ease: 'none', scrambleText: { text, chars: '0123456789×/', speed: 0.5 } });
+}
+
+export function initReveal() {
+  // block reveals, staggered within the same parent
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries
+        .filter((e) => e.isIntersecting)
+        .forEach((e, i) => {
+          e.target.style.transitionDelay = `${Math.min(i, 6) * 70}ms`;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+    },
+    { rootMargin: '0px 0px -10% 0px' }
+  );
+  document.querySelectorAll('[data-fade]').forEach((el) => io.observe(el));
+
+  fontsReady().then(() => {
+    if (!state.reduced) document.querySelectorAll('main [data-split], .contact [data-split]').forEach(splitHeading);
+    document.querySelectorAll('[data-scrub]').forEach((el) => !state.reduced && scrub(el));
+  });
+
+  document.querySelectorAll('[data-count]').forEach((el) => once(el, count));
+  document.querySelectorAll('[data-count-text]').forEach((el) => once(el, decode));
+  document.querySelectorAll('main [data-redact]').forEach((el) => once(el, (n) => setTimeout(() => n.classList.add('is-open'), 900)));
+}
+
+// The name stretches into place along Archivo's width axis as the atom forms.
+export function revealHero() {
+  const chars = document.querySelectorAll('.hero__name .char');
+  const redacts = document.querySelectorAll('.hero [data-redact]');
+  if (state.reduced) {
+    redacts.forEach((r) => r.classList.add('is-open'));
+    return;
+  }
+  gsap.fromTo(
+    chars,
+    { '--wdth': 62, opacity: 0, yPercent: 30 },
+    { '--wdth': 125, opacity: 1, yPercent: 0, duration: 1.9, ease: 'expo.out', stagger: { each: 0.045, from: 'start' }, delay: 0.25 }
+  );
+  setTimeout(() => redacts.forEach((r) => r.classList.add('is-open')), 2200);
 }

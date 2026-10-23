@@ -1,161 +1,196 @@
-import { state, pad, fontsReady } from './core.js';
+import { gsap } from 'gsap';
+import { state } from './core.js';
+import { scrollToTarget } from './smooth.js';
 
-/* ---------- loader ---------- */
-// The monogram's minute track lights up tick by tick while the fonts arrive — the watch being wound.
-export function runLoader() {
-  const el = document.querySelector('.loader');
-  if (!el) return fontsReady();
-  if (state.reduced) {
-    el.remove();
-    return fontsReady();
-  }
-
-  state.lenis?.stop();
-  const ticks = [...el.querySelectorAll('.tk')];
-  const count = el.querySelector('[data-wind]');
-  const t0 = performance.now();
-  const dur = 1700;
-  let loaded = false;
-  fontsReady().then(() => (loaded = true));
-
-  return new Promise((resolve) => {
-    const step = (now) => {
-      let p = Math.min((now - t0) / dur, 1);
-      if (!loaded) p = Math.min(p, 0.92);
-      const lit = Math.round((1 - Math.pow(1 - p, 2)) * ticks.length);
-      ticks.forEach((t, i) => t.classList.toggle('is-lit', i < lit));
-      count.textContent = pad(lit);
-      if (p < 1) return requestAnimationFrame(step);
-      setTimeout(() => {
-        el.classList.add('is-done');
-        state.lenis?.start();
-        setTimeout(resolve, 450);
-        setTimeout(() => el.remove(), 1600);
-      }, 260);
-    };
-    requestAnimationFrame(step);
-  });
-}
-
-/* ---------- local time ---------- */
-export function initClock(timezone) {
-  const opts = { hour: '2-digit', minute: '2-digit', hour12: false };
+/* ---------- the clock in Thiruvananthapuram ---------- */
+export function initClock(timeZone = 'Asia/Kolkata') {
+  const els = document.querySelectorAll('[data-clock]');
   let fmt;
   try {
-    fmt = new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: timezone });
+    fmt = new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hour12: false });
   } catch {
-    fmt = new Intl.DateTimeFormat('en-GB', opts);
+    fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
   }
-  const nodes = document.querySelectorAll('[data-clock]');
   const tick = () => {
     const t = fmt.format(new Date());
-    nodes.forEach((n) => (n.textContent = t));
+    els.forEach((el) => el.textContent !== t && (el.textContent = t));
   };
   tick();
-  setInterval(tick, 15000);
+  setInterval(tick, 10_000);
 }
 
-/* ---------- day / night dial ---------- */
-export function initTheme() {
+/* ---------- day and night ---------- */
+export function initTheme(onChange = () => {}) {
   const root = document.documentElement;
+  const btn = document.querySelector('[data-theme-toggle]');
+  const label = document.querySelector('[data-theme-label]');
   const meta = document.querySelector('meta[name="theme-color"]');
-  const btn = document.querySelector('.theme-toggle');
-  const label = btn?.querySelector('.theme-toggle__label');
-  const sync = () => {
-    meta?.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg').trim());
-    if (label) label.textContent = root.dataset.theme === 'light' ? 'Day' : 'Night';
+  const paint = () => {
+    const dark = root.dataset.theme !== 'light';
+    if (label) label.textContent = dark ? 'Day' : 'Night';
+    btn?.setAttribute('aria-label', dark ? 'Switch to the day theme' : 'Switch to the night theme');
+    meta?.setAttribute('content', dark ? '#0b0a09' : '#ece7dc');
   };
-  sync();
+  paint();
   btn?.addEventListener('click', () => {
-    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-    root.dataset.theme = next;
+    root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
     try {
-      localStorage.setItem('theme', next);
+      localStorage.setItem('theme', root.dataset.theme);
     } catch {}
-    sync();
+    paint();
+    onChange(root.dataset.theme);
   });
 }
 
-/* ---------- the index (chapters set round a dial) ---------- */
-export function initIndex() {
-  const btn = document.querySelector('.nav__index');
-  const panel = document.getElementById('index');
-  if (!btn || !panel) return;
-  const behind = () => document.querySelectorAll('main, .contact');
-  let lastFocus = null;
+/* ---------- the menu, with a preview of each project's formation ---------- */
+export function initMenu(director) {
+  const menu = document.getElementById('menu');
+  const btn = document.querySelector('.nav__menu');
+  if (!menu || !btn) return;
+  const behind = () => document.querySelectorAll('main, .contact, .hud');
   const set = (open) => {
-    if (open === panel.classList.contains('is-open')) return;
-    panel.classList.toggle('is-open', open);
-    panel.setAttribute('aria-hidden', String(!open));
+    menu.classList.toggle('is-open', open);
+    menu.setAttribute('aria-hidden', String(!open));
     btn.setAttribute('aria-expanded', String(open));
+    btn.firstElementChild.textContent = open ? 'Close' : 'Menu';
     behind().forEach((n) => (n.inert = open));
-    if (open) {
-      lastFocus = document.activeElement;
-      state.lenis?.stop();
-      setTimeout(() => panel.querySelector('a')?.focus({ preventScroll: true }), 400);
-    } else {
-      state.lenis?.start();
-      lastFocus?.focus?.({ preventScroll: true });
-    }
+    open ? state.lenis?.stop() : state.lenis?.start();
+    if (!open) director?.unfocus();
   };
-  btn.addEventListener('click', () => set(!panel.classList.contains('is-open')));
-  panel.querySelector('.index__close')?.addEventListener('click', () => set(false));
-  state.closeMenu = () => set(false);
-  addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
+  state.closeMenu = () => menu.classList.contains('is-open') && set(false);
+  btn.addEventListener('click', () => set(!menu.classList.contains('is-open')));
+  addEventListener('keydown', (e) => e.key === 'Escape' && state.closeMenu());
+  menu.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    set(false);
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) setTimeout(() => scrollToTarget(target), 60);
+  });
 }
 
-/* ---------- copy email ---------- */
+// Hovering a project name morphs the field into that project's formation.
+export function initPreviews(director) {
+  if (!director || !state.finePointer) return;
+  let leave = null;
+  document.querySelectorAll('[data-preview]').forEach((a) => {
+    a.addEventListener('pointerenter', () => {
+      clearTimeout(leave);
+      director.focus(a.dataset.preview, 'right', a.dataset.previewLabel);
+    });
+    a.addEventListener('pointerleave', () => {
+      leave = setTimeout(() => director.unfocus(), 140);
+    });
+  });
+}
+
+/* ---------- copy to clipboard ---------- */
 export function initCopy() {
   const toast = document.querySelector('.toast');
   let timer;
-  const say = (msg) => {
+  const show = (msg) => {
+    if (!toast) return;
     toast.textContent = msg;
-    toast.classList.add('is-visible');
+    toast.classList.add('is-on');
     clearTimeout(timer);
-    timer = setTimeout(() => toast.classList.remove('is-visible'), 2200);
+    timer = setTimeout(() => toast.classList.remove('is-on'), 2400);
   };
-  document.querySelectorAll('[data-copy]').forEach((b) =>
-    b.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(b.dataset.copy);
-        say(b.dataset.copied || 'Copied — talk soon');
-      } catch {
-        if (b.dataset.copy.includes('@')) location.href = `mailto:${b.dataset.copy}`;
-      }
-    })
-  );
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    const text = btn.dataset.copy;
+    try {
+      await navigator.clipboard.writeText(text);
+      show(btn.dataset.copied || 'Copied');
+    } catch {
+      if (/@/.test(text)) location.href = `mailto:${text}`;
+      else show(text);
+    }
+  });
 }
 
-/* ---------- testimonials ---------- */
-export function initQuotes() {
-  const quotes = [...document.querySelectorAll('.quote')];
-  const current = document.querySelector('.quotes__current');
-  if (quotes.length < 2) return;
-  let i = 0;
-  let timer;
-  let paused = false;
+/* ---------- film grain, generated rather than downloaded ---------- */
+export function initGrain() {
+  const el = document.querySelector('.grain');
+  if (!el) return;
+  const c = document.createElement('canvas');
+  c.width = c.height = 180;
+  const g = c.getContext('2d');
+  const img = g.createImageData(180, 180);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  el.style.backgroundImage = `url(${c.toDataURL('image/png')})`;
+}
 
-  const go = (n) => {
-    i = (n + quotes.length) % quotes.length;
-    quotes.forEach((q, k) => {
-      q.classList.toggle('is-active', k === i);
-      q.setAttribute('aria-hidden', String(k !== i));
+/* ---------- primary buttons lean towards the cursor ---------- */
+export function initMagnetic() {
+  if (state.reduced || !state.finePointer) return;
+  document.querySelectorAll('[data-magnetic]').forEach((el) => {
+    const x = gsap.quickTo(el, 'x', { duration: 0.6, ease: 'elastic.out(1, 0.45)' });
+    const y = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'elastic.out(1, 0.45)' });
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      x((e.clientX - r.left - r.width / 2) * 0.25);
+      y((e.clientY - r.top - r.height / 2) * 0.35);
     });
-    if (current) current.textContent = pad(i + 1);
-  };
-  const schedule = () => {
-    clearInterval(timer);
-    if (!state.reduced) timer = setInterval(() => !paused && go(i + 1), 7000);
-  };
+    el.addEventListener('pointerleave', () => {
+      x(0);
+      y(0);
+    });
+  });
+}
 
-  document.querySelectorAll('.quotes__btn').forEach((b) =>
-    b.addEventListener('click', () => {
-      go(i + Number(b.dataset.dir));
-      schedule();
-    })
+/* ---------- the nav marks the section you're in ---------- */
+export function initNavSpy() {
+  const links = [...document.querySelectorAll('[data-nav]')];
+  const targets = links.map((a) => document.getElementById(a.dataset.nav)).filter(Boolean);
+  if (!targets.length) return;
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((a) => a.classList.toggle('is-current', a.dataset.nav === e.target.id));
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' }
   );
-  const wrap = document.querySelector('.quotes__wrap');
-  wrap.addEventListener('mouseenter', () => (paused = true));
-  wrap.addEventListener('mouseleave', () => (paused = false));
-  schedule();
+  targets.forEach((t) => io.observe(t));
+}
+
+/* ---------- the cursor is a charge in the field; a click is a pulse ---------- */
+export function initPointer(field) {
+  if (!field) return;
+  addEventListener('pointermove', (e) => field.pointer(e.clientX, e.clientY, e.pointerType === 'mouse' ? 1 : 0), { passive: true });
+  document.addEventListener('pointerleave', () => field.pointer(-9999, -9999, 0));
+  addEventListener('pointerdown', (e) => {
+    if (e.target.closest('a, button, input, textarea, summary, .case, .menu, .nav')) return;
+    field.shock(e.clientX, e.clientY);
+  });
+}
+
+/* ---------- boot: count the atoms in, then let the page start ---------- */
+export function bootCount(total, duration = 0.9) {
+  const el = document.querySelector('[data-boot-count]');
+  if (!el || state.reduced) {
+    if (el) el.textContent = total.toLocaleString('en-GB');
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    const o = { v: 0 };
+    gsap.to(o, {
+      v: total,
+      duration,
+      ease: 'power2.inOut',
+      onUpdate: () => (el.textContent = Math.round(o.v).toLocaleString('en-GB')),
+      onComplete: () => {
+        document.querySelector('.boot__op').textContent = 'COMMIT;';
+        resolve();
+      },
+    });
+  });
 }
