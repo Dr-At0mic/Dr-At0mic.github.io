@@ -9,19 +9,17 @@ import { state } from './modules/core.js';
 import { initSmooth, scrollToTarget } from './modules/smooth.js';
 import { initReveal, revealHero } from './modules/reveal.js';
 import { initType } from './modules/type.js';
-import { initCursor } from './modules/cursor.js';
-import { initMarquee } from './modules/marquee.js';
-import { initArchive } from './modules/archive.js';
+import { initDials } from './modules/guilloche.js';
+import { initHeroDial } from './modules/dial.js';
 import { initCase } from './modules/case.js';
-import { runLoader, initClock, initTheme, initMenu, initCopy, initQuotes } from './modules/ui.js';
+import { runLoader, initClock, initTheme, initIndex, initCopy, initQuotes } from './modules/ui.js';
 
 const root = document.documentElement;
 const site = data.site || {};
 
 document.title = site.title || data.profile.name;
 document.querySelector('meta[name="description"]')?.setAttribute('content', site.description || '');
-if (site.accent) root.style.setProperty('--accent', site.accent);
-if (!root.dataset.theme) root.dataset.theme = site.defaultTheme === 'dark' ? 'dark' : 'light';
+if (!root.dataset.theme) root.dataset.theme = site.defaultTheme === 'light' ? 'light' : 'dark';
 
 document.getElementById('app').innerHTML = renderApp(data);
 
@@ -33,12 +31,11 @@ scrollTo(0, 0);
 initSmooth();
 initReveal();
 initType();
-initCursor(site.customCursor !== false);
-initMarquee();
-initArchive();
+initHeroDial(data.profile.timezone);
+initDials(document, { reduced: state.reduced });
 initClock(data.profile.timezone);
 initTheme();
-initMenu();
+initIndex();
 initCopy();
 initQuotes();
 const route = initCase(data.projects, data.experience);
@@ -47,7 +44,7 @@ runLoader().then(() => {
   revealHero();
   if (startHash.startsWith('#/work/')) route?.();
   else if (startHash.length > 1) {
-    const target = document.querySelector(startHash);
+    const target = document.getElementById(decodeURIComponent(startHash.slice(1)));
     if (target) setTimeout(() => scrollToTarget(target), 600);
   }
 });

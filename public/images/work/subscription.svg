@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
-  <rect width="1200" height="1200" fill="#EFE9DD"/>
-  <path d="M420 300 A280 280 0 1 1 210 520" fill="none" stroke="#17140F" stroke-width="40" stroke-linecap="round"/>
-  <path d="M160 470 L215 560 L295 480 Z" fill="#17140F"/>
-  <circle cx="420" cy="580" r="150" fill="#2B3FD6" style="mix-blend-mode:multiply"/>
-  <ellipse cx="800" cy="860" rx="130" ry="40" fill="#E6A93A" stroke="#17140F" stroke-width="4"/><ellipse cx="800" cy="826" rx="130" ry="40" fill="#E8461E" stroke="#17140F" stroke-width="4"/><ellipse cx="800" cy="792" rx="130" ry="40" fill="#E6A93A" stroke="#17140F" stroke-width="4"/><ellipse cx="800" cy="758" rx="130" ry="40" fill="#E8461E" stroke="#17140F" stroke-width="4"/><ellipse cx="800" cy="724" rx="130" ry="40" fill="#E6A93A" stroke="#17140F" stroke-width="4"/><ellipse cx="800" cy="690" rx="130" ry="40" fill="#E8461E" stroke="#17140F" stroke-width="4"/>
-  <path d="M100 1000 H1100" stroke="#17140F" stroke-width="3"/>
-  <g fill="#17140F"><rect x="130" y="1040" width="40" height="20"/><rect x="210" y="1040" width="40" height="42"/><rect x="290" y="1040" width="40" height="64"/><rect x="370" y="1040" width="40" height="86"/><rect x="450" y="1040" width="40" height="20"/><rect x="530" y="1040" width="40" height="42"/><rect x="610" y="1040" width="40" height="64"/><rect x="690" y="1040" width="40" height="86"/><rect x="770" y="1040" width="40" height="20"/><rect x="850" y="1040" width="40" height="42"/><rect x="930" y="1040" width="40" height="64"/><rect x="1010" y="1040" width="40" height="86"/></g></svg>

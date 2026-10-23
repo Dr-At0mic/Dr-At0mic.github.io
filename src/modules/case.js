@@ -1,5 +1,6 @@
 import { state } from './core.js';
 import { renderCase } from '../render.js';
+import { initDials } from './guilloche.js';
 
 // Case studies open in a sliding panel and live at #/work/<id>, so they can be linked and the back button closes them.
 export function initCase(projects = [], experience = []) {
@@ -17,7 +18,10 @@ export function initCase(projects = [], experience = []) {
     const i = projects.findIndex((p) => String(p.id) === id);
     if (i < 0) return close();
     const next = projects.length > 1 ? projects[(i + 1) % projects.length] : null;
-    panel.innerHTML = renderCase(projects[i], i, projects.length, next, companyUrl(projects[i]));
+    const featured = projects.filter((p) => p.featured);
+    const fi = featured.indexOf(projects[i]);
+    panel.innerHTML = renderCase(projects[i], i, projects.length, next, companyUrl(projects[i]), fi < 0 ? i : fi);
+    initDials(panel, { reduced: state.reduced });
     panel.scrollTop = 0;
     if (!isOpen) {
       isOpen = true;

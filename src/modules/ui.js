@@ -1,6 +1,7 @@
 import { state, pad, fontsReady } from './core.js';
 
 /* ---------- loader ---------- */
+// The monogram's minute track lights up tick by tick while the fonts arrive — the watch being wound.
 export function runLoader() {
   const el = document.querySelector('.loader');
   if (!el) return fontsReady();
@@ -10,9 +11,10 @@ export function runLoader() {
   }
 
   state.lenis?.stop();
-  const count = el.querySelector('.loader__count');
+  const ticks = [...el.querySelectorAll('.tk')];
+  const count = el.querySelector('[data-wind]');
   const t0 = performance.now();
-  const dur = 1500;
+  const dur = 1700;
   let loaded = false;
   fontsReady().then(() => (loaded = true));
 
@@ -20,14 +22,16 @@ export function runLoader() {
     const step = (now) => {
       let p = Math.min((now - t0) / dur, 1);
       if (!loaded) p = Math.min(p, 0.92);
-      count.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * 100)).padStart(3, '0');
+      const lit = Math.round((1 - Math.pow(1 - p, 2)) * ticks.length);
+      ticks.forEach((t, i) => t.classList.toggle('is-lit', i < lit));
+      count.textContent = pad(lit);
       if (p < 1) return requestAnimationFrame(step);
       setTimeout(() => {
         el.classList.add('is-done');
         state.lenis?.start();
-        setTimeout(resolve, 380);
-        setTimeout(() => el.remove(), 1300);
-      }, 180);
+        setTimeout(resolve, 450);
+        setTimeout(() => el.remove(), 1600);
+      }, 260);
     };
     requestAnimationFrame(step);
   });
@@ -51,14 +55,19 @@ export function initClock(timezone) {
   setInterval(tick, 15000);
 }
 
-/* ---------- theme ---------- */
+/* ---------- day / night dial ---------- */
 export function initTheme() {
   const root = document.documentElement;
   const meta = document.querySelector('meta[name="theme-color"]');
-  const sync = () => meta?.setAttribute('content', getComputedStyle(root).getPropertyValue('--paper').trim());
+  const btn = document.querySelector('.theme-toggle');
+  const label = btn?.querySelector('.theme-toggle__label');
+  const sync = () => {
+    meta?.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg').trim());
+    if (label) label.textContent = root.dataset.theme === 'light' ? 'Day' : 'Night';
+  };
   sync();
-  document.querySelector('.theme-toggle')?.addEventListener('click', () => {
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  btn?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
     root.dataset.theme = next;
     try {
       localStorage.setItem('theme', next);
@@ -67,19 +76,30 @@ export function initTheme() {
   });
 }
 
-/* ---------- mobile menu ---------- */
-export function initMenu() {
-  const btn = document.querySelector('.nav__menu-btn');
-  const menu = document.getElementById('menu');
-  if (!btn || !menu) return;
+/* ---------- the index (chapters set round a dial) ---------- */
+export function initIndex() {
+  const btn = document.querySelector('.nav__index');
+  const panel = document.getElementById('index');
+  if (!btn || !panel) return;
+  const behind = () => document.querySelectorAll('main, .contact');
+  let lastFocus = null;
   const set = (open) => {
-    menu.classList.toggle('is-open', open);
-    menu.setAttribute('aria-hidden', String(!open));
+    if (open === panel.classList.contains('is-open')) return;
+    panel.classList.toggle('is-open', open);
+    panel.setAttribute('aria-hidden', String(!open));
     btn.setAttribute('aria-expanded', String(open));
-    document.querySelector('.nav').classList.remove('is-hidden');
-    open ? state.lenis?.stop() : state.lenis?.start();
+    behind().forEach((n) => (n.inert = open));
+    if (open) {
+      lastFocus = document.activeElement;
+      state.lenis?.stop();
+      setTimeout(() => panel.querySelector('a')?.focus({ preventScroll: true }), 400);
+    } else {
+      state.lenis?.start();
+      lastFocus?.focus?.({ preventScroll: true });
+    }
   };
-  btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
+  btn.addEventListener('click', () => set(!panel.classList.contains('is-open')));
+  panel.querySelector('.index__close')?.addEventListener('click', () => set(false));
   state.closeMenu = () => set(false);
   addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
 }
@@ -98,7 +118,7 @@ export function initCopy() {
     b.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(b.dataset.copy);
-        say(b.dataset.copied || 'copied — talk soon!');
+        say(b.dataset.copied || 'Copied — talk soon');
       } catch {
         if (b.dataset.copy.includes('@')) location.href = `mailto:${b.dataset.copy}`;
       }

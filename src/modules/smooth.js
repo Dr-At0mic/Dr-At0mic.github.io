@@ -22,17 +22,9 @@ export function initSmooth() {
     scrollToTarget(target);
   });
 
-  // nav: solid once you leave the top, tucks away while scrolling down
+  // nav: solid once you leave the top. It never tucks away — the hero dial docks into it.
   const nav = document.querySelector('.nav');
-  let lastY = 0;
-  const onScroll = (y) => {
-    nav.classList.toggle('is-scrolled', y > 30);
-    const delta = y - lastY;
-    if (Math.abs(delta) > 4) {
-      nav.classList.toggle('is-hidden', delta > 0 && y > window.innerHeight * 0.5);
-      lastY = y;
-    }
-  };
+  const onScroll = (y) => nav.classList.toggle('is-scrolled', y > 30);
   if (state.lenis) state.lenis.on('scroll', ({ scroll }) => onScroll(scroll));
   else addEventListener('scroll', () => onScroll(scrollY), { passive: true });
 }

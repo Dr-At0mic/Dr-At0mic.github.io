@@ -48,7 +48,7 @@ export function initReveal() {
   document.querySelectorAll('.menu__word').forEach((el, i) => el.style.setProperty('--i', i));
 
   const targets = document.querySelectorAll(
-    '[data-split]:not(.hero [data-split]), [data-fade]:not(.hero [data-fade]), [data-reveal-media], .is-draw'
+    '[data-split]:not(.hero [data-split]), [data-fade]:not(.hero [data-fade]), [data-reveal]'
   );
 
   if (state.reduced) {
@@ -80,12 +80,11 @@ export function revealHero() {
   const root = document.documentElement;
   root.classList.add('is-ready');
   const seq = [
-    ['.hero__eyebrow', 0.15],
-    ['.hero__intro', 0.3],
-    ['.hero .polaroid', 0.55],
-    ['.hero .badge', 0.85],
-    ['.hero__note', 1.25],
-    ['.hero__foot', 0.9],
+    ['.hero__eyebrow', 0.2],
+    ['.hero__name', 0.35],
+    ['.hero__intro', 0.8],
+    ['.hero__right', 1.0],
+    ['.hero__foot', 1.2],
   ];
   seq.forEach(([sel, d]) => {
     const el = document.querySelector(sel);

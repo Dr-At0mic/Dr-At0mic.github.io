@@ -1,55 +1,200 @@
 // Turns data.json into markup. Every section is optional — if its data is
 // missing or empty, it simply isn't drawn and the numbering closes up.
+//
+// The design is "Calibre": the portfolio set out as a watchmaker's catalogue. Projects are
+// pieces in a collection, each with its own engraved dial; the hero is a working dial that
+// tells the time in Thiruvananthapuram.
+
+import { TONES, PATTERN_NAMES } from './modules/guilloche.js';
 
 export const esc = (s = '') =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-/* ---------- hand-drawn bits ---------- */
+const pad = (n) => String(n).padStart(2, '0');
+const list = (v) => (Array.isArray(v) ? v.filter(Boolean) : []);
+const f1 = (n) => +n.toFixed(2);
+const chars = (s) =>
+  [...s].map((c) => (c === ' ' ? '<span class="char char--space">&nbsp;</span>' : `<span class="char">${esc(c)}</span>`)).join('');
 
-export const doodle = {
-  circle: `<svg class="doodle doodle--circle" viewBox="0 0 220 90" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M178 14C128-2 38 4 14 34c-18 24 40 50 110 46 62-4 92-26 82-46C196 10 150 4 104 10"/></svg>`,
-  underline: `<svg class="doodle doodle--underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 13C40 6 70 15 110 9s80-6 120 0 50 6 67-1"/></svg>`,
-  arrow: `<svg class="doodle doodle--arrow" viewBox="0 0 120 90" aria-hidden="true"><path pathLength="1" d="M10 10c30-6 60 4 74 24s14 32 10 46"/><path pathLength="1" d="M80 64l14 17 11-19"/></svg>`,
-  quote: `<svg class="doodle doodle--quote" viewBox="0 0 120 90" aria-hidden="true"><path d="M50 8C24 16 8 36 8 60c0 14 9 24 21 24 11 0 19-8 19-19 0-10-7-18-17-18-3 0-5 1-7 2 2-14 12-26 28-33zM110 8C84 16 68 36 68 60c0 14 9 24 21 24 11 0 19-8 19-19 0-10-7-18-17-18-3 0-5 1-7 2 2-14 12-26 28-33z"/></svg>`,
-};
+export const roman = (n) =>
+  [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']].reduce((s, [v, r]) => {
+    while (n >= v) {
+      s += r;
+      n -= v;
+    }
+    return s;
+  }, '');
 
-export const asterisk = `<svg class="asterisk" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5v30M7 12.5l26 15M7 27.5l26-15"/></svg>`;
-// The brand mark — three orbits round a nucleus, an electron on each (Dr. Atomic).
-const orbit = (deg) =>
-  `<g transform="rotate(${deg} 20 20)"><ellipse cx="20" cy="20" rx="17.5" ry="6.6"/><circle class="atom__e" cx="31.2" cy="25.1" r="2.3"/></g>`;
-export const atom = `<svg class="atom" viewBox="0 0 40 40" aria-hidden="true">${[0, 60, -60].map(orbit).join('')}<circle cx="20" cy="20" r="3.4"/></svg>`;
-const arrowIcon = `<svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8.5 7H17v8.5"/></svg>`;
+const arrowIcon = `<svg class="i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M14 7l5 5-5 5"/></svg>`;
 const plusIcon = `<svg class="i-plus" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`;
 
-// `code` → monospace, **text** → bold, *text* → italic accent, {text} → hand-circled
+// `code` → monospace, **text** → bold, *text* → italic accent, {text} → engraved underline
 export const rich = (s = '') =>
   esc(s)
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\{(.+?)\}/g, (_, t) => `<span class="circled">${t}${doodle.circle}</span>`);
+    .replace(/\{(.+?)\}/g, '<span class="engraved">$1</span>');
 
-const pad = (n) => String(n).padStart(2, '0');
-const chars = (s) =>
-  [...s].map((c) => (c === ' ' ? '<span class="char char--space">&nbsp;</span>' : `<span class="char">${esc(c)}</span>`)).join('');
-const list = (v) => (Array.isArray(v) ? v.filter(Boolean) : []);
+/* =========================================================
+   The monogram — A and S cut from Bodoni Moda (outlined, so it needs no font)
+   inside a minute track.
+   ========================================================= */
+const MONO_A = 'M399.6 -486.9V-490.9H974V-486.9ZM855.2 -1530 1384.2 -4H1525.8V0H853.8V-4H1036L650.8 -1196.2L231.7 -4H473.8V0H33.8V-4H226.9L762.9 -1530Z';
+const MONO_S = 'M500.2 30Q383.2 30 303.3 -8.3Q223.4 -46.7 173.4 -112.8Q123.4 -178.9 96.9 -262.3Q70.4 -345.6 59.8 -435.6H63.8Q73.3 -350.2 99 -268.3Q124.8 -186.4 173.5 -120.5Q222.2 -54.6 300.5 -15.5Q378.7 23.7 492.6 23.7Q594.8 23.7 673.6 -16Q752.4 -55.8 797.3 -125.8Q842.2 -195.8 842.2 -287.2Q842.2 -374.3 808.8 -433.5Q775.4 -492.7 720.2 -533.8Q664.9 -575 599.2 -608.4Q533.4 -641.9 467.6 -677.2Q401.9 -712.5 346.6 -759.1Q291.4 -805.6 258 -873.1Q224.6 -940.7 224.6 -1039.6Q224.6 -1158.3 273.8 -1247.8Q323 -1337.3 401.2 -1398Q479.4 -1458.7 568.3 -1489.3Q657.2 -1520 736.6 -1520Q864.6 -1520 950.2 -1464.4Q1035.7 -1408.8 1082.1 -1309.7Q1128.5 -1210.6 1139.9 -1079.6H1135.9Q1124.1 -1209.4 1078.4 -1306.9Q1032.7 -1404.4 949.9 -1459.1Q867 -1513.7 744.2 -1513.7Q672 -1513.7 605.3 -1482Q538.6 -1450.2 495.8 -1391.9Q453 -1333.6 453 -1252.8Q453 -1177.2 486.6 -1126Q520.1 -1074.8 575.6 -1036.9Q631 -999 697.4 -965.7Q763.7 -932.3 830 -894.1Q896.4 -856 951.8 -802.8Q1007.3 -749.6 1040.8 -673.1Q1074.4 -596.7 1074.4 -485.6Q1074.4 -380.6 1029.3 -287.3Q984.1 -193.9 904.7 -122.8Q825.3 -51.7 721.4 -10.8Q617.6 30 500.2 30ZM-43.8 20 59.8 -435.6H63.8L71.6 -360Q89 -287.3 113 -227.6Q137 -167.9 172 -121.6L-39.8 20ZM1135.9 -1079.6 1133.3 -1129.1Q1119 -1195.7 1099.3 -1258.7Q1079.6 -1321.7 1030.6 -1388.4L1235 -1520H1239L1139.9 -1079.6Z';
+
+const minuteTrack = (r, long = 6, short = 3) =>
+  Array.from({ length: 60 }, (_, i) => {
+    const a = (i / 60) * Math.PI * 2;
+    const L = i % 5 ? short : long;
+    const [s, c] = [Math.sin(a), -Math.cos(a)];
+    return `<line class="${i % 5 ? 'tk' : 'tk tk--5'}" x1="${f1(s * r)}" y1="${f1(c * r)}" x2="${f1(s * (r - L))}" y2="${f1(c * (r - L))}"/>`;
+  }).join('');
+
+export const monogram = (cls = '') => `<svg class="monogram ${cls}" viewBox="-50 -50 100 100" aria-hidden="true">
+  <circle class="monogram__rim" r="47.5"/>${minuteTrack(45, 6, 2.6)}
+  <g transform="translate(-29.56 27.82) scale(0.03791)"><path class="monogram__a" d="${MONO_A}"/><path class="monogram__s" transform="translate(530 40) scale(0.74)" d="${MONO_S}"/></g>
+</svg>`;
+
+/* =========================================================
+   Dials
+   ========================================================= */
+const TONE_NAMES = {
+  midnight: 'Midnight blue',
+  opaline: 'Silvered opaline',
+  salmon: 'Salmon',
+  racing: 'Racing green',
+  bordeaux: 'Bordeaux',
+  slate: 'Slate',
+  glacier: 'Glacier blue',
+  onyx: 'Onyx',
+  tobacco: 'Tobacco',
+};
+const COLLECTION_TONES = ['salmon', 'midnight', 'racing', 'opaline', 'bordeaux', 'glacier', 'tobacco', 'slate', 'onyx'];
+const COLLECTION_PATTERNS = ['barley', 'wave', 'sunburst', 'rosette', 'panier', 'wave', 'barley', 'sunburst', 'rosette'];
+
+// Each piece's dial: `dial: { tone, pattern }` in data.json, or one from the house rotation.
+export function finishOf(p, i = 0) {
+  const tone = TONES[p.dial?.tone] ? p.dial.tone : COLLECTION_TONES[i % COLLECTION_TONES.length];
+  const pattern = PATTERN_NAMES[p.dial?.pattern] ? p.dial.pattern : COLLECTION_PATTERNS[i % COLLECTION_PATTERNS.length];
+  return { tone, pattern, label: `${TONE_NAMES[tone]} dial · ${PATTERN_NAMES[pattern]} guilloché` };
+}
+
+export function symbolOf(p) {
+  if (p.symbol) return String(p.symbol).slice(0, 3);
+  const words = String(p.title || '?').replace(/([a-z])([A-Z])/g, '$1 $2').split(/[\s\-_]+/).filter(Boolean);
+  const s = words.length > 1 ? words[0][0] + words[1][0] : words[0].slice(0, 2);
+  return s[0].toUpperCase() + (s[1] || '').toLowerCase();
+}
+
+export const refOf = (p, n) => `${symbolOf(p).toUpperCase()}·${pad(n)}`;
+
+// polished baton: a body and a bright facet down its middle
+const baton = (h, { double = false, inner = 66, outer = 82 } = {}) => {
+  const one = (x) =>
+    `<rect class="ix" x="${f1(x - 1.7)}" y="${-outer}" width="3.4" height="${outer - inner}" rx=".6"/><rect class="ix-hi" x="${f1(x - 0.35)}" y="${-outer + 1}" width=".7" height="${outer - inner - 2}"/>`;
+  return `<g transform="rotate(${h * 30})">${double ? one(-2.6) + one(2.6) : one(0)}</g>`;
+};
+
+// two-tone dauphine hand: one half catches the light, the other doesn't
+const hand = (cls, len, w, angle) =>
+  `<g class="hand ${cls}" style="transform:rotate(${angle}deg)"><path class="hand__l" d="M0 ${f1(w * 2.6)}L${-w} 0L0 ${-len}Z"/><path class="hand__r" d="M0 ${f1(w * 2.6)}L${w} 0L0 ${-len}Z"/></g>`;
+
+const secondsHand = (angle) =>
+  `<g class="hand hand--s" style="transform:rotate(${angle}deg)"><line x1="0" y1="20" x2="0" y2="-88"/><circle cy="13" r="3"/></g><circle class="cap" r="2.6"/><circle class="cap-hi" r="1"/>`;
+
+const fitText = (s, max, width) => Math.min(max, width / Math.max(1, s.length * 0.78));
+
+const chapter = `<circle class="trk" r="94"/><circle class="trk" r="86.5"/>${minuteTrack(93.4, 6.5, 3.2)}`;
+
+// a collection dial: brand under XII, the piece number in the date window, the headline metric on the sub-dial, hands at 10:10
+export function pieceDial(p, n, finish, { cls = 'dial--piece', light = -2.3 } = {}) {
+  const tone = TONES[finish.tone];
+  const m = list(p.metrics)[0];
+  const title = String(p.title).toUpperCase();
+  const label = m ? String(m.label) : 'Year';
+  const value = m ? String(m.value) : String(p.year || '');
+  const sub = Array.from({ length: 30 }, (_, i) => i)
+    .map((i) => {
+      const a = (i / 30) * Math.PI * 2;
+      const L = i % 5 ? 1.6 : 3;
+      return `<line class="tk" x1="${f1(Math.sin(a) * 19)}" y1="${f1(-Math.cos(a) * 19)}" x2="${f1(Math.sin(a) * (19 - L))}" y2="${f1(-Math.cos(a) * (19 - L))}"/>`;
+    })
+    .join('');
+  return `
+  <div class="dial ${cls}" data-dial data-tone="${finish.tone}" data-pattern="${finish.pattern}" data-seed="${esc(p.id)}" data-light="${light}" style="--d-ink:${tone.ink};--d-applied:${tone.applied}">
+    <canvas class="dial__face" aria-hidden="true"></canvas>
+    <svg class="dial__print" viewBox="-100 -100 200 200" aria-hidden="true">
+      ${chapter}
+      ${[1, 2, 4, 5, 7, 8, 9, 10, 11].map((h) => baton(h)).join('')}${baton(0, { double: true })}
+      <text class="dial__brand" y="-47" font-size="${f1(fitText(title, 8.2, 96))}">${esc(title)}</text>
+      <text class="dial__line" y="-38.5">${esc(String(p.category || '').toUpperCase())}</text>
+      <g class="dial__date" transform="translate(62 0)"><rect x="-8.5" y="-6" width="17" height="12" rx=".8"/><text y="2.7">${pad(n)}</text></g>
+      <g class="sub" transform="translate(0 46)">
+        <circle class="sub__face" r="20.5"/>${[5, 8, 11, 14].map((r) => `<circle class="sub__az" r="${r}"/>`).join('')}${sub}
+        <text class="sub__v" y="2.6" font-size="${f1(fitText(value, 8.5, 30))}">${esc(value)}</text>
+        <text class="sub__l" y="9.8" font-size="${f1(fitText(label, 2.9, 30))}">${esc(label.toUpperCase())}</text>
+      </g>
+      ${hand('hand--h', 46, 3.7, 305)}${hand('hand--m', 74, 3, 60)}${secondsHand(48)}
+    </svg>
+    <span class="dial__glass" aria-hidden="true"></span>
+  </div>`;
+}
+
+// The hero: a working dial. Name under XII, today's date at III, the real moon phase at VI.
+export function heroDial(p) {
+  const name = p.name.toUpperCase();
+  const city = String(p.city || p.location?.split(',')[0] || '').toUpperCase();
+  const stars = [[-12, -10], [-6, -14], [3, -12.5], [11, -9], [-14, 6], [13, 7], [-4, 13], [7, 12.5], [0, 15]]
+    .map(([x, y]) => `<circle class="moon__star" cx="${x}" cy="${y}" r=".45"/>`)
+    .join('');
+  return `
+  <div class="dial dial--hero" data-dial data-hero data-tone="midnight" data-pattern="wave" data-seed="anandhu" data-light="-2.3" style="--d-ink:${TONES.midnight.ink};--d-applied:${TONES.midnight.applied}">
+    <canvas class="dial__face" aria-hidden="true"></canvas>
+    <svg class="dial__print" viewBox="-100 -100 200 200" aria-hidden="true">
+      <defs><clipPath id="moon-window"><path d="M-17 0A17 17 0 0 1 17 0A8.5 8.5 0 0 0 0 0A8.5 8.5 0 0 0-17 0Z"/></clipPath></defs>
+      ${chapter}
+      ${[1, 2, 4, 5, 7, 8, 10, 11].map((h) => baton(h)).join('')}
+      <text class="dial__num" y="-64">XII</text>
+      <text class="dial__num" x="-71" y="4.2">IX</text>
+      <text class="dial__brand" y="-43" font-size="${f1(fitText(name, 7.4, 100))}">${esc(name)}</text>
+      <text class="dial__line" y="-34.5">${esc(city)}</text>
+      <text class="dial__line" y="20">${esc(String(p.role || '').toUpperCase())}</text>
+      <text class="dial__line dial__line--faint" y="26.5">UTC +5:30</text>
+      <g class="dial__date" transform="translate(64 0)"><rect x="-8.5" y="-6" width="17" height="12" rx=".8"/><text y="2.7" data-date>--</text></g>
+      <g class="moon" transform="translate(0 56)">
+        <g clip-path="url(#moon-window)">
+          <rect class="moon__sky" x="-18" y="-18" width="36" height="18"/>
+          <g class="moon__disc" data-moon>${stars}<circle class="moon__body" cx="0" cy="-10.5" r="6.4"/><circle class="moon__body" cx="0" cy="10.5" r="6.4"/></g>
+        </g>
+        <path class="moon__frame" d="M-17 0A17 17 0 0 1 17 0A8.5 8.5 0 0 0 0 0A8.5 8.5 0 0 0-17 0Z"/>
+      </g>
+      ${hand('hand--h', 48, 4, 0)}${hand('hand--m', 76, 3.2, 0)}${secondsHand(0)}
+    </svg>
+    <span class="dial__glass" aria-hidden="true"></span>
+  </div>`;
+}
 
 // Section headings come from data.json → "sections", falling back to these.
 const SECTION_DEFAULTS = {
-  about: { label: 'About', nav: 'About' },
-  work: { label: 'Selected work', nav: 'Work', title: 'Selected *work*', aside: 'Click any project for the full story.' },
-  archive: { label: 'Archive', title: 'More *projects*', aside: '' },
-  services: { label: 'Services', nav: '', title: 'What I *do*', aside: '' },
-  skills: { label: 'Toolkit', nav: 'Skills', title: 'The *toolkit*', aside: '' },
-  experience: { label: 'Experience', nav: 'Experience', title: 'Where I’ve *worked*', highlightsTitle: 'a few nice things —' },
-  education: { label: 'Education', nav: '', title: 'Where I *studied*', languagesTitle: 'languages —' },
-  play: { label: 'Off the clock', nav: '', title: 'Off the *clock*', aside: '', handlesTitle: 'find me —' },
+  about: { label: 'The maker', nav: 'The maker' },
+  work: { label: 'The collection', nav: 'Collection', title: 'The *collection*', aside: '' },
+  archive: { label: 'References', title: 'Further *references*', aside: '' },
+  services: { label: 'Savoir-faire', nav: '', title: 'The *crafts*', aside: '' },
+  skills: { label: 'The movement', nav: 'Movement', title: 'The *movement*', aside: '' },
+  experience: { label: 'Provenance', nav: 'Provenance', title: 'Where I’ve *worked*', highlightsTitle: 'Distinctions' },
+  education: { label: 'Certification', nav: '', title: 'Where I *studied*', languagesTitle: 'Languages' },
+  play: { label: 'Off the clock', nav: '', title: 'Off the *clock*', aside: '', handlesTitle: 'Find me' },
   testimonials: { label: 'Kind words', title: 'In their *words*' },
-  contact: { label: 'Contact', nav: 'Contact' },
+  contact: { label: 'Appointments', nav: 'Contact' },
 };
 
-/* ---------- shell ---------- */
+// Hand-written headings in data.json end in " —"; engraved captions don't need it.
+const caption = (s = '') => esc(String(s).replace(/\s*[—–-]\s*$/, ''));
 
+/* =========================================================
+   Shell
+   ========================================================= */
 export function renderApp(d) {
   const sec = (key) => ({ ...SECTION_DEFAULTS[key], ...(d.sections?.[key] || {}) });
   const projects = list(d.projects);
@@ -57,37 +202,35 @@ export function renderApp(d) {
   const archive = projects.filter((p) => !p.featured);
 
   let n = 0;
-  const num = () => pad(++n);
+  const num = () => ++n;
 
   // Which sections exist, in page order. Each knows how to draw itself.
   const sections = [
     ['about', d.about, () => about(d, num(), sec('about'))],
-    ['work', featured.length, () => work(featured, projects, num(), sec('work'))],
-    ['archive', archive.length, () => archiveList(archive, num(), sec('archive'))],
-    ['services', list(d.services).length, () => services(d.services, num(), sec('services'))],
-    ['skills', list(d.skills).length, () => skills(d, num(), sec('skills'))],
-    ['experience', list(d.experience).length, () => experience(d, num(), sec('experience'))],
-    ['education', list(d.education).length || list(d.languages).length, () => education(d, num(), sec('education'))],
+    ['work', featured.length, () => collection(featured, projects, num(), sec('work'))],
+    ['archive', archive.length, () => references(archive, projects, num(), sec('archive'))],
+    ['services', list(d.services).length, () => crafts(d.services, num(), sec('services'))],
+    ['skills', list(d.skills).length, () => movement(d, num(), sec('skills'))],
+    ['experience', list(d.experience).length, () => provenance(d, num(), sec('experience'))],
+    ['education', list(d.education).length || list(d.languages).length, () => certification(d, num(), sec('education'))],
     ['play', list(d.play?.games).length || list(d.play?.handles).length, () => play(d.play, num(), sec('play'))],
     ['testimonials', list(d.testimonials).length, () => testimonials(d.testimonials, num(), sec('testimonials'))],
   ].filter(([, present]) => present);
 
-  const links = [
-    ...sections.filter(([key]) => sec(key).nav).map(([key]) => ({ id: key === 'testimonials' ? 'kind-words' : key, label: sec(key).nav })),
-    { id: 'contact', label: sec('contact').nav || 'Contact' },
+  // the index lists every chapter, numbered like the hours
+  const chapters = [
+    ...sections.map(([key]) => ({ id: key === 'testimonials' ? 'kind-words' : key, label: sec(key).label })),
+    { id: 'contact', label: sec('contact').label },
   ];
 
   const body = sections.map(([, , draw]) => draw()).join('');
 
   return `
     ${d.site?.preloader !== false ? loader(d) : ''}
-    <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
-    <div class="grain" aria-hidden="true"></div>
-    ${nav(d, links)}
-    ${menu(d, links)}
+    ${nav(d)}
+    ${index(d, chapters)}
     <main id="main">
       ${hero(d)}
-      ${list(d.marquee).length ? marquee(d.marquee) : ''}
       ${body}
     </main>
     ${contact(d, num(), sec('contact'))}
@@ -95,164 +238,144 @@ export function renderApp(d) {
       <div class="case__backdrop" data-close></div>
       <article class="case__panel" role="dialog" aria-modal="true" aria-labelledby="case-title" tabindex="-1" data-lenis-prevent></article>
     </div>
-    <div class="preview" aria-hidden="true"><div class="preview__inner"></div></div>
-    <div class="toast hand" role="status" aria-live="polite"></div>
+    <div class="toast caps" role="status" aria-live="polite"></div>
   `;
 }
 
 function loader(d) {
   return `
   <div class="loader" aria-hidden="true">
-    <div class="loader__top label"><span>${esc(d.profile.name)}</span><span class="loader__eyebrow">${esc(d.hero?.eyebrow || '')}</span></div>
-    <div class="loader__mark">${atom}</div>
-    <div class="loader__bottom">
-      <span class="label">Loading the good stuff</span>
-      <span class="loader__count">000</span>
-    </div>
+    <div class="loader__mark">${monogram('monogram--loader')}</div>
+    <p class="caps loader__line">${esc(d.profile.name)} — winding <span data-wind>00</span></p>
   </div>`;
 }
 
-function nav(d, links) {
+function nav(d) {
   const p = d.profile;
   return `
   <header class="nav">
     <a class="nav__brand" href="#top" aria-label="${esc(p.name)} — back to top">
-      <span class="nav__mark">${atom}</span>
+      ${monogram('monogram--nav')}
       <span class="nav__name">${esc(p.name)}</span>
     </a>
-    <div class="nav__meta label">
+    <p class="nav__meta caps">
       ${p.availability ? `<span class="status ${p.available ? 'is-open' : ''}"><i></i>${esc(p.availability)}</span>` : ''}
       <span class="nav__clock"><span data-clock>--:--</span> in ${esc(p.city || p.location?.split(',')[0] || '')}</span>
-    </div>
-    <nav class="nav__links" aria-label="Primary">
-      ${links.map((l) => `<a class="roll" href="#${l.id}"><span data-text="${esc(l.label)}">${esc(l.label)}</span></a>`).join('')}
-    </nav>
-    <button class="theme-toggle" type="button" aria-label="Switch light / dark"><span></span></button>
-    <button class="nav__menu-btn roll" type="button" aria-expanded="false" aria-controls="menu"><span data-text="Close">Menu</span></button>
+    </p>
+    <button class="theme-toggle caps" type="button" aria-label="Switch between the day and night dial"><span class="theme-toggle__disc" aria-hidden="true"></span><span class="theme-toggle__label"></span></button>
+    <button class="nav__index caps" type="button" aria-expanded="false" aria-controls="index"><span class="nav__index-label">Index</span><span class="nav__dock" aria-hidden="true"></span></button>
   </header>`;
 }
 
-function menu(d, links) {
+function index(d, chapters) {
+  const count = chapters.length;
   return `
-  <div class="menu" id="menu" aria-hidden="true">
-    <nav class="menu__links" aria-label="Mobile">
-      ${links.map((l, i) => `<a href="#${l.id}"><span class="label">${pad(i + 1)}</span><span class="menu__word">${esc(l.label)}</span></a>`).join('')}
-    </nav>
-    <div class="menu__foot">
-      <a class="label menu__email" href="mailto:${esc(d.profile.email)}">${esc(d.profile.email)}</a>
-      <div class="menu__socials">${list(d.socials).map((s) => `<a class="label" href="${esc(s.url)}" target="_blank" rel="noopener"${s.note ? ` title="${esc(s.note)}"` : ""}>${esc(s.label)}${s.note ? "*" : ""}</a>`).join('')}</div>
+  <div class="index" id="index" aria-hidden="true">
+    <div class="index__ring">
+      <ol class="index__hours">
+        ${chapters
+          .map(
+            (c, i) =>
+              `<li style="--a:${f1((i / count) * 360)}deg"><a href="#${c.id}"><span class="index__num">${roman(i + 1)}</span><span class="index__label">${esc(c.label)}</span></a></li>`
+          )
+          .join('')}
+      </ol>
+      <div class="index__centre">
+        ${monogram('monogram--index')}
+        <a class="index__mail caps" href="mailto:${esc(d.profile.email)}">${esc(d.profile.email)}</a>
+      </div>
     </div>
+    <button class="index__close caps" type="button">Close</button>
   </div>`;
 }
 
-/* ---------- sections ---------- */
-
+/* =========================================================
+   Sections
+   ========================================================= */
 function hero(d) {
   const p = d.profile;
   const h = d.hero || {};
   const words = p.name.trim().split(/\s+/);
-  const lines = [words[0], words.slice(1).join(' ')].filter(Boolean);
-  const badge = h.badge || 'Available for work ✺ ';
+  const functions = list(d.marquee);
+  const spec = [
+    ['Calibre', p.role],
+    ['Functions', p.headline],
+    ['Origin', p.location],
+    ['Status', p.available ? p.availability : ''],
+  ].filter(([, v]) => v);
 
   return `
   <section class="hero" id="top">
-    <div class="hero__body">
-      ${h.eyebrow ? `<p class="label hero__eyebrow" data-fade>${esc(h.eyebrow)}</p>` : ''}
-      ${h.intro ? `<p class="hero__intro" data-split>${rich(h.intro)}</p>` : ''}
-      ${h.note ? `<p class="hand hero__note" data-fade>${esc(h.note)}${doodle.arrow}</p>` : ''}
+    <div class="hero__left">
+      ${h.eyebrow ? `<p class="caps hero__eyebrow" data-fade>${esc(h.eyebrow)}</p>` : ''}
+      <h1 class="hero__name" data-split>${esc(words[0])}<br /><em>${esc(words.slice(1).join(' '))}</em></h1>
+      ${h.intro ? `<p class="hero__intro" data-fade>${rich(h.intro)}</p>` : ''}
     </div>
 
-    <div class="hero__aside">
-      ${
-        p.portrait
-          ? `<figure class="polaroid" data-fade>
-              <span class="tape" aria-hidden="true"></span>
-              <div class="polaroid__img"><img src="${esc(p.portrait)}" alt="Portrait of ${esc(p.name)}" /></div>
-              ${p.portraitCaption ? `<figcaption class="hand">${esc(p.portraitCaption)}</figcaption>` : ''}
-            </figure>`
-          : ''
-      }
-      <a class="badge ${p.portrait ? '' : 'badge--solo'}" href="#contact" data-magnetic data-fade aria-label="Get in touch">
-        <svg viewBox="0 0 200 200" aria-hidden="true">
-          <defs><path id="badge-path" d="M100 100m-76 0a76 76 0 1 1 152 0a76 76 0 1 1-152 0"/></defs>
-          <text><textPath href="#badge-path" textLength="474" lengthAdjust="spacing">${esc(badge)}</textPath></text>
-        </svg>
-        <span class="badge__core">${arrowIcon}</span>
-      </a>
+    <div class="hero__slot">${heroDial(p)}</div>
+
+    <div class="hero__right" data-fade>
+      <dl class="spec">${spec.map(([k, v]) => `<div><dt class="caps">${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+      ${h.note ? `<p class="hero__note">${esc(h.note)}</p>` : ''}
+      <a class="btn" href="#work" data-magnetic><span>View the collection</span>${arrowIcon}</a>
     </div>
 
-    <h1 class="hero__name" aria-label="${esc(p.name)}">
-      ${lines
-        .map(
-          (l, i) =>
-            `<span class="hero__line hero__line--${i + 1}" aria-hidden="true"><span class="hero__line-inner">${chars(l)}</span></span>`
-        )
-        .join('')}
-    </h1>
-
-    <div class="hero__foot label" data-fade>
-      <span>${esc(p.role)}</span>
-      <span class="hero__loc">${esc(p.location || '')}</span>
-      <span class="hero__scroll">Scroll <i></i></span>
+    <div class="hero__foot caps" data-fade>
+      <span>Scroll</span>
+      ${functions.length ? `<p class="hero__functions">${functions.map((f) => `<span>${esc(f)}</span>`).join('<i aria-hidden="true">◆</i>')}</p>` : '<span></span>'}
+      <span><span data-clock>--:--</span> IST</span>
     </div>
   </section>`;
 }
 
-function marquee(items) {
-  const group = (alt) =>
-    `<span class="marquee__group">${items
-      .map((t, i) => `<span class="marquee__item ${(i + alt) % 2 ? 'is-italic' : ''}">${esc(t)}</span>${asterisk}`)
-      .join('')}</span>`;
-  const band = (cls, dir, alt) =>
-    `<div class="marquee ${cls}" data-marquee="${dir}"><div class="marquee__track">${group(alt).repeat(4)}</div></div>`;
-  return `
-  <section class="marquees" aria-label="Disciplines">
-    ${band('marquee--b', 1, 1)}
-    ${band('marquee--a', -1, 0)}
-  </section>`;
-}
-
-function sectionHead(num, s, extraTitle = '') {
+function sectionHead(num, s, note = '') {
   return `
   <header class="s-head">
-    <div class="s-head__meta label"><span>(${num})</span><span>${esc(s.label)}</span></div>
-    <h2 class="s-head__title" data-split>${rich(s.title || s.label)}${extraTitle}</h2>
+    <p class="s-head__num" aria-hidden="true">${roman(num)}</p>
+    <p class="caps s-head__label">${esc(s.label)}</p>
+    <h2 class="s-head__title" data-split>${rich(s.title || s.label)}</h2>
     ${s.aside ? `<p class="s-head__aside" data-fade>${rich(s.aside)}</p>` : ''}
+    ${note ? `<p class="caps s-head__note" data-fade>${note}</p>` : ''}
   </header>`;
 }
 
 function about(d, num, s) {
   const a = d.about;
+  const p = d.profile;
   return `
   <section class="section about" id="about">
-    <div class="about__top">
-      <div class="s-head__meta label about__meta"><span>(${num})</span><span>${esc(s.label)}</span></div>
-      <p class="about__statement" data-scrub>${rich(a.statement)}</p>
+    <div class="about__head">
+      <p class="s-head__num" aria-hidden="true">${roman(num)}</p>
+      <p class="caps s-head__label">${esc(s.label)}</p>
     </div>
-
-    <div class="about__details">
-      <div class="about__body" data-fade>
-        ${list(a.body).map((t) => `<p>${rich(t)}</p>`).join('')}
-      </div>
+    <div class="about__grid">
       ${
-        list(a.currently).length
-          ? `<aside class="now" data-fade>
-              <p class="hand now__title">currently —</p>
-              <dl>${a.currently.map((c) => `<div><dt class="label">${esc(c.label)}</dt><dd>${rich(c.value)}</dd></div>`).join('')}</dl>
-            </aside>`
+        p.portrait
+          ? `<figure class="arch" data-fade>
+              <div class="arch__frame"><img src="${esc(p.portrait)}" alt="Portrait of ${esc(p.name)}" loading="lazy" /></div>
+              <figcaption class="caps">${esc(p.portraitCaption || p.name)}</figcaption>
+            </figure>`
           : ''
       }
+      <div class="about__text">
+        <p class="about__statement" data-scrub>${rich(a.statement)}</p>
+        <div class="about__body" data-fade>${list(a.body).map((t) => `<p>${rich(t)}</p>`).join('')}</div>
+        ${
+          list(a.currently).length
+            ? `<dl class="about__now" data-fade>${a.currently.map((c) => `<div><dt class="caps">${esc(c.label)}</dt><dd>${rich(c.value)}</dd></div>`).join('')}</dl>`
+            : ''
+        }
+      </div>
     </div>
-
     ${
       list(a.stats).length
-        ? `<ul class="stats">
+        ? `<ul class="figures">
             ${a.stats
               .map(
                 (st) => `
-              <li class="stat" data-fade>
-                <span class="stat__num"><span data-count="${esc(st.value)}">0</span>${esc(st.suffix || '')}</span>
-                <span class="label">${esc(st.label)}</span>
+              <li class="figure" data-fade>
+                <span class="figure__num"><span data-count="${esc(st.value)}">0</span><em>${esc(st.suffix || '')}</em></span>
+                <span class="caps figure__label">${esc(st.label)}</span>
               </li>`
               )
               .join('')}
@@ -262,80 +385,69 @@ function about(d, num, s) {
   </section>`;
 }
 
-const stackTags = (p, max = 4) =>
-  list(p.stack).length
-    ? `<ul class="mini-tags">${p.stack
-        .slice(0, max)
-        .map((t) => `<li>${esc(t)}</li>`)
-        .join('')}${p.stack.length > max ? `<li>+${p.stack.length - max}</li>` : ''}</ul>`
-    : '';
-
-function work(featured, all, num, s) {
+function collection(featured, all, num, s) {
   return `
-  <section class="section work" id="work">
-    ${sectionHead(num, s, `<sup>(${pad(featured.length)})</sup>`)}
-    <div class="work__grid">
+  <section class="section collection" id="work">
+    ${sectionHead(num, s, `${featured.length} pieces`)}
+    <div class="collection__grid">
       ${featured
-        .map(
-          (p, i) => `
-        <article class="card card--${(i % 4) + 1}">
-          <a class="card__link" href="#/work/${esc(p.id)}" data-cursor="View">
-            <div class="card__media" data-reveal-media>
-              <img src="${esc(p.cover)}" alt="${esc(p.title)} — cover" loading="lazy" data-parallax="0.08" />
-              ${p.context ? `<span class="card__context label">${esc(p.context)}</span>` : ''}
-            </div>
-            <div class="card__meta">
-              <span class="label">${pad(all.indexOf(p) + 1)}</span>
-              <h3 class="card__title">${esc(p.title)}</h3>
-              <span class="label card__cat">${esc(p.category)} — ${esc(p.year)}</span>
-            </div>
-            <p class="card__summary">${rich(p.summary)}</p>
-            ${stackTags(p)}
+        .map((p, i) => {
+          const n = all.indexOf(p) + 1;
+          const finish = finishOf(p, i);
+          return `
+        <article class="piece" data-fade>
+          <a class="piece__link" href="#/work/${esc(p.id)}">
+            ${pieceDial(p, n, finish)}
+            <div class="piece__meta caps"><span>Ref. ${refOf(p, n)}</span><span>${esc(p.year)}</span></div>
+            <h3 class="piece__title">${esc(p.title)}</h3>
+            <p class="piece__summary">${rich(p.summary)}</p>
+            <p class="piece__finish caps">${esc(finish.label)}</p>
+            <span class="piece__more caps">Discover the piece ${arrowIcon}</span>
           </a>
-        </article>`
-        )
+        </article>`;
+        })
         .join('')}
     </div>
   </section>`;
 }
 
-function archiveList(items, num, s) {
+function references(items, all, num, s) {
   return `
-  <section class="section archive" id="archive">
+  <section class="section references" id="archive">
     ${sectionHead(num, s)}
-    <div class="archive__head label" aria-hidden="true"><span>Year</span><span>Project</span><span>Discipline</span><span>Made at</span><span></span></div>
-    <ul class="archive__list">
+    <ol class="refs">
       ${items
-        .map(
-          (p) => `
-        <li>
-          <a class="row" href="#/work/${esc(p.id)}" data-preview="${esc(p.cover)}" data-cursor="Open">
-            <span class="row__year label">${esc(p.year)}</span>
-            <span class="row__title">${esc(p.title)}</span>
-            <span class="row__cat">${esc(p.category)}</span>
-            <span class="row__client">${esc(p.context || p.client || '')}</span>
-            <span class="row__arrow">${arrowIcon}</span>
+        .map((p) => {
+          const n = all.indexOf(p) + 1;
+          return `
+        <li data-fade>
+          <a class="ref" href="#/work/${esc(p.id)}">
+            <span class="ref__no caps">${refOf(p, n)}</span>
+            <span class="ref__name">${esc(p.title)}</span>
+            <span class="ref__leader" aria-hidden="true"></span>
+            <span class="ref__cat">${esc(p.category)}</span>
+            <span class="ref__year caps">${esc(p.year)}</span>
           </a>
-        </li>`
-        )
+        </li>`;
+        })
         .join('')}
-    </ul>
+    </ol>
   </section>`;
 }
 
-function services(items, num, s) {
+function crafts(items, num, s) {
   return `
-  <section class="section services" id="services">
+  <section class="section crafts" id="services">
     ${sectionHead(num, s)}
-    <ol class="services__list">
+    <ol class="crafts__list">
       ${items
         .map(
           (sv, i) => `
-        <li class="service" data-fade>
-          <span class="service__num label">${pad(i + 1)}</span>
-          <h3 class="service__title"><span class="service__star">${asterisk}</span>${esc(sv.title)}</h3>
-          <p class="service__desc">${rich(sv.description)}</p>
-          <ul class="tags">${list(sv.deliverables).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+        <li class="craft" data-fade>
+          <span class="craft__num" aria-hidden="true">${roman(i + 1)}</span>
+          <h3 class="craft__title">${esc(sv.title)}</h3>
+          <p class="craft__desc">${rich(sv.description)}</p>
+          <p class="craft__tags caps">${list(sv.deliverables).map(esc).join('<i aria-hidden="true"> · </i>')}</p>
         </li>`
         )
         .join('')}
@@ -343,23 +455,26 @@ function services(items, num, s) {
   </section>`;
 }
 
-function skills(d, num, s) {
+// The toolkit as a movement. Core strengths are its jewels — and a calibre states its jewel count.
+function movement(d, num, s) {
+  const isCore = (t) => /^\*[^*]+\*/.test(t);
+  const jewels = d.skills.reduce((n, g) => n + list(g.items).filter(isCore).length, 0);
   return `
-  <section class="section skills" id="skills">
-    ${sectionHead(num, s)}
-    <div class="skills__list">
+  <section class="section movement" id="skills">
+    ${sectionHead(num, s, jewels ? `Calibre fitted with ${jewels} jewels` : '')}
+    <div class="movement__list">
       ${d.skills
         .map(
-          (g, i) => `
-        <div class="skill-row" data-fade>
-          <span class="label skill-row__num">${pad(i + 1)}</span>
-          <h3 class="skill-row__area">${esc(g.area)}</h3>
-          <p class="skill-row__items">${list(g.items)
-            .map((t) => {
-              const core = /^\*[^*]+\*/.test(t);
-              return `<span class="skill ${core ? 'is-core' : ''}">${core ? esc(t.replace(/^\*([^*]+)\*/, '$1')) : esc(t)}</span>`;
-            })
-            .join('<span class="skill-sep" aria-hidden="true">/</span>')}</p>
+          (g) => `
+        <div class="component" data-fade>
+          <h3 class="component__area caps">${esc(g.area)}</h3>
+          <p class="component__items">${list(g.items)
+            .map((t) =>
+              isCore(t)
+                ? `<span class="part is-jewel"><i class="jewel" aria-hidden="true"></i>${esc(t.replace(/^\*([^*]+)\*/, '$1'))}</span>`
+                : `<span class="part">${esc(t)}</span>`
+            )
+            .join('')}</p>
         </div>`
         )
         .join('')}
@@ -367,8 +482,8 @@ function skills(d, num, s) {
     ${
       list(d.domains).length
         ? `<div class="domains" data-fade>
-            <p class="hand domains__title">domains I know —</p>
-            <ul class="tags tags--loose">${d.domains.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+            <p class="caps domains__title">Domains</p>
+            <p class="domains__list">${d.domains.map(esc).join('<i aria-hidden="true"> · </i>')}</p>
           </div>`
         : ''
     }
@@ -379,98 +494,92 @@ function highlightList(items = []) {
   return `<ul class="bullets">${items.map((h) => `<li>${rich(h)}</li>`).join('')}</ul>`;
 }
 
-function experience(d, num, s) {
+function provenance(d, num, s) {
   const hl = list(d.highlights);
   return `
-  <section class="section experience" id="experience">
+  <section class="section provenance" id="experience">
     ${sectionHead(num, s)}
-    <div class="experience__grid ${hl.length ? '' : 'is-solo'}">
-      <ol class="ledger">
-        ${d.experience
-          .map(
-            (e) => `
-          <li class="ledger__row" data-fade>
-            <span class="label ledger__period">${esc(e.period)}</span>
-            <div class="ledger__main">
-              <h3 class="ledger__role">${esc(e.role)}</h3>
-              <p class="ledger__co">${e.url ? `<a class="ledger__link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.company)} ${arrowIcon}</a>` : esc(e.company)}${e.location ? ` <span>· ${esc(e.location)}</span>` : ''}</p>
-            </div>
-            <div class="ledger__body">
-              <p class="ledger__desc">${rich(e.description || '')}</p>
-              ${
-                list(e.highlights).length
-                  ? `<details class="more">
-                      <summary class="label"><span class="more__open">What I did (${e.highlights.length})</span><span class="more__close">Show less</span>${plusIcon}</summary>
-                      ${highlightList(e.highlights)}
-                    </details>`
-                  : ''
-              }
-            </div>
-          </li>`
-          )
-          .join('')}
-      </ol>
-      ${
-        hl.length
-          ? `<aside class="awards" data-fade>
-              <p class="hand awards__title">${esc(s.highlightsTitle)}</p>
-              <ul>${hl
-                .map((h) => `<li><span class="awards__tag">${esc(h.tag || h.year || '')}</span><span class="awards__t">${esc(h.title)}</span><span class="awards__o">${esc(h.detail || h.org || '')}</span></li>`)
-                .join('')}</ul>
-            </aside>`
-          : ''
-      }
-    </div>
+    <ol class="timeline">
+      ${d.experience
+        .map(
+          (e) => `
+        <li class="era" data-fade>
+          <p class="era__period">${esc(e.period)}</p>
+          <div class="era__main">
+            <h3 class="era__role">${esc(e.role)}</h3>
+            <p class="era__co caps">${e.url ? `<a class="ext" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.company)}</a>` : esc(e.company)}${e.location ? ` · ${esc(e.location)}` : ''}</p>
+            <p class="era__desc">${rich(e.description || '')}</p>
+            ${
+              list(e.highlights).length
+                ? `<details class="more">
+                    <summary class="caps"><span class="more__open">What I did (${e.highlights.length})</span><span class="more__close">Show less</span>${plusIcon}</summary>
+                    ${highlightList(e.highlights)}
+                  </details>`
+                : ''
+            }
+          </div>
+        </li>`
+        )
+        .join('')}
+    </ol>
+    ${
+      hl.length
+        ? `<div class="distinctions" data-fade>
+            <p class="caps distinctions__title">${caption(s.highlightsTitle)}</p>
+            <ul>${hl
+              .map((h) => `<li><span class="distinctions__tag">${esc(h.tag || h.year || '')}</span><span class="distinctions__t">${esc(h.title)}</span><span class="distinctions__o">${esc(h.detail || h.org || '')}</span></li>`)
+              .join('')}</ul>
+          </div>`
+        : ''
+    }
   </section>`;
 }
 
-function education(d, num, s) {
+function certification(d, num, s) {
   const langs = list(d.languages);
   return `
-  <section class="section education" id="education">
+  <section class="section certification" id="education">
     ${sectionHead(num, s)}
-    <div class="education__grid ${langs.length ? '' : 'is-solo'}">
-      <ol class="edu__list">
-        ${list(d.education)
-          .map(
-            (e) => `
-          <li class="edu" data-fade>
-            <span class="label edu__period">${esc(e.period)}</span>
-            <div class="edu__main">
-              <h3 class="edu__degree">${esc(e.degree)}</h3>
-              <p class="edu__inst">${esc(e.institution)}${e.board ? ` <span>· ${esc(e.board)}</span>` : ''}</p>
-              ${e.detail ? `<p class="edu__detail">${rich(e.detail)}</p>` : ''}
-            </div>
-            ${
-              e.score || e.result
-                ? `<div class="edu__result">
-                    ${e.score ? `<span class="edu__score">${esc(e.score)}<small>${esc(e.scoreUnit || '')}</small></span>` : ''}
-                    ${e.result ? `<span class="label">${esc(e.result)}</span>` : ''}
-                  </div>`
-                : ''
-            }
-          </li>`
-          )
-          .join('')}
-      </ol>
-      ${
-        langs.length
-          ? `<aside class="langs" data-fade>
-              <p class="hand langs__title">${esc(s.languagesTitle)}</p>
-              <ul>${langs
-                .map((l) => {
-                  const lvl = Math.max(0, Math.min(5, Number(l.level) || 0));
-                  return `<li>
-                    <span class="langs__name">${esc(l.name)}</span>
-                    <span class="langs__dots" role="img" aria-label="${lvl} out of 5">${'<i class="on"></i>'.repeat(lvl)}${'<i></i>'.repeat(5 - lvl)}</span>
-                    <span class="langs__note">${esc(l.note || '')}</span>
-                  </li>`;
-                })
-                .join('')}</ul>
-            </aside>`
-          : ''
-      }
-    </div>
+    <ol class="certs">
+      ${list(d.education)
+        .map(
+          (e) => `
+        <li class="cert" data-fade>
+          <p class="cert__period caps">${esc(e.period)}</p>
+          <div class="cert__main">
+            <h3 class="cert__degree">${esc(e.degree)}</h3>
+            <p class="cert__inst">${esc(e.institution)}${e.board ? ` · <span>${esc(e.board)}</span>` : ''}</p>
+            ${e.detail ? `<p class="cert__detail">${rich(e.detail)}</p>` : ''}
+          </div>
+          ${
+            e.score || e.result
+              ? `<div class="cert__seal">
+                  ${e.score ? `<span class="cert__score">${esc(e.score)}<small>${esc(e.scoreUnit || '')}</small></span>` : ''}
+                  ${e.result ? `<span class="caps">${esc(e.result)}</span>` : ''}
+                </div>`
+              : ''
+          }
+        </li>`
+        )
+        .join('')}
+    </ol>
+    ${
+      langs.length
+        ? `<div class="langs" data-fade>
+            <p class="caps langs__title">${caption(s.languagesTitle)}</p>
+            <ul>${langs
+              .map((l) => {
+                const lvl = Math.max(0, Math.min(5, Number(l.level) || 0));
+                return `<li>
+                  <span class="langs__name">${esc(l.name)}</span>
+                  <span class="langs__jewels" role="img" aria-label="${lvl} out of 5">${Array.from({ length: 5 }, (_, i) => `<i class="${i < lvl ? 'on' : ''}"></i>`).join('')}</span>
+                  <span class="langs__note">${esc(l.note || '')}</span>
+                </li>`;
+              })
+              .join('')}</ul>
+          </div>`
+        : ''
+    }
   </section>`;
 }
 
@@ -480,20 +589,15 @@ function play(p, num, s) {
   return `
   <section class="section play" id="play">
     ${sectionHead(num, s)}
-    <div class="play__grid ${handles.length ? '' : 'is-solo'}">
+    <div class="play__grid">
       <ol class="games">
         ${games
           .map(
             (g) => `
-          <li class="game" data-fade>
-            <span class="label game__status">${esc(g.status || '')}</span>
-            <div class="game__main">
-              <h3 class="game__title">${
-                g.url ? `<a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(g.title)}${arrowIcon}</a>` : esc(g.title)
-              }</h3>
-              ${g.note ? `<p class="game__note">${rich(g.note)}</p>` : ''}
-            </div>
-            ${g.tag ? `<span class="game__tag hand">${esc(g.tag)}</span>` : ''}
+          <li class="game${/now/i.test(g.status || '') ? ' is-live' : ''}" data-fade>
+            <p class="game__status caps"><i></i>${esc(g.status || '')}</p>
+            <h3 class="game__title">${g.url ? `<a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(g.title)}</a>` : esc(g.title)}</h3>
+            ${g.note || g.tag ? `<p class="game__note">${g.note ? rich(g.note) : ''}${g.tag ? ` <span class="caps game__tag">${esc(g.tag)}</span>` : ''}</p>` : ''}
           </li>`
           )
           .join('')}
@@ -501,15 +605,15 @@ function play(p, num, s) {
       ${
         handles.length
           ? `<aside class="handles" data-fade>
-              <p class="hand handles__title">${esc(s.handlesTitle)}</p>
+              <p class="caps handles__title">${caption(s.handlesTitle)}</p>
               <ul>${handles
                 .map(
                   (h) => `<li>
-                    <span class="label handles__platform">${esc(h.platform)}</span>
+                    <span class="caps handles__platform">${esc(h.platform)}</span>
                     ${
                       h.url
-                        ? `<a class="handles__id" href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.handle)}${arrowIcon}</a>`
-                        : `<button class="handles__id" type="button" data-copy="${esc(h.handle)}" data-copied="copied — see you in game" data-cursor="Copy">${esc(h.handle)}</button>`
+                        ? `<a class="handles__id" href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.handle)}</a>`
+                        : `<button class="handles__id" type="button" data-copy="${esc(h.handle)}" data-copied="Copied — see you in game">${esc(h.handle)}</button>`
                     }
                   </li>`
                 )
@@ -526,14 +630,13 @@ function testimonials(items, num, s) {
   <section class="section quotes" id="kind-words">
     ${sectionHead(num, s)}
     <div class="quotes__wrap">
-      ${doodle.quote}
       <div class="quotes__stage" aria-live="polite">
         ${items
           .map(
             (q, i) => `
           <figure class="quote ${i === 0 ? 'is-active' : ''}" aria-hidden="${i !== 0}">
             <blockquote>${rich(q.quote)}</blockquote>
-            <figcaption><span class="quote__name">${esc(q.name)}</span><span class="label">${esc(q.role)}</span></figcaption>
+            <figcaption><span class="quote__name">${esc(q.name)}</span><span class="caps">${esc(q.role)}</span></figcaption>
           </figure>`
           )
           .join('')}
@@ -542,7 +645,7 @@ function testimonials(items, num, s) {
         items.length > 1
           ? `<div class="quotes__nav">
               <button class="quotes__btn" data-dir="-1" type="button" aria-label="Previous testimonial">${arrowIcon}</button>
-              <span class="label"><span class="quotes__current">01</span> / ${pad(items.length)}</span>
+              <span class="caps"><span class="quotes__current">01</span> / ${pad(items.length)}</span>
               <button class="quotes__btn" data-dir="1" type="button" aria-label="Next testimonial">${arrowIcon}</button>
             </div>`
           : ''
@@ -558,92 +661,106 @@ function contact(d, num, s) {
   return `
   <footer class="contact" id="contact">
     <div class="contact__inner">
-      <div class="s-head__meta label"><span>(${num})</span><span>${esc(s.label)}</span></div>
+      <p class="s-head__num" aria-hidden="true">${roman(num)}</p>
+      <p class="caps s-head__label">${esc(s.label)}</p>
       <h2 class="contact__headline" data-split>${rich(c.headline || "Let's make something *together*.")}</h2>
-
-      <div class="contact__grid">
-        ${c.text ? `<p class="contact__text" data-fade>${rich(c.text)}</p>` : ''}
-        <div class="contact__actions" data-fade>
-          <button class="email" type="button" data-copy="${esc(p.email)}" data-cursor="Copy">
-            <span class="email__text">${esc(p.email).replace("@", "@<wbr>")}</span>${doodle.underline}
-          </button>
-          ${p.phone ? `<a class="contact__phone label" href="tel:${esc(p.phone.replace(/\s+/g, ''))}">${esc(p.phone)}</a>` : ''}
-          <a class="btn" href="mailto:${esc(p.email)}" data-magnetic><span>${esc(c.cta || 'Say hello')}</span>${arrowIcon}</a>
-        </div>
-        ${
-          list(d.socials).length
-            ? `<ul class="socials" data-fade>${d.socials
-                .map((so) => `<li><a href="${esc(so.url)}" target="_blank" rel="noopener"><span class="social__label"><span class="roll"><span data-text="${esc(so.label)}">${esc(so.label)}</span></span>${so.note ? `<span class="social__note hand">${esc(so.note)}</span>` : ""}</span>${arrowIcon}</a></li>`)
-                .join('')}</ul>`
-            : ''
-        }
+      ${c.text ? `<p class="contact__text" data-fade>${rich(c.text)}</p>` : ''}
+      <div class="contact__actions" data-fade>
+        <button class="email" type="button" data-copy="${esc(p.email)}">
+          <span class="email__text">${esc(p.email).replace('@', '@<wbr>')}</span>
+          <span class="caps email__hint">Click to copy</span>
+        </button>
+        ${p.phone ? `<a class="contact__phone caps" href="tel:${esc(p.phone.replace(/\s+/g, ''))}">${esc(p.phone)}</a>` : ''}
+        <a class="btn" href="mailto:${esc(p.email)}" data-magnetic><span>${esc(c.cta || 'Say hello')}</span>${arrowIcon}</a>
       </div>
+      ${
+        list(d.socials).length
+          ? `<ul class="socials caps" data-fade>${d.socials
+              .map((so) => `<li><a href="${esc(so.url)}" target="_blank" rel="noopener"${so.note ? ` title="${esc(so.note)}"` : ''}>${esc(so.label)}</a>${so.note ? `<span class="socials__note">${esc(so.note)}</span>` : ''}</li>`)
+              .join('')}</ul>`
+          : ''
+      }
     </div>
 
-    <div class="footer__name" aria-hidden="true"><span class="footer__name-inner">${chars(p.name)}</span></div>
+    <div class="footer__sign" aria-hidden="true">
+      ${monogram('monogram--footer')}
+      <div class="footer__name"><span class="footer__name-inner">${chars(p.name)}</span></div>
+    </div>
 
-    <div class="footer__bar label">
+    <div class="footer__bar caps">
       <span>© ${year} ${esc(p.name)}</span>
       <span class="footer__colophon">${esc(d.footer?.colophon || '')}</span>
-      <span><span data-clock>--:--</span> · ${esc(p.city || p.location?.split(',')[0] || '')}</span>
-      <a class="roll" href="#top"><span data-text="Back to top ↑">Back to top ↑</span></a>
+      <span>It is <span data-clock>--:--</span> in ${esc(p.city || p.location?.split(',')[0] || '')}</span>
+      <a href="#top">Back to top</a>
     </div>
   </footer>`;
 }
 
-/* ---------- case study (rendered on demand) ---------- */
-
-export function renderCase(p, index, total, next, companyUrl = '') {
-  const meta = [
-    ['Made at', p.client || p.context],
-    ['When', p.period || p.year],
-    ['Role', list(p.role).join(', ')],
-  ].filter(([, v]) => v);
-  const gallery = list(p.gallery);
+/* =========================================================
+   Case study — a piece's reference page (rendered on demand)
+   ========================================================= */
+export function renderCase(p, index, total, next, companyUrl = '', featuredIndex = 0) {
+  const n = index + 1;
+  const finish = finishOf(p, featuredIndex);
+  const gallery = list(p.gallery).map((g) => (typeof g === 'string' ? { src: g } : g));
   const links = [...list(p.links), ...(p.link ? [{ label: 'Visit the live site', url: p.link }] : [])];
-  const metrics = list(p.metrics);
+  const spec = [
+    ['Made at', p.client || p.context, companyUrl],
+    ['Year', p.period || p.year],
+    ['Role', list(p.role).join(', ')],
+    ...list(p.metrics).map((m) => [m.label, m.value]),
+    ['Calibre', list(p.stack).join(' · ')],
+    ['Finish', finish.label],
+  ].filter(([, v]) => v);
 
   return `
-    <div class="case__bar">
-      <span class="label">Case study — ${pad(index + 1)} / ${pad(total)}</span>
-      <button class="case__close roll" type="button" data-close><span data-text="Close ✕">Close ✕</span></button>
+    <div class="case__bar caps">
+      <span>Ref. ${refOf(p, n)} — ${pad(n)} of ${pad(total)}</span>
+      <button class="case__close caps" type="button" data-close>Close</button>
     </div>
-    <header class="case__head">
-      <p class="label case__cat">${esc(p.category)}${p.context ? ` · ${esc(p.context)}` : ''}</p>
-      <h2 class="case__title" id="case-title">${esc(p.title)}</h2>
-      <p class="case__summary">${rich(p.summary)}</p>
-    </header>
-    <figure class="case__cover"><img src="${esc(p.cover)}" alt="${esc(p.title)} — cover" /></figure>
-    ${
-      metrics.length
-        ? `<ul class="case__metrics">${metrics
-            .map((m) => `<li><span class="case__metric">${esc(m.value)}</span><span class="label">${esc(m.label)}</span></li>`)
-            .join('')}</ul>`
-        : ''
-    }
-    <div class="case__body">
-      <aside class="case__side">
-        <dl class="case__meta">${meta.map(([k, v]) => `<div><dt class="label">${k}</dt><dd>${k === 'Made at' && companyUrl ? `<a class="ledger__link" href="${esc(companyUrl)}" target="_blank" rel="noopener">${esc(v)} ${arrowIcon}</a>` : esc(v)}</dd></div>`).join('')}</dl>
-        ${list(p.stack).length ? `<p class="label case__stack-title">Built with</p><ul class="tags">${p.stack.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-      </aside>
-      <div class="case__text">
-        ${list(p.description).map((t) => `<p>${rich(t)}</p>`).join('')}
-        ${list(p.highlights).length ? `<h3 class="hand case__hl-title">the interesting bits —</h3>${highlightList(p.highlights)}` : ''}
+    <div class="case__grid">
+      <div class="case__stage">
+        ${pieceDial(p, n, finish, { cls: 'dial--case' })}
+        <p class="caps case__finish">${esc(finish.label)}</p>
+      </div>
+      <div class="case__info">
+        <p class="caps case__cat">${esc(p.category)}${p.context ? ` · ${esc(p.context)}` : ''}</p>
+        <h2 class="case__title" id="case-title">${esc(p.title)}</h2>
+        <p class="case__summary">${rich(p.summary)}</p>
+        <dl class="case__spec">${spec
+          .map(
+            ([k, v, url]) =>
+              `<div><dt class="caps">${esc(k)}</dt><dd>${url ? `<a class="ext" href="${esc(url)}" target="_blank" rel="noopener">${esc(v)}</a>` : esc(v)}</dd></div>`
+          )
+          .join('')}</dl>
+        <div class="case__text">
+          ${list(p.description).map((t) => `<p>${rich(t)}</p>`).join('')}
+          ${list(p.highlights).length ? `<h3 class="caps case__hl-title">Functions</h3>${highlightList(p.highlights)}` : ''}
+        </div>
         ${
           links.length
             ? `<div class="case__links">${links
-                .map((l) => `<a class="btn btn--small" href="${esc(l.url)}" target="_blank" rel="noopener"><span>${esc(l.label)}</span>${arrowIcon}</a>`)
+                .map((l, i) => `<a class="btn${i ? ' btn--quiet' : ''}" href="${esc(l.url)}" target="_blank" rel="noopener"><span>${esc(l.label)}</span>${arrowIcon}</a>`)
                 .join('')}</div>`
             : ''
         }
       </div>
     </div>
-    ${gallery.length ? `<div class="case__gallery">${gallery.map((g) => `<img src="${esc(g)}" alt="" loading="lazy" />`).join('')}</div>` : ''}
+    ${
+      gallery.length
+        ? `<div class="case__gallery">${gallery
+            .map(
+              (g, i) =>
+                `<figure class="${g.wide ? 'is-wide' : ''}"><img src="${esc(g.src)}" alt="${esc(g.alt || `${p.title} — screenshot ${i + 1}`)}" loading="lazy" decoding="async" />${g.alt ? `<figcaption class="caps">${roman(i + 1)} — ${esc(g.alt)}</figcaption>` : ''}</figure>`
+            )
+            .join('')}</div>`
+        : ''
+    }
     ${
       next
         ? `<a class="case__next" href="#/work/${esc(next.id)}">
-            <span class="label">Next project</span>
-            <span class="case__next-title">${esc(next.title)} ${arrowIcon}</span>
+            <span class="caps">Next piece</span>
+            <span class="case__next-title">${esc(next.title)}</span>
           </a>`
         : ''
     }

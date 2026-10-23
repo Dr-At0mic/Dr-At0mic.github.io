@@ -11,7 +11,8 @@
     "resume:biodata": "node tools/resume/build.mjs --template biodata",
     "resume:ats": "node tools/resume/build.mjs --template resume-ats",
     "resume:biodata-ats": "node tools/resume/build.mjs --template biodata-ats",
-    "resume:all": "node tools/resume/build.mjs --template all"
+    "resume:all": "node tools/resume/build.mjs --template all",
+    "brand": "node tools/brand/build.mjs"
   },
   "devDependencies": {
     "puppeteer-core": "^25.14.0",
