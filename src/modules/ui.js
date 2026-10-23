@@ -1,6 +1,8 @@
 import { state, pad, fontsReady } from './core.js';
 
 /* ---------- loader ---------- */
+// The atom fills its shells one electron at a time; the counter keeps pace with the CSS
+// (each electron lights 32 ms after the last, starting 250 ms in).
 export function runLoader() {
   const el = document.querySelector('.loader');
   if (!el) return fontsReady();
@@ -10,17 +12,20 @@ export function runLoader() {
   }
 
   state.lenis?.stop();
-  const count = el.querySelector('.loader__count');
-  const t0 = performance.now();
-  const dur = 1500;
+  const count = el.querySelector('[data-electrons]');
+  const total = el.querySelectorAll('.bohr__e').length;
+  const dur = 250 + total * 32 + 260;
   let loaded = false;
   fontsReady().then(() => (loaded = true));
+  requestAnimationFrame(() => el.classList.add('is-go'));
+  const t0 = performance.now();
 
   return new Promise((resolve) => {
     const step = (now) => {
       let p = Math.min((now - t0) / dur, 1);
       if (!loaded) p = Math.min(p, 0.92);
-      count.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * 100)).padStart(3, '0');
+      const lit = Math.max(0, Math.min(total, Math.floor((now - t0 - 250) / 32) + 1));
+      count.textContent = pad(p < 1 ? Math.min(lit, total - 1) : total);
       if (p < 1) return requestAnimationFrame(step);
       setTimeout(() => {
         el.classList.add('is-done');
@@ -55,7 +60,7 @@ export function initClock(timezone) {
 export function initTheme() {
   const root = document.documentElement;
   const meta = document.querySelector('meta[name="theme-color"]');
-  const sync = () => meta?.setAttribute('content', getComputedStyle(root).getPropertyValue('--paper').trim());
+  const sync = () => meta?.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg').trim());
   sync();
   document.querySelector('.theme-toggle')?.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -98,7 +103,7 @@ export function initCopy() {
     b.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(b.dataset.copy);
-        say(b.dataset.copied || 'copied — talk soon!');
+        say(b.dataset.copied || 'Copied — talk soon');
       } catch {
         if (b.dataset.copy.includes('@')) location.href = `mailto:${b.dataset.copy}`;
       }

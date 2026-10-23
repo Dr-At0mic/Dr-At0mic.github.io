@@ -1,14 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="#17140F"/>
-  <g fill="none" stroke="#E8461E" stroke-width="3.6">
-    <ellipse cx="32" cy="32" rx="23" ry="8.6"/>
-    <ellipse cx="32" cy="32" rx="23" ry="8.6" transform="rotate(60 32 32)"/>
-    <ellipse cx="32" cy="32" rx="23" ry="8.6" transform="rotate(-60 32 32)"/>
+  <!-- Element 33 (As) — Anandhu Suresh. Bohr shells 2·8·18·5; the five valence electrons in blue. -->
+  <rect width="64" height="64" rx="12" fill="#07080B"/>
+  <g fill="none" stroke="#E9ECF1">
+    <circle cx="32" cy="32" r="11" stroke-width="2.2" opacity=".45"/>
+    <circle cx="32" cy="32" r="18" stroke-width="2.2" opacity=".45"/>
+    <circle cx="32" cy="32" r="25.5" stroke-width="2.6"/>
   </g>
-  <g fill="#E8461E" stroke="#17140F" stroke-width="2">
-    <circle cx="46.8" cy="38.6" r="3.4"/>
-    <circle cx="46.8" cy="38.6" r="3.4" transform="rotate(60 32 32)"/>
-    <circle cx="46.8" cy="38.6" r="3.4" transform="rotate(-60 32 32)"/>
+  <g fill="#5C8DFF" stroke="#07080B" stroke-width="1.6">
+    <circle cx="32" cy="6.5" r="4.4"/>
+    <circle cx="56.25" cy="24.12" r="4.4"/>
+    <circle cx="46.99" cy="52.63" r="4.4"/>
+    <circle cx="17.01" cy="52.63" r="4.4"/>
+    <circle cx="7.75" cy="24.12" r="4.4"/>
   </g>
-  <circle cx="32" cy="32" r="4.6" fill="#E8461E"/>
+  <circle cx="32" cy="32" r="5.6" fill="#5C8DFF"/>
 </svg>
