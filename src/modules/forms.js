@@ -92,9 +92,10 @@ class Cloud {
     return [s * Math.cos(a), s * Math.sin(a), z];
   }
 
-  // a label the DOM draws next to a point of the formation (local space, before tilt)
-  mark(p, text, spin = 0) {
-    this.markers.push({ p, text, spin });
+  // a label the DOM draws next to a point of the formation (local space, before tilt);
+  // `prefer: 'left'` points it leftwards when there's room
+  mark(p, text, spin = 0, prefer = 'right') {
+    this.markers.push({ p, text, spin, prefer });
   }
 
   // the rest of the budget becomes faint dust, then the order is shuffled so that any
@@ -440,55 +441,58 @@ function rotateTo(a, b) {
   ];
 }
 
-/* ---------- the maker: a portrait relief sampled from the photo ---------- */
-// `img` is { data, width, height } from a canvas. The bust mask suits a centred head-and-shoulders
-// photo; `ink` inverts it for the light theme, where particles darken the paper instead.
-function portrait(c, { img, ink = false } = {}) {
+/* ---------- the maker: a 3D bust reconstructed from the photo ---------- */
+// `img` is { data, width, height } read from public/images/portrait-3d.png, which
+// tools/portrait/make_portrait3d.py builds with a matting model and a depth model:
+// R = relit brightness (0 = not part of the bust), G = front depth, B = back depth.
+function portrait(c, { img } = {}) {
   if (!img) return c.done();
   const { data, width: W, height: H } = img;
-  const lum = new Float32Array(W * H);
-  for (let i = 0; i < W * H; i++) lum[i] = (0.2126 * data[i * 4] + 0.7152 * data[i * 4 + 1] + 0.0722 * data[i * 4 + 2]) / 255;
+  const R = (x, y) => data[(y * W + x) * 4];
+  let [x0, x1, y0, y1] = [W, 0, H, 0];
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++)
+      if (R(x, y)) {
+        x0 = Math.min(x0, x);
+        x1 = Math.max(x1, x);
+        y0 = Math.min(y0, y);
+        y1 = Math.max(y1, y);
+      }
+  if (x1 <= x0) return c.done();
 
-  const head = { x: 0.5, y: 0.29, rx: 0.21, ry: 0.25 };
-  const ss = (e0, e1, x) => {
-    const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
-    return t * t * (3 - 2 * t);
+  const k = 3.1 / (y1 - y0); // world units per pixel
+  const cx = (x0 + x1) / 2;
+  const cy = (y0 + y1) / 2;
+  const FRONT = 0.95;
+  const BACK = 0.6;
+  const pick = () => {
+    const x = x0 + Math.floor(c.r() * (x1 - x0 + 1));
+    const y = y0 + Math.floor(c.r() * (y1 - y0 + 1));
+    const i = (y * W + x) * 4;
+    return data[i] ? { x: x + c.r(), y: y + c.r(), s: data[i] / 255, f: data[i + 1] / 255, b: data[i + 2] / 255 } : null;
   };
-  const mask = (u, v) => {
-    const eh = Math.hypot((u - head.x) / head.rx, (v - head.y) / head.ry);
-    const mh = ss(1.06, 0.9, eh);
-    const hw = v < 0.45 ? 0 : v < 0.55 ? 0.15 : Math.min(0.5, 0.21 + (v - 0.55) * 1.2);
-    const mb = hw ? ss(hw + 0.02, hw - 0.03, Math.abs(u - 0.52)) * ss(0.43, 0.47, v) : 0;
-    return Math.max(mh, mb);
-  };
+  const at = (p, z, size, bright) => c.add((p.x - cx) * k, (cy - p.y) * k, z - FRONT * 0.45, size, bright);
 
-  // stretch the contrast inside the mask
-  const inside = [];
-  for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (mask(x / W, y / H) > 0.5) inside.push(lum[y * W + x]);
-  inside.sort((a, b) => a - b);
-  const lo = inside[Math.floor(inside.length * 0.02)] ?? 0;
-  const hi = inside[Math.floor(inside.length * 0.985)] ?? 1;
-
-  const h3 = 3.05;
-  const w3 = h3 * (W / H);
-  const budget = Math.floor(c.n * 0.9);
-  let tries = 0;
-  while (c.i < budget && tries++ < c.n * 60) {
-    const u = c.r();
-    const v = c.r();
-    const m = mask(u, v);
-    if (c.r() > m) continue;
-    const L0 = lum[Math.min(H - 1, Math.floor(v * H)) * W + Math.min(W - 1, Math.floor(u * W))];
-    let L = Math.min(1, Math.max(0, (L0 - lo) / (hi - lo)));
-    if (ink) L = 1 - L;
-    if (c.r() > 0.08 + 0.92 * Math.pow(L, 1.1)) continue;
-    const bh = Math.max(0, 1 - ((u - head.x) / head.rx) ** 2 - ((v - head.y) / head.ry) ** 2);
-    const hw = Math.min(0.5, 0.21 + Math.max(0, v - 0.55) * 1.2);
-    const bb = v > 0.5 ? Math.max(0, 1 - ((u - 0.52) / hw) ** 2) : 0;
-    const z = 0.32 * Math.sqrt(bh) + 0.16 * Math.sqrt(bb) + (ink ? 1 - L : L) * 0.07;
-    c.add((u - 0.52) * w3, (0.5 - v) * h3 + 0.1, z, 0.72 + 0.4 * L, (0.16 + 0.84 * Math.pow(L, 1.05)) * m);
+  // the lit front surface: denser and brighter where the light falls
+  const front = Math.floor(c.n * 0.78);
+  let guard = 0;
+  while (c.i < front && guard++ < c.n * 80) {
+    const p = pick();
+    if (!p || c.r() > 0.05 + 0.95 * Math.pow(p.s, 1.15)) continue;
+    at(p, p.f * FRONT + c.gauss() * 0.004, 0.68 + 0.42 * p.s, 0.1 + 0.95 * p.s);
   }
-  c.mark([0.0, 1.62, 0.1], 'the maker, assembled');
+  // the back and the sides, faint, so it has volume when it turns
+  const back = c.i + Math.floor(c.n * 0.08);
+  while (c.i < back && guard++ < c.n * 120) {
+    const p = pick();
+    if (p) at(p, -p.b * BACK, 0.6, 0.07);
+  }
+  const sides = c.i + Math.floor(c.n * 0.06);
+  while (c.i < sides && guard++ < c.n * 160) {
+    const p = pick();
+    if (p && p.b < 0.2) at(p, -p.b * BACK + c.r() * (p.f * FRONT + p.b * BACK), 0.6, 0.08 + 0.2 * p.s);
+  }
+  c.mark([0, (cy - y0) * k + 0.04, 0.2], 'the maker, assembled');
   return c.done({ dust: 3.8, dim: 0.8 });
 }
 
@@ -956,8 +960,7 @@ function knowledgeGraph(c) {
   }
   segment(c, nodes[cited], onPage(-0.23, 0.26 - 5 * 0.058), Math.floor(N * 0.02), { s: 0.7, b: 0.9, a: 1 }, { flow: true, jit: 0.0015 });
 
-  c.mark(nodes[cited], 'concept');
-  c.mark(onPage(0.0, 0.45), 'the exact passage it came from');
+  c.mark(onPage(-0.27, -0.44), 'its source, quoted');
   return { ...c.done({ dust: 3.6 }), tilt: [0.05, -0.3, 0] };
 }
 

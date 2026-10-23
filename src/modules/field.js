@@ -6,7 +6,26 @@
 // layers and how far between them. Particles fly through curl noise on the way, get pushed
 // around by the cursor, and a click sends a shockwave through them.
 
-import * as THREE from 'three';
+import {
+  BufferAttribute,
+  BufferGeometry,
+  CustomBlending,
+  DataArrayTexture,
+  FloatType,
+  Group,
+  Matrix3,
+  NearestFilter,
+  OneFactor,
+  PerspectiveCamera,
+  Points,
+  RGBAFormat,
+  SRGBColorSpace,
+  Scene,
+  ShaderMaterial,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
+} from 'three';
 import { buildForm, euler, applyM } from './forms.js';
 import { state, clamp, lerp } from './core.js';
 
@@ -82,7 +101,6 @@ uniform float uFocus;
 uniform float uCalm;
 uniform float uFlowSpeed;
 uniform float uDim;
-uniform float uLight;
 
 attribute float aSeed;
 
@@ -161,7 +179,6 @@ const FRAGMENT = /* glsl */ `
 precision highp float;
 varying vec3 vColor;
 varying float vAlpha;
-uniform float uLight;
 void main(){
   vec2 c = gl_PointCoord - 0.5;
   float r = dot(c, c) * 4.0;
@@ -171,11 +188,8 @@ void main(){
 }
 `;
 
-// colours are what each particle adds to the night, or takes away from the paper by day
-const THEMES = {
-  dark: { clear: '#0b0a09', base: [0.93, 0.89, 0.82], accent: [1.0, 0.72, 0.2], gain: 0.42 },
-  light: { clear: '#ece7dc', base: [0.62, 0.62, 0.66], accent: [0.18, 0.62, 0.72], gain: 0.34 },
-};
+// what each particle adds to the night: bone, and orpiment for the accent
+const PALETTE = { clear: '#0b0a09', base: [0.93, 0.89, 0.82], accent: [1.0, 0.72, 0.2], gain: 0.42 };
 
 // How many particles this device gets. A phone gets a quarter of a big desktop.
 export function chooseTier() {
@@ -188,16 +202,8 @@ export function chooseTier() {
   return { w: 256, h: 256, dpr: 1.75 };
 }
 
-export function webglAvailable() {
-  try {
-    const c = document.createElement('canvas');
-    return !!c.getContext('webgl2');
-  } catch {
-    return false;
-  }
-}
 
-export function createField(canvas, { forms, params = {}, theme = 'dark' } = {}) {
+export function createField(canvas, { forms, params = {} } = {}) {
   const tier = chooseTier();
   const W = tier.w;
   const H = tier.h;
@@ -208,21 +214,21 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
   const layer = Object.fromEntries(names.map((n, i) => [n, i]));
   const meta = names.map((n) => ({ name: n, tilt: [0, 0, 0], markers: [], label: n, ready: false }));
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
+  const renderer = new WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, tier.dpr));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.outputColorSpace = SRGBColorSpace;
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 60);
+  const scene = new Scene();
+  const camera = new PerspectiveCamera(35, 1, 0.1, 60);
   camera.position.set(0, 0, 6.2);
 
   const posData = new Float32Array(N * 4 * names.length);
   const auxData = new Float32Array(N * 4 * names.length);
   const texture = (data) => {
-    const t = new THREE.DataArrayTexture(data, W, H, names.length);
-    t.format = THREE.RGBAFormat;
-    t.type = THREE.FloatType;
-    t.minFilter = t.magFilter = THREE.NearestFilter;
+    const t = new DataArrayTexture(data, W, H, names.length);
+    t.format = RGBAFormat;
+    t.type = FloatType;
+    t.minFilter = t.magFilter = NearestFilter;
     t.generateMipmaps = false;
     t.needsUpdate = true;
     return t;
@@ -230,11 +236,11 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
   const posTex = texture(posData);
   const auxTex = texture(auxData);
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new BufferAttribute(new Float32Array(N * 3), 3));
   const seeds = new Float32Array(N);
   for (let i = 0; i < N; i++) seeds[i] = Math.random();
-  geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1));
+  geometry.setAttribute('aSeed', new BufferAttribute(seeds, 1));
 
   // fewer particles on smaller tiers: make each one a little bigger and brighter
   const scarcity = 65536 / N;
@@ -245,41 +251,40 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
     uFrom: { value: 0 },
     uTo: { value: 0 },
     uT: { value: 0 },
-    uTiltFrom: { value: new THREE.Matrix3() },
-    uTiltTo: { value: new THREE.Matrix3() },
+    uTiltFrom: { value: new Matrix3() },
+    uTiltTo: { value: new Matrix3() },
     uTime: { value: 0 },
     uSize: { value: 0.0125 * Math.pow(scarcity, 0.32) },
     uProj: { value: 1 },
-    uMouse: { value: new THREE.Vector2(9, 9) },
+    uMouse: { value: new Vector2(9, 9) },
     uMouseOn: { value: 0 },
     uAspect: { value: 1 },
-    uShock: { value: new THREE.Vector3(0, 0, -100) },
+    uShock: { value: new Vector3(0, 0, -100) },
     uStir: { value: 0 },
     uFocus: { value: 6.2 },
     uCalm: { value: state.reduced ? 0 : 1 },
     uFlowSpeed: { value: 0.32 },
     uDim: { value: 1 },
-    uLight: { value: 0 },
-    uBase: { value: new THREE.Vector3() },
-    uAccent: { value: new THREE.Vector3() },
+    uBase: { value: new Vector3() },
+    uAccent: { value: new Vector3() },
   };
   const gain = Math.pow(scarcity, 0.38);
 
-  const material = new THREE.ShaderMaterial({
+  const material = new ShaderMaterial({
     vertexShader: VERTEX,
     fragmentShader: FRAGMENT,
     uniforms,
     transparent: true,
     depthWrite: false,
     depthTest: false,
-    blending: THREE.CustomBlending,
-    blendSrc: THREE.OneFactor,
-    blendDst: THREE.OneFactor,
+    blending: CustomBlending,
+    blendSrc: OneFactor,
+    blendDst: OneFactor,
   });
 
-  const points = new THREE.Points(geometry, material);
+  const points = new Points(geometry, material);
   points.frustumCulled = false;
-  const group = new THREE.Group();
+  const group = new Group();
   group.add(points);
   scene.add(group);
 
@@ -293,38 +298,47 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
     meta[i] = { name: names[i], tilt: f.tilt, matrix: euler(f.tilt), markers: f.markers, label: f.label, ready: true };
   }
 
-  function build(name) {
+  // Formations are built in a worker, in page order, so the hero's comes first and the intro
+  // never waits on the main thread. Without workers they're built here, one per idle slot.
+  const pending = new Set();
+  let worker = null;
+  try {
+    worker = new Worker(new URL('./forms.worker.js', import.meta.url), { type: 'module' });
+    worker.onmessage = ({ data }) => {
+      pending.delete(data.name);
+      const i = layer[data.name];
+      if (i !== undefined) upload(i, data);
+    };
+    worker.onerror = () => {
+      worker = null;
+      pending.forEach((name) => idleBuild(name));
+      pending.clear();
+    };
+  } catch {
+    worker = null;
+  }
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 32));
+  const idleBuild = (name) => idle(() => build(name, true));
+
+  function build(name, now = false) {
     const i = layer[name];
-    if (i === undefined || meta[i].ready) return;
-    const base = name.replace(/-ink$/, '');
-    const p = { ...(params[base] || {}), ...(name.endsWith('-ink') ? { ink: true } : {}) };
-    if (base === 'portrait' && !p.img) return;
-    upload(i, buildForm(base, N, p));
+    if (i === undefined || meta[i].ready || pending.has(name)) return;
+    const p = params[name] || {};
+    if (name === 'portrait' && !p.img) return;
+    if (now || !worker) return upload(i, buildForm(name, N, p));
+    pending.add(name);
+    worker.postMessage({ name, n: N, params: p });
   }
 
-  // the rest are built in idle time, one per slot, so the first frame isn't held up
-  const queue = names.slice();
-  const idle = window.requestIdleCallback || ((fn) => setTimeout(() => fn({ timeRemaining: () => 8 }), 32));
-  const pump = () =>
-    idle(() => {
-      const next = queue.shift();
-      if (next === undefined) return;
-      build(next);
-      pump();
-    });
+  const pump = () => {
+    for (const name of names) worker ? build(name) : idleBuild(name);
+  };
 
-  /* ---------- theme ---------- */
-  function setTheme(name) {
-    const t = THEMES[name] || THEMES.dark;
-    renderer.setClearColor(t.clear, 1);
-    uniforms.uBase.value.set(...t.base).multiplyScalar(t.gain * gain);
-    // orpiment is darker than bone, so it gets a little more gain to read as bright
-    uniforms.uAccent.value.set(...t.accent).multiplyScalar(t.gain * gain * (name === 'light' ? 1.05 : 1.3));
-    material.blendEquation = name === 'light' ? THREE.ReverseSubtractEquation : THREE.AddEquation;
-    uniforms.uLight.value = name === 'light' ? 1 : 0;
-    material.needsUpdate = true;
-    current.theme = name;
-  }
+  /* ---------- colour ---------- */
+  renderer.setClearColor(PALETTE.clear, 1);
+  uniforms.uBase.value.set(...PALETTE.base).multiplyScalar(PALETTE.gain * gain);
+  // orpiment is darker than bone, so it gets a little more gain to read as bright
+  uniforms.uAccent.value.set(...PALETTE.accent).multiplyScalar(PALETTE.gain * gain * 1.3);
 
   /* ---------- sizing ---------- */
   function resize() {
@@ -340,7 +354,7 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
   }
 
   /* ---------- state the page drives ---------- */
-  const current = { from: 'singularity', to: 'singularity', t: 0, theme };
+  const current = { from: 'singularity', to: 'singularity', t: 0 };
   const target = { x: 0, y: 0, scale: 1, spinY: 0, tiltX: 0, dim: 1 };
   const pose = { x: 0, y: 0, scale: 1, spinY: 0, tiltX: 0, dim: 1 };
   const mouse = { x: 9, y: 9, tx: 9, ty: 9, on: 0, ton: 0 };
@@ -369,7 +383,7 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
   }
 
   /* ---------- markers: labels pinned to points of the current formation ---------- */
-  const v = new THREE.Vector3();
+  const v = new Vector3();
   function project(name, m, time) {
     const info = meta[layer[name]];
     if (!info?.ready) return null;
@@ -417,8 +431,8 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
   }
 
   resize();
-  setTheme(theme);
-  build('singularity');
+  // the first frame is the singularity, so it's built right here
+  build('singularity', true);
   pump();
 
   return {
@@ -436,15 +450,12 @@ export function createField(canvas, { forms, params = {}, theme = 'dark' } = {})
     project,
     render,
     resize,
-    setTheme,
-    // the portrait needs its photo first
+    // the portrait needs its image first
     provide(name, extra) {
       params[name] = { ...(params[name] || {}), ...extra };
-      for (const n of [name, `${name}-ink`]) {
-        const i = layer[n];
-        if (i !== undefined) meta[i].ready = false;
-        build(n);
-      }
+      const i = layer[name];
+      if (i !== undefined) meta[i].ready = false;
+      build(name);
     },
     get time() {
       return elapsed;

@@ -1,42 +1,46 @@
-// Builds the Calibre brand files from the same code the website draws with.
+// Builds the Atomic brand files from the site itself.
 //
 //   npm run brand
 //
 // Writes:
-//   public/brand/monogram.svg        the AS monogram in its minute track, for dark backgrounds
-//   public/brand/monogram-light.svg  the same, for light backgrounds
-//   public/brand/avatar.png          1024² profile picture: the monogram on midnight
-//   public/brand/dial.png            1024² the hero dial at 10:10, engraved and lit
-//   public/og.png                    1200×630 link preview (index.html points at it)
+//   public/favicon.svg        the mark on a soot tile — arsenic's six 4p lobes, seen down the diagonal
+//   public/brand/mark.svg     the same mark, no tile, for dark backgrounds
+//   public/brand/avatar.png   1024² profile picture: the hero's electron cloud, rendered by the site
+//   public/brand/atom.png     1600² the same, larger, for slides or a banner
+//   public/og.png             1200×630 link preview (index.html points at it)
 //
-// The PNGs are drawn by Chrome or Edge (found automatically, or set CHROME_PATH) with the
-// site's own stylesheet, guilloché engine and Google Fonts — so they need a network connection.
+// The PNGs are taken from the real page: the tool starts Vite, opens the site in Chrome or Edge
+// (found automatically, or set CHROME_PATH) with WebGL on, waits for the particles to settle and
+// takes the picture — so they need a network connection for the fonts.
 
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { monogram, heroDial } from '../../src/render.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const data = JSON.parse(readFileSync(join(root, 'data.json'), 'utf8'));
 const out = join(root, 'public/brand');
 mkdirSync(out, { recursive: true });
 
-/* ---------- SVGs: the monogram with its CSS resolved to fixed colours ---------- */
-const svgFile = (inner, { gold, ink, cut }) =>
-  inner
-    .replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" ')
-    .replace(' aria-hidden="true"', '')
-    .replace(
-      />/,
-      `><title>${data.profile.name} — monogram</title><style>.monogram__rim{fill:none;stroke:${gold};stroke-width:.6;opacity:.55}.tk{stroke:${gold};stroke-width:.55;opacity:.75}.tk--5{stroke-width:1.2;opacity:1}.monogram__a{fill:${gold}}.monogram__s{fill:${ink};stroke:${cut};stroke-width:36;paint-order:stroke}</style>`
-    );
+/* ---------- the mark: six teardrop lobes, phases alternating, around a nucleus ---------- */
+const GOLD = '#F4B52F';
+const BONE = '#ECE7DC';
+const SOOT = '#0B0A09';
+const lobe = 'M0 -7C8.6 -13 9.6 -31 0 -40C-9.6 -31 -8.6 -13 0 -7Z';
+const mark = (tile) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100" width="512" height="512">
+  <title>${data.profile.name} — mark</title>
+  ${tile ? `<rect x="-50" y="-50" width="100" height="100" rx="22" fill="${SOOT}"/>` : ''}
+  <g transform="rotate(16) scale(${tile ? 1 : 1.18})">
+    ${Array.from({ length: 6 }, (_, i) => `<path d="${lobe}" transform="rotate(${i * 60})" fill="${i % 2 ? GOLD : BONE}" fill-opacity="${i % 2 ? 0.95 : 0.88}"/>`).join('\n    ')}
+    <circle r="4.2" fill="${BONE}"/>
+  </g>
+</svg>
+`;
+writeFileSync(join(root, 'public/favicon.svg'), mark(true));
+writeFileSync(join(out, 'mark.svg'), mark(false));
+console.log('✓ public/favicon.svg, public/brand/mark.svg');
 
-writeFileSync(join(out, 'monogram.svg'), svgFile(monogram(), { gold: '#E2B497', ink: '#EFE8DC', cut: '#06080E' }));
-writeFileSync(join(out, 'monogram-light.svg'), svgFile(monogram(), { gold: '#2747A0', ink: '#10131A', cut: '#EFEEEA' }));
-console.log('✓ public/brand/monogram.svg, monogram-light.svg');
-
-/* ---------- PNGs ---------- */
+/* ---------- PNGs, rendered by the site ---------- */
 function findBrowser() {
   const local = process.env.LOCALAPPDATA || '';
   return [
@@ -57,89 +61,51 @@ function findBrowser() {
     .find((p) => existsSync(p));
 }
 
-const css = readFileSync(join(root, 'src/style.css'), 'utf8');
-// the engine runs in the page as a plain module script
-const engine = readFileSync(join(root, 'src/modules/guilloche.js'), 'utf8').replace(/^export /gm, '');
-const fonts =
-  '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Hanken+Grotesk:wght@300..600&display=block">';
-
-// every dial on the page: engraved, lit from the upper left, hands at ten past ten
-const setup = `
-  ${engine}
-  document.querySelectorAll('[data-dial]').forEach((el) => {
-    mountDial(el, { maxPx: 2000 });
-    const set = (sel, deg) => el.querySelector(sel) && (el.querySelector(sel).style.transform = 'rotate(' + deg + 'deg)');
-    set('.hand--h', 305); set('.hand--m', 60); set('.hand--s', 48);
-    const date = el.querySelector('[data-date]'); if (date) date.textContent = '10';
-  });
-  document.documentElement.classList.add('is-ready');
-  window.__ready = true;`;
-
-const stage = `body{margin:0;overflow:hidden;background:#06080e} .dial--hero{position:relative;inset:auto;opacity:1}`;
-const p = data.profile;
-const pages = [
-  {
-    file: join(out, 'avatar.png'),
-    w: 1024,
-    h: 1024,
-    html: `<style>${stage} .wrap{width:1024px;height:1024px;display:grid;place-items:center;background:radial-gradient(closest-side,#141c33,#06080e)} .monogram{font-size:780px}</style>
-      <div class="wrap">${monogram()}</div>`,
-  },
-  {
-    file: join(out, 'dial.png'),
-    w: 1024,
-    h: 1024,
-    html: `<style>${stage} .wrap{width:1024px;height:1024px;display:grid;place-items:center;background:radial-gradient(closest-side,#16203a,#06080e)} .dial{width:820px}</style>
-      <div class="wrap">${heroDial(p)}</div>`,
-  },
-  {
-    file: join(root, 'public/og.png'),
-    w: 1200,
-    h: 630,
-    html: `<style>${stage}
-      .og{position:relative;width:1200px;height:630px;padding:64px 70px;display:grid;grid-template-columns:1fr 470px;align-items:center;gap:40px;background:radial-gradient(60% 90% at 78% 50%,#141c33,#06080e 70%)}
-      .og .dial{width:470px}
-      .og h1{font-family:var(--serif);font-weight:400;font-size:92px;line-height:.95;letter-spacing:-.03em;color:#efe8dc;margin-top:26px}
-      .og h1 em{display:inline-block;padding-left:.55em}
-      .og p{max-width:440px;margin-top:30px;font-family:var(--sans);font-weight:300;font-size:21px;line-height:1.55;color:#aba598}
-      .og .caps{color:#aba598;font-size:12px}
-      .og p.caps{max-width:none}
-      .og .foot{position:absolute;left:70px;bottom:40px;color:#75716a}
-    </style>
-    <div class="og">
-      <div>
-        <p class="caps" style="margin:0">${p.role} — ${String(p.location).split(',')[0]}</p>
-        <h1>${p.name.split(' ')[0]}<br /><em>${p.name.split(' ').slice(1).join(' ')}</em></h1>
-        <p>Multi-tenant SaaS, secure APIs, Flutter &amp; React apps and practical AI — from the database all the way to the phone.</p>
-      </div>
-      ${heroDial(p)}
-      <span class="caps foot">${p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-    </div>`,
-  },
-];
-
 const executablePath = findBrowser();
 if (!executablePath) {
   console.warn('! No Chrome/Edge found, so no PNGs this time. Set CHROME_PATH and run again.');
   process.exit(0);
 }
+
+// only the field: no text, no HUD, no grain
+const bare = 'main, .nav, .hud, .contact, .grain, .markers, .boot { visibility: hidden !important; }';
+// the hero without the chrome around it, its name sized for a 630px-tall card
+const og = `.nav, .hud, .grain, .markers, .boot, .hero__top, .hero__fig, .hero__foot, .hero__spec, .hero__note { visibility: hidden !important; }
+  .hero { min-height: 630px !important; padding-bottom: 44px !important; }
+  .hero__name { font-size: 150px !important; }
+  .hero__intro { padding-top: 0 !important; }`;
+
+const shots = [
+  { file: join(out, 'avatar.png'), w: 1024, h: 1024, css: bare, scale: 1.1 },
+  { file: join(out, 'atom.png'), w: 1600, h: 1600, css: bare, scale: 1.1 },
+  { file: join(root, 'public/og.png'), w: 1200, h: 630, css: og },
+];
+
+const { createServer } = await import('vite');
+const server = await createServer({ root, logLevel: 'error', server: { port: 0 } });
+await server.listen();
+const url = server.resolvedUrls.local[0];
+
 const { default: puppeteer } = await import('puppeteer-core');
-const browser = await puppeteer.launch({ executablePath, headless: true });
+const args = ['--ignore-gpu-blocklist', '--enable-gpu', '--enable-unsafe-swiftshader', ...(process.platform === 'win32' ? ['--use-angle=d3d11'] : [])];
+const browser = await puppeteer.launch({ executablePath, headless: true, args });
 try {
-  for (const pg of pages) {
+  for (const s of shots) {
     const page = await browser.newPage();
-    await page.setViewport({ width: pg.w, height: pg.h, deviceScaleFactor: 1 });
-    await page.setContent(
-      `<!doctype html><html data-theme="dark"><head><meta charset="utf-8">${fonts}<style>${css}</style></head><body>${pg.html}<script type="module">${setup}</script></body></html>`,
-      { waitUntil: 'networkidle0' }
-    );
-    await page.evaluate(() => document.fonts.ready);
-    await page.waitForFunction(() => window.__ready === true);
-    await new Promise((r) => setTimeout(r, 300));
-    await page.screenshot({ path: pg.file, clip: { x: 0, y: 0, width: pg.w, height: pg.h } });
+    await page.setViewport({ width: s.w, height: s.h, deviceScaleFactor: 1 });
+    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.addStyleTag({ content: s.css });
+    // centre the atom for the square renders
+    if (s.scale) await page.evaluate((scale) => Object.assign(document.querySelector('.hero').dataset, { shift: '0', scale: String(scale) }), s.scale);
+    if (!(await page.evaluate(() => !document.documentElement.classList.contains('no-webgl')))) throw new Error('WebGL is unavailable in this browser, so the field cannot be rendered.');
+    // the boot count, the big bang, and a moment for the shape to settle
+    await page.waitForFunction(() => document.documentElement.classList.contains('is-booted'), { timeout: 20000 });
+    await new Promise((r) => setTimeout(r, 4200));
+    await page.screenshot({ path: s.file, clip: { x: 0, y: 0, width: s.w, height: s.h } });
     await page.close();
-    console.log(`✓ ${pg.file.slice(root.length + 1).replace(/\\/g, '/')}`);
+    console.log(`✓ ${s.file.slice(root.length + 1).replace(/\\/g, '/')}`);
   }
 } finally {
   await browser.close();
+  await server.close();
 }

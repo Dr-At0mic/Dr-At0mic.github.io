@@ -136,12 +136,14 @@ function nav(d, links) {
     </nav>
     <div class="nav__meta caps">
       <span class="nav__clock" title="${esc(p.location || '')}"><span data-clock>--:--</span> IST <span class="nav__ml" lang="ml">തിരുവനന്തപുരം</span></span>
-      <button class="nav__btn" type="button" data-sound aria-pressed="false"><span class="nav__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span data-sound-label>Sound off</span></button>
-      <button class="nav__btn" type="button" data-theme-toggle><span data-theme-label>Day</span></button>
+      ${soundButton()}
       <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
     </div>
   </header>`;
 }
+
+const soundButton = () =>
+  `<button class="nav__btn" type="button" data-sound aria-pressed="false"><span class="nav__wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span data-sound-label>Sound off</span></button>`;
 
 function hud() {
   return `
@@ -170,6 +172,10 @@ function menu(d, links, featured, all) {
           .map((p) => `<li><a href="#work-${esc(p.id)}" data-preview="${esc(formOf(p.form, 'globe').name)}" data-preview-label="work/${esc(p.id)}"><span class="caps">${pad(all.indexOf(p) + 1)}</span><span>${esc(p.title)}</span><span class="caps menu__cat">${esc(p.category)}</span></a></li>`)
           .join('')}</ol>
         <a class="menu__mail" href="mailto:${esc(d.profile.email)}">${esc(d.profile.email)}</a>
+      </div>
+      <div class="menu__controls caps">
+        <span><span data-clock>--:--</span> IST · <span lang="ml" class="nav__ml">തിരുവനന്തപുരം</span></span>
+        ${soundButton()}
       </div>
     </div>
   </div>`;
@@ -229,7 +235,7 @@ function about(d, num, s, figNo) {
   const a = d.about;
   const form = d.profile.portrait ? formOf(s.form, 'portrait') : formOf(s.form, 'dust');
   return `
-  <section class="section about" id="about"${anchor(form, 'left', 'about/the-maker')}>
+  <section class="section about" id="about"${anchor(form, 'left', 'about/the-maker', { turn: 0.55 })}>
     <div class="about__grid">
       <div class="about__stage" aria-hidden="true"></div>
       <div class="about__text">

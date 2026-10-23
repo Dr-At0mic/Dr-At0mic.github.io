@@ -20,8 +20,7 @@ export function initDirector(field, { hud, layer, boot = false } = {}) {
   }));
   if (!anchors.length) return null;
 
-  const theme = () => document.documentElement.dataset.theme || 'dark';
-  const resolve = (form) => (theme() === 'light' && field.has(`${form}-ink`) ? `${form}-ink` : form);
+  const resolve = (form) => form;
 
   function measure() {
     const y = scrollY;
@@ -40,11 +39,17 @@ export function initDirector(field, { hud, layer, boot = false } = {}) {
     const halfW = halfH * aspect;
     const ds = a.el.dataset;
     const dim = ds.dim ? Number(ds.dim) : 1;
-    if (narrow) return { x: 0, y: halfH * 0.36, scale: Math.min(1, (halfW * 0.92) / 1.6) * Math.min(1.2, Number(ds.scale) || 1), spinY: hold * 0.5, tiltX: 0, dim };
+    // how far it turns as you scroll past; a relief like the portrait only turns a little
+    const turn = hold * (ds.turn ? Number(ds.turn) : 1);
+    // on a phone the shape sits above its text: it presents itself, then recedes as the text covers it
+    if (narrow) {
+      const cover = smooth(clamp((hold + 0.7) / 0.6));
+      return { x: 0, y: halfH * 0.36, scale: Math.min(1, (halfW * 0.92) / 1.6) * Math.min(1.2, Number(ds.scale) || 1), spinY: turn * 0.5, tiltX: 0, dim: dim * (1 - 0.7 * cover) };
+    }
     const off = a.side === 'right' ? 1 : a.side === 'left' ? -1 : 0;
     const fit = off ? Math.min(1, (halfW * 0.5) / 1.55) : Math.min(1.15, (halfW * 0.8) / 1.6);
     const shift = (Number(ds.shift) || 0) * halfW;
-    return { x: off * halfW * 0.48 + shift, y: 0, scale: fit * (Number(ds.scale) || 1), spinY: hold * 0.45, tiltX: hold * -0.06, dim };
+    return { x: off * halfW * 0.48 + shift, y: 0, scale: fit * (Number(ds.scale) || 1), spinY: turn * 0.45, tiltX: turn * -0.06, dim };
   }
 
   // the scroll position → (from, to, t), plus how far through the current hold we are
@@ -88,9 +93,11 @@ export function initDirector(field, { hud, layer, boot = false } = {}) {
 
   function intro(duration = 2.6) {
     return new Promise((resolveIntro) => {
-      override = { from: 'singularity', to: resolve(anchors[0].form), t: 0, pose: poseFor(anchors[0]), labelFrom: 'boot', labelTo: anchors[0].label };
-      tween(override, 1, duration, () => {
-        override = null;
+      const o = { from: 'singularity', to: resolve(anchors[0].form), t: 0, pose: poseFor(anchors[0]), labelFrom: 'boot', labelTo: anchors[0].label };
+      override = o;
+      tween(o, 1, duration, () => {
+        // a case study opened from a deep link may have taken over in the meantime
+        if (override === o) override = null;
         resolveIntro();
       });
     });
@@ -176,8 +183,9 @@ export function initDirector(field, { hud, layer, boot = false } = {}) {
       side = near.side;
       marks = near.el.dataset.markers !== 'off';
       t = state.reduced ? (s.t < 0.5 ? 0 : 1) : s.t;
-      const pa = poseFor(s.a, s.hold);
-      const pb = poseFor(s.b, s.hold);
+      // between two anchors, the outgoing one is at the end of its hold and the incoming one at the start
+      const pa = poseFor(s.a, s.a === s.b ? s.hold : 1);
+      const pb = poseFor(s.b, s.a === s.b ? s.hold : -1);
       pose = Object.fromEntries(Object.keys(pa).map((k) => [k, pa[k] + (pb[k] - pa[k]) * s.t]));
     }
     field.set({ from, to, t });
@@ -228,7 +236,7 @@ export function initDirector(field, { hud, layer, boot = false } = {}) {
     const near = t < 0.5 ? from : to;
     const vis = clamp(1 - Math.abs(t < 0.5 ? t : 1 - t) * 8) * (W < 720 || !marks ? 0 : 1);
     const list = field.meta(near)?.markers || [];
-    const [minX, maxX] = side === 'right' ? [W * 0.47, W - 20] : side === 'left' ? [20, W * 0.55] : [W * 0.24, W * 0.64];
+    const [minX, maxX] = side === 'right' ? [W * 0.47, W - 20] : side === 'left' ? [20, W * 0.58] : [W * 0.24, W * 0.64];
     const placed = [];
     markers.forEach((m, i) => {
       const mk = list[i];
@@ -241,8 +249,10 @@ export function initDirector(field, { hud, layer, boot = false } = {}) {
         m._w = text.offsetWidth;
       }
       const w = (m._w ||= text.offsetWidth) + 40;
-      const flip = p[0] + w > maxX;
-      if (flip && p[0] - w < minX) return hide();
+      const fitsRight = p[0] + w <= maxX;
+      const fitsLeft = p[0] - w >= minX;
+      if (!fitsRight && !fitsLeft) return hide();
+      const flip = mk.prefer === 'left' ? fitsLeft : !fitsRight;
       const box = flip ? [p[0] - w, p[0], p[1] - 10, p[1] + 10] : [p[0], p[0] + w, p[1] - 10, p[1] + 10];
       if (placed.some((b) => box[0] < b[1] && box[1] > b[0] && box[2] < b[3] && box[3] > b[2])) return hide();
       placed.push(box);

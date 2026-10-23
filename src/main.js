@@ -9,12 +9,11 @@ import { state, fontsReady } from './modules/core.js';
 import { initSmooth, scrollToTarget } from './modules/smooth.js';
 import { initReveal, revealHero } from './modules/reveal.js';
 import { initType } from './modules/type.js';
-import { createField, webglAvailable } from './modules/field.js';
 import { initDirector } from './modules/director.js';
 import { initCase } from './modules/case.js';
 import { initTrace } from './modules/trace.js';
 import { initSound } from './modules/sound.js';
-import { bootCount, initClock, initTheme, initMenu, initPreviews, initCopy, initGrain, initMagnetic, initNavSpy, initPointer } from './modules/ui.js';
+import { bootCount, initClock, initMenu, initPreviews, initCopy, initGrain, initMagnetic, initNavSpy, initPointer } from './modules/ui.js';
 
 const root = document.documentElement;
 const site = data.site || {};
@@ -22,7 +21,6 @@ const site = data.site || {};
 root.classList.add('js', 'is-booting');
 document.title = site.title || data.profile.name;
 document.querySelector('meta[name="description"]')?.setAttribute('content', site.description || '');
-if (!root.dataset.theme) root.dataset.theme = site.defaultTheme === 'light' ? 'light' : 'dark';
 
 document.getElementById('app').innerHTML = renderApp(data);
 
@@ -38,7 +36,6 @@ function formsOnPage() {
     const f = formOf(p.form);
     if (f) names.push(f.name);
   }
-  if (names.includes('portrait')) names.push('portrait-ink');
   return names;
 }
 
@@ -54,14 +51,15 @@ function formParams() {
   return params;
 }
 
-// The portrait formation is sampled from the photo's pixels.
-function loadPortrait(src) {
+// The portrait formation is sampled from the 3D bust that tools/portrait/make_portrait3d.py bakes
+// into one image (brightness, front depth, back depth).
+function loadBust(src) {
   return new Promise((resolve) => {
     const img = new Image();
     img.decoding = 'async';
     img.onload = () => {
-      const w = 240;
-      const h = Math.round((w * img.naturalHeight) / img.naturalWidth);
+      const w = img.naturalWidth;
+      const h = img.naturalHeight;
       const c = document.createElement('canvas');
       c.width = w;
       c.height = h;
@@ -87,30 +85,46 @@ initTrace();
 initSound();
 initMagnetic();
 
-let field = null;
-let director = null;
-if (webglAvailable()) {
+const hasWebGL = (() => {
   try {
-    field = createField(document.querySelector('.field'), { forms: formsOnPage(), params: formParams(), theme: root.dataset.theme });
-    director = initDirector(field, { hud: document.querySelector('.hud'), layer: document.querySelector('.markers'), boot: preloader });
+    return !!document.createElement('canvas').getContext('webgl2');
+  } catch {
+    return false;
+  }
+})();
+if (!hasWebGL) root.classList.add('no-webgl');
+
+// The particle engine (three.js) is by far the heaviest part of the page, so it loads on its
+// own — alongside the fonts, and not at all on a device without WebGL 2.
+async function startField() {
+  if (!hasWebGL) return {};
+  try {
+    const { createField } = await import('./modules/field.js');
+    const field = createField(document.querySelector('.field'), { forms: formsOnPage(), params: formParams() });
+    const director = initDirector(field, { hud: document.querySelector('.hud'), layer: document.querySelector('.markers'), boot: preloader });
+    return { field, director };
   } catch (err) {
     console.warn('The particle field is unavailable on this device:', err);
-    field = director = null;
+    root.classList.add('no-webgl');
+    return {};
   }
 }
-if (!field) root.classList.add('no-webgl');
-
-initTheme((theme) => field?.setTheme(theme));
-initMenu(director);
-initPreviews(director);
-initPointer(field);
-const route = initCase(data.projects, data.experience, director);
-
-if (field?.has('portrait') && data.profile.portrait) loadPortrait(data.profile.portrait).then((img) => img && field.provide('portrait', { img }));
 
 (async () => {
   state.lenis?.stop();
-  await fontsReady();
+  const [{ field = null, director = null }] = await Promise.all([startField(), fontsReady()]);
+
+  initMenu(director);
+  initPreviews(director);
+  initPointer(field);
+  const route = initCase(data.projects, data.experience, director);
+
+  const bust = formParams().portrait?.src || 'images/portrait-3d.png';
+  if (field?.has('portrait')) loadBust(bust).then((img) => img && field.provide('portrait', { img }));
+
+  // Handy while editing: the parsed data and the field are in the console as `portfolio`.
+  if (import.meta.env.DEV) window.portfolio = { data, state, field, director };
+
   if (preloader && field) await bootCount(field.count);
   root.classList.remove('is-booting');
   root.classList.add('is-booted');
@@ -123,6 +137,3 @@ if (field?.has('portrait') && data.profile.portrait) loadPortrait(data.profile.p
     if (target) setTimeout(() => scrollToTarget(target), 700);
   }
 })();
-
-// Handy while editing: the parsed data is available in the console as `portfolio`.
-if (import.meta.env.DEV) window.portfolio = { data, state, field, director };

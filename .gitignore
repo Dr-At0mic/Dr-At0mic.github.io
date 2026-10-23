@@ -12,3 +12,5 @@ tools/portrait/out/
 # raw bio notes (personal details, register numbers) — source material only, never published
 projects/
 /graphify-out
+# portrait models, downloaded on first run of make_portrait3d.py
+tools/portrait/models/

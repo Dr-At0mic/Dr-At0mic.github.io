@@ -1,7 +1,7 @@
 /* =========================================================
    Atomic — the portfolio as one field of particles.
-   Night is orpiment on soot; day is realgar on paper — the two
-   sulfides of arsenic, element 33, that painters used for centuries.
+   Orpiment on soot: the yellow sulfide of arsenic, element 33,
+   that painters used for centuries. Always night — the particles glow.
    ========================================================= */
 
 :root {
@@ -28,21 +28,6 @@
   --nav-h: 64px;
 
   color-scheme: dark;
-}
-
-:root[data-theme='light'] {
-  --bg: #ece7dc;
-  --ink: #15130f;
-  --ink-2: rgba(21, 19, 15, 0.76);
-  --ink-3: rgba(21, 19, 15, 0.63);
-  --line: rgba(21, 19, 15, 0.14);
-  --line-2: rgba(21, 19, 15, 0.3);
-  --accent: #b8381b;
-  --on-accent: #ece7dc;
-  --live: #b8381b;
-  --scrim: rgba(236, 231, 220, 0.86);
-  --scrim-soft: rgba(236, 231, 220, 0.6);
-  color-scheme: light;
 }
 
 /* ---------- base ---------- */
@@ -212,9 +197,6 @@ code {
   opacity: 0.06;
   background-size: 180px 180px;
   animation: grain 0.9s steps(6) infinite;
-}
-:root[data-theme='light'] .grain {
-  opacity: 0.09;
 }
 @keyframes grain {
   0% { transform: translate(0, 0); }
@@ -633,6 +615,16 @@ code {
   font-style: italic;
   font-size: clamp(22px, 2vw, 30px);
   color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.menu__controls {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
 }
 
 /* ---------- shared section scaffolding ---------- */
@@ -726,6 +718,11 @@ main {
   color: var(--accent);
   font-size: 10px;
 }
+/* captions often sit beside a formation: a soot halo keeps them legible over the particles */
+.fig__t,
+.fig__n {
+  text-shadow: 0 0 10px var(--bg), 0 0 4px var(--bg), 0 0 2px var(--bg);
+}
 .fig__t em {
   font-size: 1.1em;
 }
@@ -810,6 +807,13 @@ main {
   margin-left: -0.04em;
   color: var(--ink);
   user-select: none;
+}
+/* the letters animate along the width axis; containment keeps each frame's relayout inside
+   the name instead of rippling through the whole page (≈55 ms → under a frame on a slow phone) */
+.hero__name,
+.hero__line,
+.footer__name {
+  contain: layout style;
 }
 .hero__line {
   display: block;
@@ -944,13 +948,15 @@ main {
   gap: 10px;
   padding-top: 22px;
 }
+/* sized so "1,000+" fits a quarter of the width */
 .stat__num {
-  font-size: clamp(54px, 7.6vw, 140px);
+  font-size: clamp(44px, 4.8vw, 104px);
   line-height: 0.9;
   font-weight: 250;
   letter-spacing: -0.05em;
-  font-variation-settings: 'wdth' 125;
+  font-variation-settings: 'wdth' 110;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .stat__num em {
   font-size: 0.6em;
@@ -1107,7 +1113,6 @@ main {
   align-self: end;
   grid-column: 9 / span 4;
   justify-self: end;
-  margin-bottom: -6vh;
 }
 .chapter__fig--left {
   grid-column: 1 / span 4;
@@ -1975,6 +1980,19 @@ main {
 .case.is-open .case__backdrop {
   opacity: 1;
 }
+/* with a case open, only the field stays behind it — the page itself steps out */
+main,
+.contact,
+.nav,
+.markers {
+  transition: opacity 0.6s var(--ease);
+}
+.has-case main,
+.has-case .contact,
+.has-case .nav,
+.has-case .markers {
+  opacity: 0;
+}
 .case__panel {
   position: absolute;
   inset: 0 auto 0 0;
@@ -2232,8 +2250,18 @@ main {
 .no-webgl .chapter__text {
   grid-column: 1 / span 8 !important;
 }
-.no-webgl .hud {
+.no-webgl .hud,
+.no-webgl .fig {
   display: none;
+}
+/* the atom as a still, rendered by `npm run brand` */
+.no-webgl .hero::before {
+  content: '';
+  position: absolute;
+  inset: 8vh 20% 18vh;
+  z-index: -1;
+  background: url('/brand/atom.png') center / contain no-repeat;
+  opacity: 0.85;
 }
 
 /* =========================================================
@@ -2272,8 +2300,12 @@ main {
   .nav__menu {
     display: inline-flex;
   }
-  .nav__meta [data-sound] [data-sound-label] {
+  /* on a phone, sound and theme live in the menu */
+  .nav__meta .nav__btn {
     display: none;
+  }
+  .menu__controls {
+    display: flex;
   }
 
   .hud__label span,
@@ -2310,7 +2342,7 @@ main {
   }
   .hero__name {
     grid-row: 3;
-    font-size: clamp(54px, 19vw, 140px);
+    font-size: clamp(46px, 14.6vw, 140px);
   }
   .hero__fig {
     grid-column: 1 / -1;
@@ -2476,7 +2508,7 @@ main {
     grid-template-columns: 1fr 1fr;
   }
   .stat__num {
-    font-size: 15vw;
+    font-size: 10.5vw;
   }
   .metrics dd {
     font-size: 30px;

@@ -27,6 +27,7 @@ export function initCase(projects = [], experience = [], director = null) {
       lastFocus = document.activeElement;
       el.classList.add('is-open');
       el.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('has-case');
       behind().forEach((n) => (n.inert = true));
       state.lenis?.stop();
     }
@@ -38,6 +39,7 @@ export function initCase(projects = [], experience = [], director = null) {
     isOpen = false;
     el.classList.remove('is-open');
     el.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('has-case');
     behind().forEach((n) => (n.inert = false));
     state.lenis?.start();
     director?.unfocus();

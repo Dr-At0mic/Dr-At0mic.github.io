@@ -3,7 +3,6 @@
     "title": "Anandhu Suresh — Full-Stack Software Engineer",
     "description": "Full-stack engineer building multi-tenant SaaS, secure APIs, Flutter and React apps, and practical AI — from the database to the phone. Based in Thiruvananthapuram, Kerala.",
     "accent": "#9A5B3F",
-    "defaultTheme": "dark",
     "preloader": true
   },
   "profile": {
@@ -35,7 +34,8 @@
       "nav": "About",
       "form": {
         "name": "portrait",
-        "caption": "The maker, assembled from the same particles as everything else on this page."
+        "src": "images/portrait-3d.png",
+        "caption": "The maker, rebuilt in 3D from one photograph — a depth model for the shape, a matting model for the edges — and assembled from the same particles as everything else here."
       }
     },
     "work": {

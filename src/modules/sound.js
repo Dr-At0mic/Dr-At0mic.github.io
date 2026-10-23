@@ -2,10 +2,10 @@
 // noise when a transaction begins and a soft tick when it commits — all synthesised.
 
 export function initSound() {
-  const btn = document.querySelector('[data-sound]');
-  const label = document.querySelector('[data-sound-label]');
-  if (!btn || !(window.AudioContext || window.webkitAudioContext)) {
-    btn?.remove();
+  // there's one in the nav and one in the phone menu
+  const btns = [...document.querySelectorAll('[data-sound]')];
+  if (!btns.length || !(window.AudioContext || window.webkitAudioContext)) {
+    btns.forEach((b) => b.remove());
     return;
   }
   let ctx = null;
@@ -86,16 +86,20 @@ export function initSound() {
     });
   };
 
-  btn.addEventListener('click', () => {
+  const toggle = () => {
     if (!ctx) start();
     on = !on;
     ctx.resume?.();
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.setTargetAtTime(on ? 0.5 : 0, ctx.currentTime, 0.4);
-    btn.setAttribute('aria-pressed', String(on));
-    if (label) label.textContent = on ? 'Sound on' : 'Sound off';
+    btns.forEach((b) => {
+      b.setAttribute('aria-pressed', String(on));
+      const label = b.querySelector('[data-sound-label]');
+      if (label) label.textContent = on ? 'Sound on' : 'Sound off';
+    });
     if (on) tick();
-  });
+  };
+  btns.forEach((b) => b.addEventListener('click', toggle));
 
   addEventListener('tx', (e) => (e.detail.op === 'commit' ? tick() : whoosh()));
 }

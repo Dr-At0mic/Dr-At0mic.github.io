@@ -19,29 +19,6 @@ export function initClock(timeZone = 'Asia/Kolkata') {
   setInterval(tick, 10_000);
 }
 
-/* ---------- day and night ---------- */
-export function initTheme(onChange = () => {}) {
-  const root = document.documentElement;
-  const btn = document.querySelector('[data-theme-toggle]');
-  const label = document.querySelector('[data-theme-label]');
-  const meta = document.querySelector('meta[name="theme-color"]');
-  const paint = () => {
-    const dark = root.dataset.theme !== 'light';
-    if (label) label.textContent = dark ? 'Day' : 'Night';
-    btn?.setAttribute('aria-label', dark ? 'Switch to the day theme' : 'Switch to the night theme');
-    meta?.setAttribute('content', dark ? '#0b0a09' : '#ece7dc');
-  };
-  paint();
-  btn?.addEventListener('click', () => {
-    root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
-    try {
-      localStorage.setItem('theme', root.dataset.theme);
-    } catch {}
-    paint();
-    onChange(root.dataset.theme);
-  });
-}
-
 /* ---------- the menu, with a preview of each project's formation ---------- */
 export function initMenu(director) {
   const menu = document.getElementById('menu');
