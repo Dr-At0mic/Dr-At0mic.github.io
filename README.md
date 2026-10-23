@@ -65,7 +65,7 @@ You can also re-run a deploy from the repo's **Actions** tab ("Deploy to GitHub 
 | `education` | Degrees and schooling, each with its score. `level: "school"` entries are left off the résumé but kept on the biodata |
 | `languages` | Spoken languages, with a 0–5 `level` drawn as dots |
 | `testimonials` | Quotes. Empty right now, so the section is hidden. Add some and it appears |
-| `contact`, `socials`, `footer` | The closing block. A social can carry a `note` (e.g. LinkedIn's "not up to date"), shown under the link and on the résumé |
+| `contact`, `socials`, `footer` | The closing block. A social can carry a `note`, shown under the link and on the résumé |
 | `resume` | Résumé-only settings: `summary`, `photo`, which `projects` to include (by id, in order) and `maxProjectHighlights`. The website itself has no résumé link |
 
 **Any section can be removed.** Delete it or leave its list empty and it disappears; the numbering (and the menu) close up automatically.
