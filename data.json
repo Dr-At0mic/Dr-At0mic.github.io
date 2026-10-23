@@ -77,7 +77,7 @@
         "name": "commit-graph",
         "lanes": 14,
         "commits": 1070,
-        "caption": "Fourteen production repositories, about 1,070 commits since November 2024 — a lane each."
+        "caption": "Fourteen production repositories, about 1,070 commits since June 2024 — a lane each."
       }
     },
     "education": {
@@ -124,7 +124,7 @@
   "about": {
     "statement": "I build software end to end — the database, the APIs, the web and mobile UI, the ML models and the deployment. Mostly that means *multi-tenant SaaS* that stays fast, secure and properly isolated, and AI features that cite their sources instead of making things up.",
     "body": [
-      "At **Siga Infotech** (since November 2024) I build and run multi-tenant SaaS platforms for restaurants, UK care homes, staffing agencies, retail and AI — about a thousand commits across fourteen production repositories — and look after the AWS production setup they run on, down to the monthly bill.",
+      "At **Siga Infotech** (since June 2024) I build and run multi-tenant SaaS platforms for restaurants, UK care homes, staffing agencies, retail and AI — about a thousand commits across fourteen production repositories — and look after the AWS production setup they run on, down to the monthly bill.",
       "On my own time I trained a graph neural network from scratch to forecast India's air quality, built a knowledge-graph learning app that refuses to hallucinate, an app that turns an Android phone into a PC microphone, and a studio that turns GitHub activity into animated art. I think about failure modes first, and I quite enjoy the hard migrations nobody else wants."
     ],
     "stats": [
@@ -330,7 +330,7 @@
       "context": "Siga Infotech",
       "category": "Restaurant POS SaaS",
       "year": 2026,
-      "period": "Nov 2024 — Now",
+      "period": "Jun 2024 — Now",
       "featured": true,
       "form": {
         "name": "receipt",
@@ -1272,8 +1272,8 @@
   ],
   "experience": [
     {
-      "period": "Nov 2024 — Now",
-      "role": "Full-Stack Software Engineer",
+      "period": "Jun 2024 — Now",
+      "role": "Software Engineer",
       "company": "Siga Infotech",
       "location": "Kerala",
       "description": "Building and running multi-tenant SaaS products end to end — database architecture, APIs, admin portals, Flutter apps and the AWS production infrastructure they run on. About 1,070 commits across 14 production repositories.",
@@ -1495,7 +1495,7 @@
     "colophon": "Designed & built in Thiruvananthapuram. Set in Archivo, Instrument Serif and Martian Mono. Every shape on this page is drawn by code from one field of particles."
   },
   "resume": {
-    "summary": "Full-stack engineer who builds products end to end — database, APIs, web and mobile UI, ML models and deployment. At Siga Infotech (Nov 2024 – present) I build and run multi-tenant SaaS platforms across restaurant POS, UK care homes, UK staffing agencies, AI SaaS and retail POS (~1,070 commits, 14 production repositories), and manage their AWS production deployments on Lambda, EC2 and Lightsail, including cost analysis and optimisation. Strongest in database-per-tenant architecture, permission and identity systems, security hardening, and practical AI: RAG, guarded LLM pipelines and on-device ML.",
+    "summary": "Full-stack engineer who builds products end to end — database, APIs, web and mobile UI, ML models and deployment. At Siga Infotech (Jun 2024 – present) I build and run multi-tenant SaaS platforms across restaurant POS, UK care homes, UK staffing agencies, AI SaaS and retail POS (~1,070 commits, 14 production repositories), and manage their AWS production deployments on Lambda, EC2 and Lightsail, including cost analysis and optimisation. Strongest in database-per-tenant architecture, permission and identity systems, security hardening, and practical AI: RAG, guarded LLM pipelines and on-device ML.",
     "projects": [
       "breathe",
       "easy-learn",
