@@ -51,13 +51,16 @@ export function initMenu(director) {
 export function initPreviews(director) {
   if (!director || !state.finePointer) return;
   let leave = null;
+  // a link that opens a case study is covered by the panel the moment it's clicked, which fires
+  // pointerleave — by then the case study owns the field, and closing it hands the field back
+  const caseOpen = () => document.documentElement.classList.contains('has-case');
   document.querySelectorAll('[data-preview]').forEach((a) => {
     a.addEventListener('pointerenter', () => {
       clearTimeout(leave);
       director.focus(a.dataset.preview, 'right', a.dataset.previewLabel);
     });
     a.addEventListener('pointerleave', () => {
-      leave = setTimeout(() => director.unfocus(), 140);
+      leave = setTimeout(() => caseOpen() || director.unfocus(), 140);
     });
   });
 }

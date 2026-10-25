@@ -645,7 +645,7 @@ export function renderCase(p, index, total, next, companyUrl = '') {
         .join('')}</dl>
       <div class="case__text">
         ${list(p.description).map((t) => `<p>${rich(t)}</p>`).join('')}
-        ${list(p.highlights).length ? `<h3 class="caps case__hl">How it works</h3><ol class="case__points">${p.highlights.map((h) => `<li>${rich(h)}</li>`).join('')}</ol>` : ''}
+        ${list(p.highlights).length ? `<h3 class="caps case__hl">How it works</h3><ol class="case__points">${p.highlights.map((h) => `<li><span>${rich(h)}</span></li>`).join('')}</ol>` : ''}
         ${
           links.length
             ? `<div class="case__links">${links.map((l, i) => `<a class="${i ? 'ext caps' : 'cta'}" href="${esc(l.url)}" target="_blank" rel="noopener"><span>${esc(l.label)}</span>${i ? ext : arrow}</a>`).join('')}</div>`
