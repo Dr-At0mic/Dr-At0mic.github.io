@@ -87,11 +87,20 @@ A `form` is `"form": "name"` or `"form": { "name": "…", "caption": "…", …p
 | `hash-chain` | An append-only ledger of linked blocks |
 | `knowledge-graph` | A graph whose highlighted node links back to the passage it came from |
 | `db-tenants` | Twelve tenant databases behind a router |
+| `tiers` | Five stacked user tiers, a bead per seat, scope flowing down through them |
+| `billing-coil` | A turn per billing period and a bead per day, widening at a mid-cycle upgrade that carries the unused days over as credit |
+| `barcode` | A real EAN-13 (India's 890 prefix, computed check digit) under a scanner's beam |
+| `house-score` | A house on its plot inside a dial of weighted checklist categories, gold where items passed |
+| `funnel` | Leads spiralling down through MQL, SQL and opportunity; the few that convert land in a database |
+| `vehicle` | A car on a road with a post every kilometre and its odometer above it |
+| `playbook` | An open book with pages mid-turn, its lines streaming up into an agent |
 | `stack` | Database → API → web → phone, exploded |
 | `armillary` | The toolkit: a ring per `skills` area, a bead per tool, core strengths bright |
 | `commit-graph` | A lane per repository, a dot per commit — `lanes` and `commits` are parameters |
 | `chess-king` | A Staunton king, lathe-turned |
-| `globe`, `dust` | Fallbacks: a project without a `form` gets `globe`; quiet sections rest as `dust` |
+| `globe`, `dust` | Fallbacks: a featured project without a `form` gets `globe`; quiet sections rest as `dust` |
+
+Hovering a project in the work index or the "More work" list morphs the field into that project's formation, and it holds while the project's case study is open.
 
 The particle count follows the device: 65,536 on a desktop, 32,768 on a machine with 4 GB / 4 cores or less (or a window under 1,100px wide), 16,384 on a phone or touch screen. Without WebGL 2 the page reads as a plain editorial page with a still of the atom; with `prefers-reduced-motion` the shapes still form but change without flying, and nothing drifts or follows the cursor.
 
