@@ -791,6 +791,10 @@
       "year": 2026,
       "period": "May 2026 — Now",
       "featured": false,
+      "form": {
+        "name": "tiers",
+        "caption": "Five user tiers on one platform: system admins at the top, client-portal users at the base, and scope flowing down through every tier."
+      },
       "summary": "A multi-tenant platform for UK temporary-staffing agencies with five user tiers — I bootstrapped the platform and own the client domain.",
       "description": [
         "Zynk Suite (Sqube) serves system admins, super admins, agency admins, staff and client-portal users. I bootstrapped it from our multi-tenant SaaS core and removed about 17k lines of the old restaurant domain."
@@ -838,6 +842,10 @@
       "year": 2026,
       "period": "Jul 2025 — Apr 2026",
       "featured": false,
+      "form": {
+        "name": "billing-coil",
+        "caption": "One turn per billing period, a bead per day. Partway through the third the plan is upgraded — the coil widens, and the unused days of the old plan cross over as credit."
+      },
       "summary": "One app-agnostic subscription and billing service shared by many products and tenants — proration, dues, tax-aware invoicing and churn analytics.",
       "description": [
         "I built v1 on Express, migrated it to NestJS 11 within two weeks with a use-case-driven clean architecture, and then took it through nine months of production hardening. Primary author: 22 of 24 commits, about 9,200 lines."
@@ -881,6 +889,10 @@
       "year": 2026,
       "period": "Mar 2026 — Apr 2026",
       "featured": false,
+      "form": {
+        "name": "barcode",
+        "caption": "A real EAN-13 — 890 is India’s GS1 prefix, and the last digit is its check digit — crossing the scanner at the till."
+      },
       "summary": "A retail and inventory POS with one database per tenant — I built its loyalty engine and GST compliance reporting.",
       "description": [
         "Siga POS is a Flutter app on an Express/Drizzle backend with separate master and tenant configs."
@@ -914,6 +926,10 @@
       "year": 2023,
       "period": "Sep 2023 — Oct 2023",
       "featured": false,
+      "form": {
+        "name": "house-score",
+        "caption": "Know Before You Buy: the checklist as a dial around the house. Each arc is a category sized by its weight; gold is what passed."
+      },
       "summary": "A property-verification platform and real-estate CRM for Kerala — shipped by me alone, from first commit to production with full observability.",
       "description": [
         "PropSure scores properties against a configurable inspection checklist (\"Know Before You Buy\"), publishes verified listings, captures enquiries as CRM leads and manages pipelines and site visits — about 51k lines of TypeScript across a NestJS API, a React admin portal and a trilingual marketing site."
@@ -963,6 +979,10 @@
       "year": 2023,
       "period": "Aug 2023 — Sep 2023",
       "featured": false,
+      "form": {
+        "name": "funnel",
+        "caption": "Leads fall in and are qualified on the way down — MQL, SQL, opportunity. The few that convert land in the tenant’s own database."
+      },
       "summary": "An enterprise lead-management CRM on Spring Boot where every customer company gets its own physically isolated database.",
       "description": [
         "A Gradle multi-module modular monolith (12 modules, 46 endpoints) with a React 19 frontend: a dark control plane for platform admins and a light workspace for six tenant roles."
@@ -1007,6 +1027,10 @@
       "year": 2026,
       "period": "2026",
       "featured": false,
+      "form": {
+        "name": "vehicle",
+        "caption": "A vehicle, its odometer and the road it bills for: every kilometre becomes a daily allowance or a receivable."
+      },
       "summary": "A fleet-finance app for vehicle-hire businesses — one React Native codebase running on Android, iOS and the web.",
       "description": [
         "FleetBooks covers client receivables, drivers, vehicles, odometer readings, attendance and daily allowances, delivered spec-first: user stories, derived requirements and implementation plans with risk analysis."
@@ -1049,6 +1073,10 @@
       "year": 2026,
       "period": "2026",
       "featured": false,
+      "form": {
+        "name": "playbook",
+        "caption": "Two playbooks, multitenancy and permissions, open on the table — and streaming into the coding agent that loads them."
+      },
       "summary": "My production lessons on multi-tenancy and permissions, packaged as skills that AI coding agents load and follow.",
       "description": [
         "Two reusable playbooks: `multitenancy` (all three isolation strategies with 12 NestJS templates) and `pac`, a ~7.7k-line permission engine combining RBAC, PBAC and ABAC."

@@ -327,9 +327,10 @@ function more(items, all, num, s) {
       ${items
         .map((p) => {
           const n = all.indexOf(p) + 1;
+          const form = formOf(p.form);
           return `
         <li data-fade>
-          <a class="ledger__row" href="#/work/${esc(p.id)}">
+          <a class="ledger__row" href="#/work/${esc(p.id)}"${form ? ` data-preview="${esc(form.name)}" data-preview-label="work/${esc(p.id)}"` : ''}>
             <span class="ledger__n caps">${pad(n)}</span>
             <span class="ledger__t">${esc(p.title)}</span>
             <span class="ledger__s">${rich(p.summary)}</span>
