@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy | README Templates</title>
+<meta name="description" content="What README Templates stores, what it sends to GitHub, and how to delete your data.">
+<meta name="theme-color" content="#0b0a09">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Instrument+Serif:ital@0;1&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
+<style>
+  /* Standalone page: same tokens and type as src/style.css, without the particle field. */
+  :root {
+    --bg: #0b0a09;
+    --ink: #ece7dc;
+    --ink-2: rgba(236, 231, 220, 0.74);
+    --ink-3: rgba(236, 231, 220, 0.56);
+    --line: rgba(236, 231, 220, 0.13);
+    --line-2: rgba(236, 231, 220, 0.26);
+    --accent: #f4b52f;
+    --on-accent: #0b0a09;
+    --f-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --f-serif: 'Instrument Serif', 'Times New Roman', serif;
+    --f-mono: 'Martian Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    --pad: clamp(16px, 4vw, 60px);
+    --gap: clamp(16px, 2vw, 32px);
+    --nav-h: 64px;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: 17px;
+    line-height: 1.55;
+    font-variation-settings: 'wdth' 100;
+    overflow-x: hidden;
+  }
+
+  h1, h2, p, ul { margin: 0; }
+  ul { list-style: none; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  strong { font-weight: 600; color: var(--ink); }
+  ::selection { background: var(--accent); color: var(--on-accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+
+  em {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: 0.8em;
+    padding: 0.05em 0.35em;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .caps {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-variation-settings: 'wdth' 90;
+    font-weight: 400;
+  }
+
+  .skip {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--on-accent);
+    transform: translateY(-200%);
+  }
+  .skip:focus { transform: none; }
+
+  .grain {
+    position: fixed;
+    inset: -50%;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    animation: grain 0.9s steps(6) infinite;
+  }
+  @keyframes grain {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-3%, 2%); }
+    40% { transform: translate(2%, -4%); }
+    60% { transform: translate(-4%, -1%); }
+    80% { transform: translate(3%, 3%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* ---------- nav ---------- */
+  .nav {
+    height: var(--nav-h);
+    padding: 0 var(--pad);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap);
+  }
+  .nav__brand { display: flex; align-items: baseline; gap: 12px; white-space: nowrap; }
+  .nav__name { font-weight: 650; font-size: 14px; letter-spacing: -0.005em; font-variation-settings: 'wdth' 118; }
+  .nav__alias { color: var(--ink-3); }
+  .nav__back { color: var(--ink-2); padding: 10px 0; white-space: nowrap; transition: color 0.3s; }
+  .nav__back:hover { color: var(--accent); }
+
+  /* ---------- head ---------- */
+  .head {
+    padding: clamp(56px, 12vh, 130px) var(--pad) clamp(40px, 7vh, 72px);
+    display: grid;
+    gap: 22px;
+  }
+  .head h1 {
+    font-size: clamp(56px, 10.4vw, 176px);
+    line-height: 0.9;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    font-variation-settings: 'wdth' 116;
+  }
+  .head h1 em { letter-spacing: -0.02em; font-size: 1.12em; line-height: 0.7; padding-right: 0.04em; }
+  .updated { color: var(--ink-2); }
+
+  .summary {
+    margin: 0 var(--pad);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+    padding: 22px 0 clamp(48px, 8vh, 88px);
+    border-top: 1px solid var(--line-2);
+    font-size: 15.5px;
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+  }
+
+  /* ---------- body: heading in the left rail, text on the right ---------- */
+  .policy { padding: 0 var(--pad); counter-reset: sec; }
+  .policy section {
+    counter-increment: sec;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
+    gap: var(--gap);
+    padding: clamp(32px, 6vh, 56px) 0;
+    border-top: 1px solid var(--line);
+  }
+  .policy h2 {
+    align-self: start;
+    position: sticky;
+    top: 28px;
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.08;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 110;
+  }
+  .policy h2::before {
+    content: counter(sec, decimal-leading-zero);
+    display: block;
+    margin-bottom: 12px;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    font-variation-settings: 'wdth' 90;
+    color: var(--accent);
+  }
+  .policy__body { display: grid; gap: 16px; max-width: 76ch; color: var(--ink-2); min-width: 0; }
+  .policy__body a {
+    color: var(--ink);
+    border-bottom: 1px solid var(--accent);
+    transition: color 0.3s;
+  }
+  .policy__body a:hover { color: var(--accent); }
+
+  .policy__body li { position: relative; padding-left: 1.5em; }
+  .policy__body li + li { margin-top: 10px; }
+  .policy__body li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.75em;
+    width: 0.8em;
+    height: 1px;
+    background: var(--accent);
+  }
+  .policy__body li ul { margin-top: 10px; }
+  .policy__body li li::before { background: var(--line-2); }
+
+  /* ---------- table ---------- */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.5; }
+  th, td { padding: 14px 18px 14px 0; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th:last-child, td:last-child { padding-right: 0; }
+  th {
+    border-top: 0;
+    padding-top: 0;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-variation-settings: 'wdth' 90;
+    color: var(--ink-3);
+  }
+  td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+  /* ---------- footer ---------- */
+  .footer { padding: 0 var(--pad); }
+  .footer__sign { margin: 10vh calc(var(--pad) * -0.4) 0; overflow: hidden; }
+  .footer__name {
+    font-size: 10vw; /* fits the full name edge to edge; the portfolio does this in JS */
+    line-height: 0.8;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    text-align: center;
+    user-select: none;
+  }
+  .footer__bar {
+    margin-top: 40px;
+    padding: 18px 0 36px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 30px;
+    color: var(--ink-3);
+  }
+  .footer__bar a { transition: color 0.3s; }
+  .footer__bar a:hover { color: var(--accent); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1180px) {
+    .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .policy section { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .policy h2 { position: static; }
+    .policy__body { max-width: none; }
+  }
+  @media (max-width: 680px) {
+    /* the three-column table becomes one stacked block per row */
+    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    table, tbody, tr, td { display: block; }
+    tr { padding: 16px 0; border-top: 1px solid var(--line); }
+    td, td:first-child { padding: 0; border: 0; white-space: normal; }
+    td + td { margin-top: 10px; }
+    td + td::before {
+      display: block;
+      margin-bottom: 2px;
+      font-family: var(--f-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-variation-settings: 'wdth' 90;
+      color: var(--ink-3);
+    }
+    td:nth-child(2)::before { content: 'Details'; }
+    td:nth-child(3)::before { content: 'Protection'; }
+  }
+  @media (max-width: 520px) {
+    .summary { grid-template-columns: minmax(0, 1fr); }
+    .nav__alias { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .grain { animation: none; }
+  }
+  @media print {
+    .grain, .skip, .nav__back, .footer__sign { display: none !important; }
+    html { background: #fff; color: #000; }
+    :root { --ink: #000; --ink-2: #222; --ink-3: #555; --line: #ccc; --line-2: #999; --accent: #000; }
+    .policy h2 { position: static; }
+  }
+</style>
+</head>
+<body>
+<a class="skip caps" href="#policy">Skip to policy</a>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../../">
+    <span class="nav__name">Anandhu Suresh</span>
+    <span class="nav__alias caps">a.k.a. Dr Atomic</span>
+  </a>
+  <a class="nav__back caps" href="../../">Back to portfolio</a>
+</header>
+
+<main id="policy">
+  <div class="head">
+    <h1>Privacy <em>Policy</em></h1>
+    <p class="updated caps">README Templates · Last updated November 3, 2026</p>
+  </div>
+
+  <ul class="summary">
+    <li>README Templates has no server and no user accounts of its own. We don't receive your data.</li>
+    <li>Your details and GitHub key stay on your device. The key is encrypted; your other details are not.</li>
+    <li>The app talks to GitHub using the key you provide, and only when you connect an account.</li>
+    <li>There are no analytics, ads or tracking.</li>
+  </ul>
+
+  <div class="policy">
+    <section>
+      <h2>What this covers</h2>
+      <div class="policy__body">
+        <p>This policy covers the README Templates desktop app for Windows and Linux, including the Microsoft Store version, and the web version you can run yourself from the <a href="https://github.com/Dr-At0mic/README-Templates">source code</a>. The app helps you design a GitHub profile README and publish it to your own GitHub account.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>What is stored on your device</h2>
+      <div class="policy__body">
+        <p>All of this stays in the app's local storage on your device. None of it is sent to us.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Data</th><th>Details</th><th>Protection</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>GitHub access key</td>
+                <td>Saved only if you choose to keep it on this device. Otherwise it's kept for the current session, or in memory only if encrypted storage isn't available.</td>
+                <td>Encrypted with AES-256-GCM, using a key held on your device that the app's code can use but can't read.</td>
+              </tr>
+              <tr>
+                <td>Saved account details</td>
+                <td>Your GitHub username, display name and avatar address, for the account menu.</td>
+                <td>Not encrypted.</td>
+              </tr>
+              <tr>
+                <td>Data presets</td>
+                <td>Details you save as a preset, such as your name, headline, location, website, email, social and support links, and template options.</td>
+                <td>Not encrypted.</td>
+              </tr>
+              <tr>
+                <td>App preferences</td>
+                <td>Your chosen template and form, the sidebar state and the last active account.</td>
+                <td>Not encrypted.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Your GitHub profile data, sponsor data and unsaved edits are kept in memory while the app runs and are not saved to disk.</p>
+        <p>Encryption protects your key if the app's files are copied. It can't protect against malicious software already running on your device.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>What is sent to GitHub</h2>
+      <div class="policy__body">
+        <p>Without a connected account, the app makes no requests to GitHub for your profile and shows made-up sample data instead. When you connect an account, the app contacts <code>api.github.com</code> directly from your device, sending your key only to that address, in order to:</p>
+        <ul>
+          <li><strong>Read</strong> your profile, public repositories, contribution calendar, listed social accounts and, if you have a GitHub Sponsors profile, your public sponsors and goal. Private sponsors are not requested. Income figures are not requested.</li>
+          <li><strong>Check</strong> your profile repository before publishing.</li>
+          <li><strong>Write</strong> to your <code>&lt;username&gt;/&lt;username&gt;</code> repository, but only when you select Publish or Upload artwork. It can also create that repository, as public, if it doesn't exist.</li>
+        </ul>
+        <p>What you publish becomes public on GitHub, including any email address or links you entered. GitHub handles this data under the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Other connections</h2>
+      <div class="policy__body">
+        <ul>
+          <li><strong>Updates:</strong> versions downloaded from GitHub check <code>github.com</code> for new releases at launch and when you select Check for updates. The Microsoft Store version doesn't do this, because the Store handles its updates.</li>
+          <li><strong>Images:</strong> the preview loads your avatar and your sponsors' avatars from GitHub, plus any image addresses you put in your own text. The site hosting an image can see your IP address, as with any web image.</li>
+          <li><strong>Links:</strong> links you select open in your default browser, under that site's own privacy policy.</li>
+          <li><strong>Microsoft:</strong> on Windows, the app runs on Microsoft's WebView2 runtime, and the Store version is delivered by the Microsoft Store. Both are covered by the <a href="https://www.microsoft.com/privacy/privacystatement">Microsoft Privacy Statement</a>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>What we don't collect</h2>
+      <div class="policy__body">
+        <p>The app contains no analytics, advertising, tracking or crash-reporting tools. It has no server of ours to send anything to, so we have no copy of your data and can't see, sell or share it.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to delete your data</h2>
+      <div class="policy__body">
+        <ul>
+          <li><strong>One account:</strong> open the account menu and select the bin icon beside the account.</li>
+          <li><strong>All saved keys:</strong> in the account menu, select Clear all saved keys. This also erases the device encryption key.</li>
+          <li><strong>A preset:</strong> select it in the Data preset list, then select the bin icon.</li>
+          <li><strong>Everything on this device:</strong> uninstall the app, then delete its data folder if it's still there, because uninstalling may not remove it:
+            <ul>
+              <li>Windows: <code>%LOCALAPPDATA%\com.readmetemplates.studio</code></li>
+              <li>Windows, Microsoft Store version, if present: <code>%LOCALAPPDATA%\Packages\DrAtomic.READMETemplates_cqr4nsexcrjqp</code></li>
+              <li>Linux: <code>~/.local/share/com.readmetemplates.studio</code></li>
+            </ul>
+          </li>
+          <li><strong>Your GitHub key:</strong> deleting it from the app doesn't cancel it. Revoke it in your <a href="https://github.com/settings/tokens">GitHub token settings</a>.</li>
+          <li><strong>What you published:</strong> edit or delete the files in your profile repository on GitHub. Earlier versions stay in the repository's history until you remove them.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Children</h2>
+      <div class="policy__body">
+        <p>The app isn't directed at children. Using its GitHub features requires a GitHub account, which is subject to GitHub's own age requirements.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Changes to this policy</h2>
+      <div class="policy__body">
+        <p>If this policy changes, the new version will be posted on this page with a new date.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <div class="policy__body">
+        <p>README Templates is made by Anandhu Suresh (Dr Atomic). For privacy questions, please <a href="https://github.com/Dr-At0mic/README-Templates/issues">open an issue on GitHub</a>. Issues are public, so please don't include personal details or your key.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer__sign" aria-hidden="true">
+    <div class="footer__name">ANANDHU SURESH</div>
+  </div>
+  <div class="footer__bar caps">
+    <span>Anandhu Suresh</span>
+    <a href="../../">Back to portfolio</a>
+    <a href="#policy">Back to top</a>
+  </div>
+</footer>
+</body>
+</html>

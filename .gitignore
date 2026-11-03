@@ -14,3 +14,6 @@ projects/
 /graphify-out
 # portrait models, downloaded on first run of make_portrait3d.py
 tools/portrait/models/
+
+# source copy of the readme templates privacy policy; the live page is in public/readme-templates/privacy/
+/privacy/
